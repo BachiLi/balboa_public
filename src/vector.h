@@ -122,26 +122,6 @@ inline T dot(const TVector2<T> &v0, const TVector2<T> &v1) {
 }
 
 template <typename T>
-inline T distance_squared(const TVector2<T> &v0, const TVector2<T> &v1) {
-    return dot(v0 - v1, v0 - v1);
-}
-
-template <typename T>
-inline T distance(const TVector2<T> &v0, const TVector2<T> &v1) {
-    return sqrt(distance_squared(v0, v1));
-}
-
-template <typename T>
-inline T length_squared(const TVector2<T> &v) {
-    return dot(v, v);
-}
-
-template <typename T>
-inline T length(const TVector2<T> &v) {
-    return sqrt(length_squared(v));
-}
-
-template <typename T>
 inline TVector2<T> normalize(const TVector2<T> &v0) {
     auto l = length(v0);
     if (l <= 0) {
@@ -149,26 +129,6 @@ inline TVector2<T> normalize(const TVector2<T> &v0) {
     } else {
         return v0 / l;
     }
-}
-
-template <typename T>
-inline T average(const TVector2<T> &v) {
-    return (v.x + v.y) / 2;
-}
-
-template <typename T>
-inline T max(const TVector2<T> &v) {
-    return max(v.x, v.y);
-}
-
-template <typename T>
-inline TVector2<T> min(const TVector2<T> &v0, const TVector2<T> &v1) {
-    return TVector2<T>{min(v0.x, v1.x), min(v0.y, v1.y)};
-}
-
-template <typename T>
-inline TVector2<T> max(const TVector2<T> &v0, const TVector2<T> &v1) {
-    return TVector2<T>{max(v0.x, v1.x), max(v0.y, v1.y)};
 }
 
 template <typename T>
@@ -272,64 +232,6 @@ inline TVector3<T>& operator/=(TVector3<T> &v, const T &s) {
 template <typename T>
 inline T dot(const TVector3<T> &v0, const TVector3<T> &v1) {
     return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
-}
-
-template <typename T>
-inline TVector3<T> cross(const TVector3<T> &v0, const TVector3<T> &v1) {
-    return TVector3<T>{
-        v0[1] * v1[2] - v0[2] * v1[1],
-        v0[2] * v1[0] - v0[0] * v1[2],
-        v0[0] * v1[1] - v0[1] * v1[0]};
-}
-
-template <typename T>
-inline T distance_squared(const TVector3<T> &v0, const TVector3<T> &v1) {
-    return dot(v0 - v1, v0 - v1);
-}
-
-template <typename T>
-inline T distance(const TVector3<T> &v0, const TVector3<T> &v1) {
-    return sqrt(distance_squared(v0, v1));
-}
-
-template <typename T>
-inline T length_squared(const TVector3<T> &v) {
-    return dot(v, v);
-}
-
-template <typename T>
-inline T length(const TVector3<T> &v) {
-    return sqrt(length_squared(v));
-}
-
-template <typename T>
-inline TVector3<T> normalize(const TVector3<T> &v0) {
-    auto l = length(v0);
-    if (l <= 0) {
-        return TVector3<T>{0, 0, 0};
-    } else {
-        return v0 / l;
-    }
-}
-
-template <typename T>
-inline T average(const TVector3<T> &v) {
-    return (v.x + v.y + v.z) / 3;
-}
-
-template <typename T>
-inline T max(const TVector3<T> &v) {
-    return max(max(v.x, v.y), v.z);
-}
-
-template <typename T>
-inline TVector3<T> min(const TVector3<T> &v0, const TVector3<T> &v1) {
-    return TVector3<T>{min(v0.x, v1.x), min(v0.y, v1.y), min(v0.z, v1.z)};
-}
-
-template <typename T>
-inline TVector3<T> max(const TVector3<T> &v0, const TVector3<T> &v1) {
-    return TVector3<T>{max(v0.x, v1.x), max(v0.y, v1.y), max(v0.z, v1.z)};
 }
 
 template <typename T>
