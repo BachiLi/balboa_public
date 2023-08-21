@@ -70,6 +70,6 @@ inline Image3 to_image3(const Image1 &img) {
 inline Image1 to_image1(const Image3 &img) {
     Image1 out(img.width, img.height);
     std::transform(img.data.cbegin(), img.data.cend(), out.data.begin(),
-        [] (const Vector3 &v) {return average(v);});
+        [] (const Vector3 &v) {return (v.x + v.y + v.z) / 3;});
     return out;
 }
