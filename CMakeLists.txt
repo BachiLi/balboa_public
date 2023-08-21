@@ -17,7 +17,8 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(SRCS src/3rdparty/stb_image.h
+set(SRCS src/3rdparty/json.hh
+         src/3rdparty/stb_image.h
          src/3rdparty/stb_image_write.h
          src/flexception.h
          src/hw1.h

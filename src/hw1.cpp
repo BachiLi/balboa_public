@@ -1,4 +1,5 @@
 #include "hw1.h"
+#include "hw1_scenes.h"
 
 Image3 hw_1_1(const std::vector<std::string> &params) {
     // Homework 1.1: render a circle at the specified
@@ -23,6 +24,25 @@ Image3 hw_1_1(const std::vector<std::string> &params) {
             color = Vector3{r, g, b};
         }
     }
+
+    for (int y = 0; y < img.height; y++) {
+        for (int x = 0; x < img.width; x++) {
+            img(x, y) = Vector3{1, 1, 1};
+        }
+    }
+    return img;
+}
+
+Image3 hw_1_2(const std::vector<std::string> &params) {
+    // Homework 1.2: render multiple circles
+    if (params.size() == 0) {
+        return Image3(0, 0);
+    }
+
+    int scene_id = std::stoi(params[0]);
+    const CircleScene &scene = hw1_2_scenes[scene_id];
+
+    Image3 img(scene.resolution.x, scene.resolution.y);
 
     for (int y = 0; y < img.height; y++) {
         for (int x = 0; x < img.width; x++) {

@@ -32,7 +32,7 @@ Before you start coding, we recommend you to go through the whole handout to hav
 
 \section{Building Balboa}
 
-We are going to build our code on top of a currently barebone codebase \emph{balboa}. Balboa already includes all the third party libraries (stb\_image and stb\_image\_write) in its repository.
+We are going to build our code on top of a currently barebone codebase \emph{balboa}. Balboa already includes all the third party libraries (stb\_image, stb\_image\_write, and json) in its repository.
 All you need to do is to clone the repo and build it using CMake (assuming you are in a Unix-like system):
 \begin{lstlisting}[language=bash]
   git clone https://github.com/BachiLi/balboa_public
@@ -107,7 +107,7 @@ Image3 img2 = imread3("image2.png"); // read an image from the disk
 \end{lstlisting}
 The pixel values are stored as \lstinline{Real} in the memory. When we write the image into a file, the file format can often only supports 8-bit integers. The conversion is made in the \lstinline{imwrite} function, where we apply a \href{https://en.wikipedia.org/wiki/Gamma_correction}{gamma correction} to encode the image (with $\gamma=\frac{1}{2.2}$). We will likely talk about gamma correction in the class.
 
-You should be ready to implement the circle rendering code at this point. 
+You should be ready to implement the circle rendering code in \lstinline{hw_1_1} in \lstinline{hw1.cpp} at this point. 
 To see your results, in terminal, type:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_1 -center 200 300 -radius 100 -color 0.3 0.7 0.5
@@ -125,6 +125,63 @@ or just any parameter you like! \cref{fig:hw1_1} shows our rendering for the fir
 \end{figure}
 
 If you see your circles, congratulations! If you have not done graphics-related stuff before, this is likely the first time you have use code to generate an image from scratch. This is what makes computer graphics fun at least for me: you paint on a canvas using code (and sometimes math) instead of a brush. This makes people who are not that good in traditional art capable of generating beautiful pictures (yes, the images you generate will become prettier from now on). Furthermore, unlike things like Stable Diffusion, you maintain full control of the process: at this point, you know exactly how each pixel is generated, and if you don't like it, it's very easy to fix if you know how computer graphics works.
+
+\section{Rendering multiple circles (10 pts)}
+
+In this part, we will extend our previous code to handle multiple circles. This mostly boils down to adding a for loop to check over all of the circles for all of the pixels. However, things become more interesting here: it turns out there are two ways to structure the loops:
+\begin{lstlisting}[language=Python]
+# For each pixel, check all circles
+for each pixel:
+    for each circle:
+        # check if the pixel center hits the circle
+        # overwrite color if the circle is closer
+
+# For each circle, check all pixels
+for each circle:
+    for each pixel:
+        # check if the pixel center hits the circle
+        # overwrite color if the circle is closer
+\end{lstlisting}
+Think for a bit: do these two produce the same results? The first loop structure finds the closest hitting circle for each pixel, and the second loop structure \emph{paints} each circle on the canvas in order. It will be clearer in the future lectures that in 3D graphics, the first loop structure is usually called \emph{ray tracing} (or ray casting) and the second loop structure is called \emph{rasterization}.
+
+Another small complication we need to resolve is to decide which circle is the closest when there are multiple ones overlapping with a pixel. We simply assume the circles are ordered from the farthest to the closest. 
+
+For this part, you can choose to implement either style above that suits you better. The scene is given in the array \lstinline{hw1_2_scenes} in \lstinline{hw1_scenes.h}. We will select the scenes using command line arguments. Implement your rendering code in the function \lstinline{hw_1_2} and see the result using the following commands:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_2 [scene_id]
+\end{lstlisting}
+where \lstinline{[scene_id]} is the scene you want to render (0-4).
+
+\paragraph{Bonus: accelerating rasterization using bounding boxes.} In practice, we may have a lot of circles and a lot of pixels. So we want to pick a way to render that is the fastest. Both loop structures can be sped up significantly. The observation is that most of the time, each pixel would only hits a small amount of circles. Or equivalently, each circle only will overlap with a small amount of pixels. It turns out that the acceleration for the first loop structure (ray tracing) is a bit more involved (we will discuss them in \href{https://cseweb.ucsd.edu/~tzli/cse168}{CSE 168}), so we will only talk about the acceleration for the rasterization part.
+
+% In this part, we will extend our previous code to handle multiple circles. We will mainly address two challenges: 1) Specifying multiple circles through the command line is cumbersome. How can we make this easier? 2) What do we do when a pixel center hits more than one circle? Which color should we take?
+
+% For challenge 1), we will introduce a \emph{scene file} that represents the objects we want to render. There is no a single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsible \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing an example of the scene:
+
+% \begin{lstlisting}[language=javascript]
+% {
+%     "canvas": {
+%         "resolution": [640, 480]
+%     }
+%     "background": [
+%         1, 1, 1
+%     ]
+%     "objects": [
+%         {
+%             "type": "circle",
+%             "center": [200, 300],
+%             "radius": 100,
+%             "color": [0.7, 0.3, 0.5]
+%         },
+%         {
+%             "type": "circle",
+%             "center": [400, 100],
+%             "radius": 150,
+%             "color": [0.3, 0.5, 0.7]
+%         },
+%     ]
+% }
+% \end{lstlisting}
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
