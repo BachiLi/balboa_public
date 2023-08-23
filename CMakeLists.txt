@@ -17,13 +17,15 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(SRCS src/3rdparty/json.hh
+set(SRCS src/3rdparty/json.hpp
          src/3rdparty/stb_image.h
          src/3rdparty/stb_image_write.h
          src/flexception.h
          src/hw1.h
+         src/hw1_scenes.h
          src/image.h
          src/hw1.cpp
+         src/hw1_scenes.cpp
          src/image.cpp)
 
 add_library(balboa_lib STATIC ${SRCS})

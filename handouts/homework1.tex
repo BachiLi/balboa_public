@@ -146,42 +146,185 @@ Think for a bit: do these two produce the same results? The first loop structure
 
 Another small complication we need to resolve is to decide which circle is the closest when there are multiple ones overlapping with a pixel. We simply assume the circles are ordered from the farthest to the closest. 
 
-For this part, you can choose to implement either style above that suits you better. The scene is given in the array \lstinline{hw1_2_scenes} in \lstinline{hw1_scenes.h}. We will select the scenes using command line arguments. Implement your rendering code in the function \lstinline{hw_1_2} and see the result using the following commands:
+For this part, you can choose to implement either style above that suits you better. The scene is given in the array \lstinline{hw1_2_scenes} in \lstinline{hw1_scenes.h}. Note that the scene also specifies the background color and the canvas resolution. We will select the scenes using command line arguments. Implement your rendering code in the function \lstinline{hw_1_2} and see the result using the following commands:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_2 [scene_id]
 \end{lstlisting}
 where \lstinline{[scene_id]} is the scene you want to render (0-4).
 
+We show our rendering for scene 0 in \cref{fig:hw1_2}. We will grade your results using the other scenes.
+
+\begin{figure}[ht]
+    \begin{minipage}{0.67\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{imgs/hw_1_2.png}
+    \caption{References for Homework 1.2.}
+    \label{fig:hw1_2}
+    \end{minipage}
+    \begin{minipage}{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{imgs/circle_box.pdf}
+    \caption{The axis-aligned bounding box of a circle.}
+    \label{fig:circle_box}
+    \end{minipage}
+\end{figure}
+
 \paragraph{Bonus: accelerating rasterization using bounding boxes.} In practice, we may have a lot of circles and a lot of pixels. So we want to pick a way to render that is the fastest. Both loop structures can be sped up significantly. The observation is that most of the time, each pixel would only hits a small amount of circles. Or equivalently, each circle only will overlap with a small amount of pixels. It turns out that the acceleration for the first loop structure (ray tracing) is a bit more involved (we will discuss them in \href{https://cseweb.ucsd.edu/~tzli/cse168}{CSE 168}), so we will only talk about the acceleration for the rasterization part.
 
-% In this part, we will extend our previous code to handle multiple circles. We will mainly address two challenges: 1) Specifying multiple circles through the command line is cumbersome. How can we make this easier? 2) What do we do when a pixel center hits more than one circle? Which color should we take?
+Notice that each circle usually only intersect with a small set of pixels. Therefore, we can modify the rasterization loop into the following:
+\begin{lstlisting}[language=Python]
+# For each circle, check all pixels
+for each circle:
+    bounding_box = \
+        BBox(circle.center - radius,
+             circle.center + radius)
+    for each pixel in bounding_box:
+        # check if the pixel center hits the circle
+        # overwrite color if the circle is closer
+\end{lstlisting}
+Here, for each circle, we can compute an \emph{axis-aligned bounding box} that contains the circle (\cref{fig:circle_box}), and only loop over the pixels that overlaps with the bounding box. An axis-aligned bounding box is defined by two points: the point on the top left, and the point at the bottom right. 
 
-% For challenge 1), we will introduce a \emph{scene file} that represents the objects we want to render. There is no a single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsible \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing an example of the scene:
+For the bonus, implement the rasterization loop above, and report the speedup you obtain before and after the optimization.
 
-% \begin{lstlisting}[language=javascript]
-% {
-%     "canvas": {
-%         "resolution": [640, 480]
-%     }
-%     "background": [
-%         1, 1, 1
-%     ]
-%     "objects": [
-%         {
-%             "type": "circle",
-%             "center": [200, 300],
-%             "radius": 100,
-%             "color": [0.7, 0.3, 0.5]
-%         },
-%         {
-%             "type": "circle",
-%             "center": [400, 100],
-%             "radius": 150,
-%             "color": [0.3, 0.5, 0.7]
-%         },
-%     ]
-% }
-% \end{lstlisting}
+\section{Rendering more shapes (10 pts)}
+
+Next, we will add more types of shapes into our renderer. In particular, we will support rendering an (axis-aligned) rectangle and a triangle. Before that, let's introduce our scene file format, so that we don't have to hardcode our scenes in a C++ header. There is no a single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsible \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing scene 0 from the previous part in our scene format:
+\begin{lstlisting}[language=json]
+{
+    "resolution": [640, 360],
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "type": "circle",
+            "center": [320, 180],
+            "radius": 160,
+            "color": [0.3, 0.5, 0.8]
+        },
+        {
+            "type": "circle",
+            "center": [150, 80],
+            "radius": 80,
+            "color": [0.8, 0.3, 0.5]
+        },
+        {
+            "type": "circle",
+            "center": [490, 80],
+            "radius": 80,
+            "color": [0.8, 0.3, 0.5]
+        }
+    ]
+}
+\end{lstlisting}
+
+We will provide the scene parser for you. The scene is parsed into the following \lstinline{struct}:
+\begin{lstlisting}[language=C++]
+struct Scene {
+    Vector2i resolution;
+    Vector3 background;
+    std::vector<Shape> shapes;
+};
+\end{lstlisting}
+where \lstinline{Shape} is a \lstinline{std::variant}:
+\begin{lstlisting}[language=C++]
+struct Circle {
+    Vector2 center;
+    Real radius;
+    Vector3 color;
+};
+
+struct Rectangle {
+    Vector2 p_min, p_max;
+    Vector3 color;
+};
+
+struct Triangle {
+    Vector2 p0, p1, p2;
+    Vector3 color;
+};
+
+using Shape = std::variant<Circle, Rectangle, Triangle>;
+\end{lstlisting}
+
+A \lstinline{std:variant} can be seen as a \emph{tagged union}:
+\begin{lstlisting}[language=C++]
+struct Foo {
+  int type;
+  union {
+    Type0 t0;
+    Type1 t1;
+    // ...
+  }
+};
+\end{lstlisting}
+Read more about it \href{https://www.cppstories.com/2020/04/variant-virtual-polymorphism.html/}{here}. I used variant here so that I can store all shapes in a single linear array without separate heap memory allocation.
+
+In your code, one way to deal with different types of \lstinline{Shape} could be the following:
+\begin{lstlisting}[language=C++]
+if (auto *circle = std::get_if<Circle>(&shape)) {
+    // do something with circle
+} else if (auto *rectangle = std::get_if<Rectangle>(&shape)) {
+    // do something with rectangle
+} else if (auto *triangle = std::get_if<Triangle>(&shape)) {
+    // do something with triangle
+}
+\end{lstlisting}
+
+A \lstinline{Rectangle} is axis-aligned and is defined by its top-left (\lstinline{p_min}) and bottom-right (\lstinline{p_max}) points. Testing whether a 2D point is inside an axis-aligned rectangle is easy and I'll leave it to you to figure it out.
+
+\begin{figure}[t]
+    \centering
+    \begin{minipage}{0.5\linewidth}
+    \includegraphics[width=\linewidth]{imgs/half_planes.pdf}
+    \caption{Each edge of a triangle forms a line that splits the 2D space into two half planes. Here we show the edge from $p_0$ and $p_1$. The line has a ``normal'' direction $n_{01}$ that is perpendicular to the edge direction (i.e., $n_{01} \cdot \left(p_1 - p_0\right) = 0$). For a point $q$, we can determine which half-plane it is in by forming a vector with $p_0$ and taking dot product with $n_{01}$. If the dot product is positive, it is on the same side as where the normal is pointing at, and vice versa.}
+    \label{fig:half_planes}
+    \end{minipage}
+    \hspace{20pt}
+    \begin{minipage}{0.39\linewidth}
+    \includegraphics[width=\linewidth]{imgs/tri_half_planes.pdf}
+    \caption{The 6 half-planes formed by the 3 edges split the 2D plane into 7 regions. If all normals are pointing inwards, then the interior of the triangle is the intersection of all three positive half-planes. Otherwise the interior is the intersection of all negative half-planes.}
+    \label{fig:tri_half_planes}
+    \end{minipage}
+\end{figure}
+
+A \lstinline{Triangle} is defined by three points (\lstinline{p0, p1} and \lstinline{p2}). Testing whether a point is inside a triangle is a bit more involved. There are more than one way to do it, but I like to do it by looking at the \emph{half-planes} formed by the three edges of a triangle. For each edge of the triangle, we can form a line that splits the whole 2D space into two parts, we call these parts half-planes (\cref{fig:half_planes}). We can determine whether a point $q$ is on the positive or negative half-planes by looking at the sign of the dot product between a vector formed by the point $q$ and the line, and a normal vector $n$ that is perpendicular to the direction of the line. 
+
+The key observation for testing whether a point is inside a triangle or test, is to notice that if we follow the three edge directions: $p_1 - p_0$, $p_2 - p_1$, and $p_0 - p_2$, and rotate them by 90 degrees in clockwise direction to obtain the normals $n_{01}$, $n_{12}$, and $n_{20}$, then the interior of the triangle is the intersection of all the positive half-planes or all the negative half-planes. More precisely, if $p_0, p_1$ and $p_2$ follows the clockwise direction, then the interior would be the intersection of all the positive half-planes, otherwise if $p_0, p_1$ and $p_2$ follows the counterclockwise direction, then the interior would be the intersection of all the negative half-planes.
+
+The remaining question is how do we rotate the edge directions to obtain the normals? Recall that the 2D clockwise rotation matrix is:
+\begin{equation}
+\begin{bmatrix}
+\cos \theta & \sin \theta \\
+-\sin \theta & \cos \theta
+\end{bmatrix},
+\end{equation}
+where $\theta$ is the rotation angle -- plugging in $\theta = 90^{\circ}$ we obtain:
+\begin{equation}
+\begin{bmatrix}
+0 & 1 \\
+-1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x \\ y
+\end{bmatrix}
+=
+\begin{bmatrix}
+y \\ -x
+\end{bmatrix}.
+\end{equation}
+
+Thus, to obtain normal $n_{01}$, we can take the edge $e_{01} = p_1 - p_0$, and set $n_{01}.x = e_{01}.y$ and $n_{01}.y = -e_{01}.x$.
+
+At this point, you should have enough knowledge to implement a renderer that can handle circles, rectangles, and triangles. Write your code in \lstinline{hw_1_3} and test it using the following commands:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_3 ../scenes/hw1/three_circles.json
+\end{lstlisting}
+
+\section{2D transformation (10 pts)}
+
+\section{Alpha blending (10 pts)}
+
 
 %\bibliographystyle{plain}
 %\bibliography{refs}

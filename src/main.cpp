@@ -1,4 +1,5 @@
 #include "hw1.h"
+#include "timer.h"
 #include <vector>
 #include <string>
 
@@ -17,8 +18,14 @@ int main(int argc, char *argv[]) {
         Image3 img = hw_1_1(parameters);
         imwrite("hw_1_1.png", img);
     } else if (hw_num == "1_2") {
+        Timer timer;
+        tick(timer);
         Image3 img = hw_1_2(parameters);
+        std::cout << "hw_1_2 took " << tick(timer) << " seconds." << std::endl;
         imwrite("hw_1_2.png", img);
+    } else if (hw_num == "1_3") {
+        Image3 img = hw_1_3(parameters);
+        imwrite("hw_1_3.png", img);
     }
 
     return 0;

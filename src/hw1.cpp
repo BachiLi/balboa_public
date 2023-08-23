@@ -1,6 +1,8 @@
 #include "hw1.h"
 #include "hw1_scenes.h"
 
+using namespace hw1;
+
 Image3 hw_1_1(const std::vector<std::string> &params) {
     // Homework 1.1: render a circle at the specified
     // position, with the specified radius and color.
@@ -41,6 +43,25 @@ Image3 hw_1_2(const std::vector<std::string> &params) {
 
     int scene_id = std::stoi(params[0]);
     const CircleScene &scene = hw1_2_scenes[scene_id];
+
+    Image3 img(scene.resolution.x, scene.resolution.y);
+
+    for (int y = 0; y < img.height; y++) {
+        for (int x = 0; x < img.width; x++) {
+            img(x, y) = Vector3{1, 1, 1};
+        }
+    }
+    return img;
+}
+
+Image3 hw_1_3(const std::vector<std::string> &params) {
+    // Homework 1.3: render multiple shapes
+    if (params.size() == 0) {
+        return Image3(0, 0);
+    }
+
+    Scene scene = parse_scene(params[0]);
+    std::cout << scene << std::endl;
 
     Image3 img(scene.resolution.x, scene.resolution.y);
 
