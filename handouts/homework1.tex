@@ -126,7 +126,7 @@ or just any parameter you like! \cref{fig:hw1_1} shows our rendering for the fir
 
 If you see your circles, congratulations! If you have not done graphics-related stuff before, this is likely the first time you have use code to generate an image from scratch. This is what makes computer graphics fun at least for me: you paint on a canvas using code (and sometimes math) instead of a brush. This makes people who are not that good in traditional art capable of generating beautiful pictures (yes, the images you generate will become prettier from now on). Furthermore, unlike things like Stable Diffusion, you maintain full control of the process: at this point, you know exactly how each pixel is generated, and if you don't like it, it's very easy to fix if you know how computer graphics works.
 
-\section{Rendering multiple circles (10 pts)}
+\section{Rendering multiple circles (20 pts)}
 
 In this part, we will extend our previous code to handle multiple circles. This mostly boils down to adding a for loop to check over all of the circles for all of the pixels. However, things become more interesting here: it turns out there are two ways to structure the loops:
 \begin{lstlisting}[language=Python]
@@ -186,7 +186,7 @@ Here, for each circle, we can compute an \emph{axis-aligned bounding box} that c
 
 For the bonus, implement the rasterization loop above, and report the speedup you obtain before and after the optimization.
 
-\section{Rendering more shapes (10 pts)}
+\section{Rendering more shapes (20 pts)}
 
 Next, we will add more types of shapes into our renderer. In particular, we will support rendering an (axis-aligned) rectangle and a triangle. Before that, let's introduce our scene file format, so that we don't have to hardcode our scenes in a C++ header. There is no a single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsible \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing scene 0 from the previous part in our scene format:
 \begin{lstlisting}[language=json]
@@ -331,10 +331,107 @@ We show our rendering of the \lstinline{three_shapes} scene in \cref{fig:hw1_3}.
     \label{fig:hw1_3}
 \end{figure}
 
-\section{2D transformation (10 pts)}
+\section{2D transformation (20 pts)}
+
+Next, we're going to edit our shapes using some 2D transformations. These transformations can help us render more interesting shapes and generate animations. We are going to focus on \emph{affine} transformations, where each point $x \in \mathbb{R}^2$ in the shape is transformed through the expression $Ax + b$ where $A$ is some $2 \times 2$ matrix and $b$ is a 2D vector. 
+
+\begin{figure}[t]
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/scale.pdf}
+        \caption{\label{fig:scale} scale}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/shear_x.pdf}
+        \caption{\label{fig:shear_x} shear x}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/shear_y.pdf}
+        \caption{\label{fig:shear_y} shear y}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/rotate.pdf}
+        \caption{\label{fig:rotate} rotate}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/translate.pdf}
+        \caption{\label{fig:translate} translate}
+    \end{subfigure}
+    \caption{\label{fig:transformation} The five affine transformations we will support in this homework. Notice that only the translation cannot be expressed using a $2 \times 2$ matrix.}
+\end{figure}
+
+\begin{figure}[t]
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/scale_affine.pdf}
+        \caption{\label{fig:scale_affine} scale}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/shear_x_affine.pdf}
+        \caption{\label{fig:shear_x_affine} shear x}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/shear_y_affine.pdf}
+        \caption{\label{fig:shear_y_affine} shear y}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/rotate_affine.pdf}
+        \caption{\label{fig:rotate_affine} rotate}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/translate_affine.pdf}
+        \caption{\label{fig:translate_affine} translate}
+    \end{subfigure}
+    \caption{\label{fig:transformation_affine} Using \emph{augmented matrices}, we can represent all affine transforms, including translation, using $3 \times 3$ matrices. We recommend you to hand compute these matrix vector products and confirm they are the same as \cref{fig:transformation}.}
+\end{figure}
+
+In this part, we will implement a few common affine transformations: scaling, shearing, rotation, and translation. Crucially, we also want to \emph{combine} these transformations: for example, we might want to first rotate the shape, then translate it. As noted in \cref{fig:transformation}, everything except for translation can be represented as a matric vector product. This is annoying for combining the transformations: for all other transformations, we can combine them by multiplying the transformation matrices: for example, if we want to first rotate using matrix $R$ then scale using matrix $S$, we can combine them into a single matrix $S R$ (think: why isn't it $R S$?). The existence of translation makes this difficult. Fortunately, there is a very clever trick to unify every affine transformation into matrix vector products: observe that
+\begin{equation}
+\begin{bmatrix}
+x' \\ y' \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+a_{00} & a_{01} & b_{0} \\
+a_{10} & a_{11} & b_{1} \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\ y \\ 1
+\end{bmatrix}
+\end{equation}
+is equivalent to
+\begin{equation}
+\begin{bmatrix}
+x' \\ y'
+\end{bmatrix}
+=
+\begin{bmatrix}
+a_{00} & a_{01} \\
+a_{10} & a_{11}
+\end{bmatrix}
+\begin{bmatrix}
+x \\ y
+\end{bmatrix}
++
+\begin{bmatrix}
+b_0 \\ b_1
+\end{bmatrix}
+\end{equation}
+
+Therefore, we can represent all affine transformation using the $3 \times 3$ matrix above. \cref{fig:transformation_affine} shows the corresponding version of the matrices for each transformation.
 
 \section{Alpha blending (10 pts)}
 
+\section{Design your own scenes (10 pts)}
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
