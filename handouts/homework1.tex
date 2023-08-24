@@ -292,14 +292,14 @@ A \lstinline{Triangle} is defined by three points (\lstinline{p0, p1} and \lstin
 
 The key observation for testing whether a point is inside a triangle or test, is to notice that if we follow the three edge directions: $p_1 - p_0$, $p_2 - p_1$, and $p_0 - p_2$, and rotate them by 90 degrees in clockwise direction to obtain the normals $n_{01}$, $n_{12}$, and $n_{20}$, then the interior of the triangle is the intersection of all the positive half-planes or all the negative half-planes. More precisely, if $p_0, p_1$ and $p_2$ follows the clockwise direction, then the interior would be the intersection of all the positive half-planes, otherwise if $p_0, p_1$ and $p_2$ follows the counterclockwise direction, then the interior would be the intersection of all the negative half-planes.
 
-The remaining question is how do we rotate the edge directions to obtain the normals? Recall that the 2D clockwise rotation matrix is:
+The remaining question is how do we rotate the edge directions to obtain the normals? Recall that the 2D counterclockwise rotation matrix is:
 \begin{equation}
 \begin{bmatrix}
-\cos \theta & \sin \theta \\
--\sin \theta & \cos \theta
+\cos \theta & -\sin \theta \\
+\sin \theta & \cos \theta
 \end{bmatrix},
 \end{equation}
-where $\theta$ is the rotation angle -- plugging in $\theta = 90^{\circ}$ we obtain:
+where $\theta$ is the (counterclockwise) rotation angle -- plugging in $\theta = -90^{\circ}$ we obtain:
 \begin{equation}
 \begin{bmatrix}
 0 & 1 \\
@@ -319,7 +319,19 @@ Thus, to obtain normal $n_{01}$, we can take the edge $e_{01} = p_1 - p_0$, and 
 At this point, you should have enough knowledge to implement a renderer that can handle circles, rectangles, and triangles. Write your code in \lstinline{hw_1_3} and test it using the following commands:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_3 ../scenes/hw1/three_circles.json
+  ./balboa -hw 1_3 ../scenes/hw1/three_shapes.json
 \end{lstlisting}
+
+We show our rendering of the \lstinline{three_shapes} scene in \cref{fig:hw1_3}. We will grade your results using other scenes.
+
+\begin{figure}[ht]
+    \begin{minipage}{0.67\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{imgs/hw_1_3.png}
+    \caption{References for Homework 1.3.}
+    \label{fig:hw1_3}
+    \end{minipage}
+\end{figure}
 
 \section{2D transformation (10 pts)}
 
