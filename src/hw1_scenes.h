@@ -2,6 +2,7 @@
 
 #include "balboa.h"
 #include "vector.h"
+#include "matrix.h"
 #include <variant>
 #include <vector>
 
@@ -11,6 +12,7 @@ struct Circle {
     Vector2 center;
     Real radius;
     Vector3 color;
+    Matrix3x3 transform;
 };
 
 struct CircleScene {
@@ -24,11 +26,13 @@ extern CircleScene hw1_2_scenes[];
 struct Rectangle {
     Vector2 p_min, p_max;
     Vector3 color;
+    Matrix3x3 transform;
 };
 
 struct Triangle {
     Vector2 p0, p1, p2;
     Vector3 color;
+    Matrix3x3 transform;
 };
 
 using Shape = std::variant<Circle, Rectangle, Triangle>;
@@ -50,6 +54,5 @@ Scene parse_scene(const fs::path &filename);
 
 std::ostream& operator<<(std::ostream &os, const Shape &shape);
 std::ostream& operator<<(std::ostream &os, const Scene &scene);
-
 
 }

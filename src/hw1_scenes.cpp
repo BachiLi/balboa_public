@@ -1,6 +1,7 @@
 #include "hw1_scenes.h"
 #include "3rdparty/json.hpp"
 #include "flexception.h"
+#include "matrix.h"
 #include <fstream>
 
 using json = nlohmann::json;
@@ -20,6 +21,46 @@ CircleScene hw1_2_scene_0 = {
 CircleScene hw1_2_scenes[] = {
     hw1_2_scene_0
 };
+
+Matrix3x3 parse_transformation(const json &node) {
+    // Homework 1.4: parse a sequence of linear transformation and 
+    // combine them into an affine matrix
+    Matrix3x3 F = Matrix3x3::identity();
+    auto transform_it = node.find("transform");
+    if (transform_it == node.end()) {
+        // Transformation not specified, return identity.
+        return F;
+    }
+
+    for (auto it = transform_it->begin(); it != transform_it->end(); it++) {
+        if (auto scale_it = it->find("scale"); scale_it != it->end()) {
+            Vector2 scale = Vector2{
+                (*scale_it)[0], (*scale_it)[1]
+            };
+            // TODO (HW1.4): construct a scale matrix and composite with F
+            UNUSED(scale); // silence warning, feel free to remove it
+        } else if (auto rotate_it = it->find("rotate"); rotate_it != it->end()) {
+            Real angle = *rotate_it;
+            // TODO (HW1.4): construct a rotation matrix and composite with F
+            UNUSED(angle); // silence warning, feel free to remove it
+        } else if (auto translate_it = it->find("translate"); translate_it != it->end()) {
+            Vector2 translate = Vector2{
+                (*translate_it)[0], (*translate_it)[1]
+            };
+            // TODO (HW1.4): construct a translation matrix and composite with F
+            UNUSED(translate); // silence warning, feel free to remove it
+        } else if (auto shearx_it = it->find("shear_x"); shearx_it != it->end()) {
+            Real shear_x = *shearx_it;
+            // TODO (HW1.4): construct a shear matrix (x direction) and composite with F
+            UNUSED(shear_x); // silence warning, feel free to remove it
+        } else if (auto sheary_it = it->find("shear_y"); sheary_it != it->end()) {
+            Real shear_y = *sheary_it;
+            // TODO (HW1.4): construct a shear matrix (y direction) and composite with F
+            UNUSED(shear_y); // silence warning, feel free to remove it
+        }
+    }
+    return F;
+}
 
 Scene parse_scene(const fs::path &filename) {
     std::ifstream f(filename.string().c_str());
@@ -67,7 +108,8 @@ Scene parse_scene(const fs::path &filename) {
                     (*color_it)[0], (*color_it)[1], (*color_it)[2]
                 };
             }
-            scene.shapes.push_back(Circle{center, radius, color});
+            Matrix3x3 transform = parse_transformation(*it);
+            scene.shapes.push_back(Circle{center, radius, color, transform});
         } else if ((*it)["type"] == "rectangle") {
             Vector2 p_min{0, 0};
             Vector2 p_max{1, 1};
@@ -91,7 +133,8 @@ Scene parse_scene(const fs::path &filename) {
                     (*color_it)[0], (*color_it)[1], (*color_it)[2]
                 };
             }
-            scene.shapes.push_back(Rectangle{p_min, p_max, color});
+            Matrix3x3 transform = parse_transformation(*it);
+            scene.shapes.push_back(Rectangle{p_min, p_max, color, transform});
         } else if ((*it)["type"] == "triangle") {
             Vector2 p0{0, 0};
             Vector2 p1{1, 0};
@@ -122,7 +165,8 @@ Scene parse_scene(const fs::path &filename) {
                     (*color_it)[0], (*color_it)[1], (*color_it)[2]
                 };
             }
-            scene.shapes.push_back(Triangle{p0, p1, p2, color});
+            Matrix3x3 transform = parse_transformation(*it);
+            scene.shapes.push_back(Triangle{p0, p1, p2, color, transform});
         }
     }
 

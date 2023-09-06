@@ -232,20 +232,25 @@ struct Circle {
     Vector2 center;
     Real radius;
     Vector3 color;
+    Matrix3x3 transform;
 };
 
 struct Rectangle {
     Vector2 p_min, p_max;
     Vector3 color;
+    Matrix3x3 transform;
 };
 
 struct Triangle {
     Vector2 p0, p1, p2;
     Vector3 color;
+    Matrix3x3 transform;
 };
 
 using Shape = std::variant<Circle, Rectangle, Triangle>;
 \end{lstlisting}
+
+Don't worry about \lstinline{transform} for now. We'll use it in the next part.
 
 A \lstinline{std:variant} can be seen as a \emph{tagged union}:
 \begin{lstlisting}[language=C++]
@@ -427,7 +432,43 @@ b_0 \\ b_1
 \end{bmatrix}
 \end{equation}
 
-Therefore, we can represent all affine transformation using the $3 \times 3$ matrix above. \cref{fig:transformation_affine} shows the corresponding version of the matrices for each transformation.
+Therefore, we can represent all affine transformations using the $3 \times 3$ matrix above. \cref{fig:transformation_affine} shows the corresponding version of the matrices for each transformation.
+
+To describe affine transformations in our scene files, for each object, we can have a \lstinline{transform} property:
+\begin{lstlisting}[language=json]
+{
+    "type": "circle",
+    "color": [0.3, 0.5, 0.8],
+    "transform": [
+        {"scale": [200, 100]},
+        {"rotate": 45},
+        {"translate": [1.6, 1.8]}
+    ]
+}
+\end{lstlisting}
+The circle has the default radius ($1$) and center ($(0, 0)$). The transformations are applies in the order they appear: the circle is first scaled, then rotated, then translated (think: how would it look like?). Mathematically, if we denote the scaling matrix as $S$, the rotation matrix as $R$, and translation matrix as $T$, then the affine transformation matrix $F$ is:
+\begin{equation}
+    \text{translate}(\text{rotate}(\text{scale}(x))) = T R S x = F x
+\end{equation}
+The affine transformation matrix allows us to easily chain these operations and store the final result in a single matrix $F$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/spaces.pdf}
+    \caption{Transformation converts points between spaces.}
+    \label{fig:spaces}
+\end{figure}
+
+The transformation matrix above can be seen as a relation between \emph{spaces}. We call the space before the transformation the \emph{object space} because this is where the space the original object is described in. Here, the tranformation (let's call it $F$) converts points in the object space to the \emph{screen space}. On the other hand, the \emph{inverse} of the transformation $F^{-1}$ (i.e., matrix inversion) converts points in the screen space to the object space. See Figure~\ref{fig:spaces} for a visualization.
+
+The remaining question we need to address is: how do we test if the pixel center has hit the transformed shape? A main challenge is that the transformed shape may not be as easy to test compared to the original shape. For example, after linear transformations, a circle may become an ellipse. The trick we are going to test in the object space, instead of the screen space. Given a screen space point $x$ representing a pixel's center, we convert it to the object space using the inverse transform $F^{-1}$, then test whether it hits the object after the inverse transform. 
+
+To complete your implementation, first go to \lstinline{hw1_scenes.cpp} and complete the function \lstinline{parse_transformation}: this function parses the sequence of transformations and combines them into a $3 \times 3$ matrix. Next, go to \lstinline{hw1.cpp} and finish your implementation to render transformed shapes.
+
+Test your rendering using the following commands:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_4 ../scenes/hw1/transformation.json
+\end{lstlisting}
 
 \section{Alpha blending (10 pts)}
 

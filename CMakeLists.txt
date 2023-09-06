@@ -24,6 +24,9 @@ set(SRCS src/3rdparty/json.hpp
          src/hw1.h
          src/hw1_scenes.h
          src/image.h
+         src/matrix.h
+         src/timer.h
+         src/vector.h
          src/hw1.cpp
          src/hw1_scenes.cpp
          src/image.cpp)
