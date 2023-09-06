@@ -179,18 +179,21 @@ std::ostream& operator<<(std::ostream &os, const Shape &shape) {
         os << "Circle, " << 
               "center=" << circle->center << ", " <<
               "radius=" << circle->radius << ", " <<
-              "color=" << circle->color << "]";
+              "color=" << circle->color << ", " <<
+              "transform=" << std::endl << circle->transform << "]";
     } else if (auto *rectangle = std::get_if<Rectangle>(&shape)) {
         os << "Rectangle, " << 
               "p_min=" << rectangle->p_min << ", " <<
               "p_max=" << rectangle->p_max << ", " <<
-              "color=" << rectangle->color << "]";
+              "color=" << rectangle->color << ", " <<
+              "transform=" << std::endl<< rectangle->transform << "]";
     } else if (auto *triangle = std::get_if<Triangle>(&shape)) {
         os << "Triangle, " << 
               "p0=" << triangle->p0 << ", " <<
               "p1=" << triangle->p1 << ", " <<
               "p2=" << triangle->p2 << ", " <<
-              "color=" << triangle->color << "]";
+              "color=" << triangle->color << ", " <<
+              "transform=" << std::endl << triangle->transform << "]";
     } else {
         // Likely an unhandled case.
         os << "Unknown]";
