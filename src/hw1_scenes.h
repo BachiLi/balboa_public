@@ -43,6 +43,12 @@ inline void set_color(Shape &shape, const Vector3 &color) {
 inline Vector3 get_color(const Shape &shape) {
     return std::visit([](const auto &s) { return s.color; }, shape);
 }
+inline void set_transform(Shape &shape, const Matrix3x3 &transform) {
+    std::visit([&](auto &s) { s.transform = transform; }, shape);
+}
+inline Matrix3x3 get_transform(const Shape &shape) {
+    return std::visit([](const auto &s) { return s.transform; }, shape);
+}
 
 struct Scene {
     Vector2i resolution;
