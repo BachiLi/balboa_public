@@ -111,6 +111,18 @@ inline TMatrix3x3<T> operator*(const TMatrix3x3<T> &m0, const TMatrix3x3<T> &m1)
 }
 
 template <typename T>
+inline TVector3<T> operator*(const TMatrix3x3<T> &m, const TVector3<T> &v) {
+    TVector3<T> ret;
+    for (int i = 0; i < 3; i++) {
+        ret[i] = T(0);
+        for (int j = 0; j < 3; j++) {
+            ret[i] = m(i, j) * v[j];
+        }
+    }
+    return ret;
+}
+
+template <typename T>
 inline std::ostream& operator<<(std::ostream &os, const TMatrix3x3<T> &m) {
     return os << "[[" << m(0, 0) << ", " << m(0, 1) << ", " << m(0, 2) << "]," << std::endl <<
                   "[" << m(1, 0) << ", " << m(1, 1) << ", " << m(1, 2) << "]," << std::endl <<
@@ -338,6 +350,18 @@ inline TMatrix4x4<T> operator*(const TMatrix4x4<T> &m0, const TMatrix4x4<T> &m1)
             for (int k = 0; k < 4; k++) {
                 ret(i, j) += m0(i, k) * m1(k, j);
             }
+        }
+    }
+    return ret;
+}
+
+template <typename T>
+inline TVector4<T> operator*(const TMatrix4x4<T> &m, const TVector4<T> &v) {
+    TVector4<T> ret;
+    for (int i = 0; i < 4; i++) {
+        ret[i] = T(0);
+        for (int j = 0; j < 4; j++) {
+            ret[i] = m(i, j) * v[j];
         }
     }
     return ret;
