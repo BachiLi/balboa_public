@@ -490,8 +490,35 @@ Go to \lstinline{hw_1_5} in \lstinline{hw1.cpp} and implement the antialiasing s
 
 We show our rendering of the \lstinline{antialiasing} scene in \cref{fig:hw1_5}. We will grade your results using other scenes.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/hw_1_5before.png}
+    \includegraphics[width=0.4\linewidth]{imgs/hw_1_5after.png}
+    \caption{Without/with antialiasing.}
+    \label{fig:hw1_5}
+\end{figure}
 
 \section{Alpha blending (10 pts)}
+Finally, let's add some transparency into the objects. In addition to the RGB color, now each object also equips an $\alpha$ (\lstinline{alpha}) value. The lower the alpha is, the more transparent the object. $\alpha=0$ means that the object is fully transparent (so you can't see it), and $\alpha=1$ means that the object is fully opaque (so it's the same as previous parts of the homework). 
+
+For objects with $0 < \alpha < 1$, we need to blend their colors. If there is only one object with alpha $\alpha_0$ and color $C_0$, we blend it with the background color $B$ and obtain the final color $C$ as:
+\begin{equation}
+C = \alpha_0 C_0 + (1 - \alpha_0) B.
+\end{equation}
+
+What if we have two objects? We can see $\alpha$ as the amount of lights captured at that layer, and $1-\alpha$ as the amount of light pass through. So for two objects with alpha $\alpha_0$, $\alpha_1$ and color $C_0$ and $C_1$, and object $0$ is infront of object $1$, we can blend them as:
+\begin{equation}
+C = \alpha_0 C_0 + \alpha_1 (1 - \alpha_0) + (1 - \alpha_0) (1 - \alpha_1) B.
+\end{equation}
+
+We'll let you figure out the general formula for arbitrary number of objects and turn it into code.
+
+Go to \lstinline{hw_1_6} in \lstinline{hw1.cpp} and implement the alpha blending. Test your rendering using the following commands:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_6 ../scenes/hw1/alpha.json
+\end{lstlisting}
+
+We show our rendering of the \lstinline{alpha} scene in \cref{fig:hw1_6}. We will grade your results using other scenes.
 
 \section{Design your own scenes (10 pts)}
 
