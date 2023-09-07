@@ -116,7 +116,7 @@ inline TVector3<T> operator*(const TMatrix3x3<T> &m, const TVector3<T> &v) {
     for (int i = 0; i < 3; i++) {
         ret[i] = T(0);
         for (int j = 0; j < 3; j++) {
-            ret[i] = m(i, j) * v[j];
+            ret[i] += m(i, j) * v[j];
         }
     }
     return ret;
@@ -361,7 +361,7 @@ inline TVector4<T> operator*(const TMatrix4x4<T> &m, const TVector4<T> &v) {
     for (int i = 0; i < 4; i++) {
         ret[i] = T(0);
         for (int j = 0; j < 4; j++) {
-            ret[i] = m(i, j) * v[j];
+            ret[i] += m(i, j) * v[j];
         }
     }
     return ret;
