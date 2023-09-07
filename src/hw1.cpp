@@ -91,3 +91,22 @@ Image3 hw_1_4(const std::vector<std::string> &params) {
     }
     return img;
 }
+
+Image3 hw_1_5(const std::vector<std::string> &params) {
+    // Homework 1.5: antialiasing
+    if (params.size() == 0) {
+        return Image3(0, 0);
+    }
+
+    Scene scene = parse_scene(params[0]);
+    std::cout << scene << std::endl;
+
+    Image3 img(scene.resolution.x, scene.resolution.y);
+
+    for (int y = 0; y < img.height; y++) {
+        for (int x = 0; x < img.width; x++) {
+            img(x, y) = Vector3{1, 1, 1};
+        }
+    }
+    return img;
+}
