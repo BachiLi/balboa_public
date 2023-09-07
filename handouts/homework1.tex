@@ -126,7 +126,7 @@ or just any parameter you like! \cref{fig:hw1_1} shows our rendering for the fir
 
 If you see your circles, congratulations! If you have not done graphics-related stuff before, this is likely the first time you have use code to generate an image from scratch. This is what makes computer graphics fun at least for me: you paint on a canvas using code (and sometimes math) instead of a brush. This makes people who are not that good in traditional art capable of generating beautiful pictures (yes, the images you generate will become prettier from now on). Furthermore, unlike things like Stable Diffusion, you maintain full control of the process: at this point, you know exactly how each pixel is generated, and if you don't like it, it's very easy to fix if you know how computer graphics works.
 
-\section{Rendering multiple circles (20 pts)}
+\section{Rendering multiple circles (15 pts)}
 
 In this part, we will extend our previous code to handle multiple circles. This mostly boils down to adding a for loop to check over all of the circles for all of the pixels. However, things become more interesting here: it turns out there are two ways to structure the loops:
 \begin{lstlisting}[language=Python]
@@ -186,7 +186,7 @@ Here, for each circle, we can compute an \emph{axis-aligned bounding box} that c
 
 For the bonus, implement the rasterization loop above, and report the speedup you obtain before and after the optimization.
 
-\section{Rendering more shapes (20 pts)}
+\section{Rendering more shapes (15 pts)}
 
 Next, we will add more types of shapes into our renderer. In particular, we will support rendering an (axis-aligned) rectangle and a triangle. Before that, let's introduce our scene file format, so that we don't have to hardcode our scenes in a C++ header. There is no a single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsible \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing scene 0 from the previous part in our scene format:
 \begin{lstlisting}[language=json]
@@ -366,7 +366,7 @@ Next, we're going to edit our shapes using some 2D transformations. These transf
         \includegraphics[width=\linewidth]{imgs/translate.pdf}
         \caption{\label{fig:translate} translate}
     \end{subfigure}
-    \caption{\label{fig:transformation} The five affine transformations we will support in this homework. Notice that only the translation cannot be expressed using a $2 \times 2$ matrix.}
+    \caption{\label{fig:transformation} The five affine transformations we will support in this homework. Here we assume x axis is pointing right and y axis is pointing up. Notice that only the translation cannot be expressed using a $2 \times 2$ matrix.}
 \end{figure}
 
 \begin{figure}[t]
@@ -442,7 +442,7 @@ To describe affine transformations in our scene files, for each object, we can h
     "transform": [
         {"scale": [200, 100]},
         {"rotate": 45},
-        {"translate": [1.6, 1.8]}
+        {"translate": [320, 180]}
     ]
 }
 \end{lstlisting}
@@ -469,6 +469,27 @@ Test your rendering using the following commands:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_4 ../scenes/hw1/transformation.json
 \end{lstlisting}
+
+We show our rendering of the \lstinline{transformation} scene in \cref{fig:hw1_4}. We will grade your results using other scenes.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/hw_1_4.png}
+    \caption{References for Homework 1.4.}
+    \label{fig:hw1_4}
+\end{figure}
+
+\section{Antialiasing (10 pts)}
+If you zoom in to the pictures you generated, you will find that there are some ugly jagged edges around the object boundaries. This phenomonon is called ``aliasing'' in signal processing literature (we will discuss this in depth in CSE 168). The solution to aliasing is called antialiasing. We are going to implement the simplest form of antialiasing called ``supersampling''. The idea is simple: instead of only testing/sampling the pixel center, we'll sample multiple points within a pixel, and take average between them. For this homework, we will do a $4\times4$ pattern: we subdivide a pixel into 16 subpixels, compute the color at the center of the subpixels, and take an average over them.
+
+
+Go to \lstinline{hw_1_5} in \lstinline{hw1.cpp} and implement the antialiasing scheme. Test your rendering using the following commands:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_5 ../scenes/hw1/antialiasing.json
+\end{lstlisting}
+
+We show our rendering of the \lstinline{antialiasing} scene in \cref{fig:hw1_5}. We will grade your results using other scenes.
+
 
 \section{Alpha blending (10 pts)}
 
