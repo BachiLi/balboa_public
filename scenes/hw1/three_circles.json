@@ -1,0 +1,26 @@
+{
+    "resolution": [640, 360],
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "type": "circle",
+            "center": [320, 180],
+            "radius": 160,
+            "color": [0.3, 0.5, 0.8]
+        },
+        {
+            "type": "circle",
+            "center": [150, 80],
+            "radius": 80,
+            "color": [0.8, 0.3, 0.5]
+        },
+        {
+            "type": "circle",
+            "center": [490, 80],
+            "radius": 80,
+            "color": [0.8, 0.3, 0.5]
+        }
+    ]
+}

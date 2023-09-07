@@ -39,6 +39,3 @@ build/
 # Vscode related
 .vscode
 __pycache__/
-
-# Everything in the scene folder
-scenes/
