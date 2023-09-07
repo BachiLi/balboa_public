@@ -12,6 +12,7 @@ struct Circle {
     Vector2 center;
     Real radius;
     Vector3 color;
+    Real alpha;
     Matrix3x3 transform;
 };
 
@@ -26,12 +27,14 @@ extern CircleScene hw1_2_scenes[];
 struct Rectangle {
     Vector2 p_min, p_max;
     Vector3 color;
+    Real alpha;
     Matrix3x3 transform;
 };
 
 struct Triangle {
     Vector2 p0, p1, p2;
     Vector3 color;
+    Real alpha;
     Matrix3x3 transform;
 };
 

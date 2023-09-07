@@ -91,6 +91,7 @@ Scene parse_scene(const fs::path &filename) {
             Vector2 center{0, 0};
             Real radius = 1;
             Vector3 color{0, 0, 0};
+            Real alpha = 1;
 
             auto center_it = it->find("center");
             if (center_it != it->end()) {
@@ -108,12 +109,17 @@ Scene parse_scene(const fs::path &filename) {
                     (*color_it)[0], (*color_it)[1], (*color_it)[2]
                 };
             }
+            auto alpha_it = it->find("alpha");
+            if (alpha_it != it->end()) {
+                alpha = (*alpha_it);
+            }
             Matrix3x3 transform = parse_transformation(*it);
-            scene.shapes.push_back(Circle{center, radius, color, transform});
+            scene.shapes.push_back(Circle{center, radius, color, alpha, transform});
         } else if ((*it)["type"] == "rectangle") {
             Vector2 p_min{0, 0};
             Vector2 p_max{1, 1};
             Vector3 color{0, 0, 0};
+            Real alpha = 1;
 
             auto p_min_it = it->find("p_min");
             if (p_min_it != it->end()) {
@@ -133,13 +139,18 @@ Scene parse_scene(const fs::path &filename) {
                     (*color_it)[0], (*color_it)[1], (*color_it)[2]
                 };
             }
+            auto alpha_it = it->find("alpha");
+            if (alpha_it != it->end()) {
+                alpha = (*alpha_it);
+            }
             Matrix3x3 transform = parse_transformation(*it);
-            scene.shapes.push_back(Rectangle{p_min, p_max, color, transform});
+            scene.shapes.push_back(Rectangle{p_min, p_max, color, alpha, transform});
         } else if ((*it)["type"] == "triangle") {
             Vector2 p0{0, 0};
             Vector2 p1{1, 0};
             Vector2 p2{0, 1};
             Vector3 color{0, 0, 0};
+            Real alpha = 1;
 
             auto p0_it = it->find("p0");
             if (p0_it != it->end()) {
@@ -165,8 +176,12 @@ Scene parse_scene(const fs::path &filename) {
                     (*color_it)[0], (*color_it)[1], (*color_it)[2]
                 };
             }
+            auto alpha_it = it->find("alpha");
+            if (alpha_it != it->end()) {
+                alpha = (*alpha_it);
+            }
             Matrix3x3 transform = parse_transformation(*it);
-            scene.shapes.push_back(Triangle{p0, p1, p2, color, transform});
+            scene.shapes.push_back(Triangle{p0, p1, p2, color, alpha, transform});
         }
     }
 
