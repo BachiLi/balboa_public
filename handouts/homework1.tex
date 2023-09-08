@@ -35,7 +35,7 @@ Before you start coding, we recommend you to go through the whole handout to hav
 
 \paragraph{Colloboration policy.} We expect you to write the code on your own. Feel free to discuss between the peers and ask us questions though!
 
-\section{Building Balboa}
+\section{Building balboa}
 
 We are going to build our code on top of a currently barebone codebase \emph{balboa}. Balboa already includes all the third party libraries (stb\_image, stb\_image\_write, and json) in its repository.
 All you need to do is to clone the repo and build it using CMake (assuming you are in a Unix-like system):
@@ -300,7 +300,7 @@ A \lstinline{Rectangle} is axis-aligned and is defined by its top-left (\lstinli
 
 A \lstinline{Triangle} is defined by three points (\lstinline{p0, p1} and \lstinline{p2}). Testing whether a point is inside a triangle is a bit more involved. There are more than one way to do it, but I like to do it by looking at the \emph{half-planes} formed by the three edges of a triangle. For each edge of the triangle, we can form a line that splits the whole 2D space into two parts, we call these parts half-planes (\cref{fig:half_planes}). We can determine whether a point $q$ is on the positive or negative half-planes by looking at the sign of the dot product between a vector formed by the point $q$ and the line, and a normal vector $n$ that is perpendicular to the direction of the line. 
 
-The key observation for testing whether a point is inside a triangle or test, is to notice that if we follow the three edge directions: $p_1 - p_0$, $p_2 - p_1$, and $p_0 - p_2$, and rotate them by 90 degrees in clockwise direction to obtain the normals $n_{01}$, $n_{12}$, and $n_{20}$, then the interior of the triangle is the intersection of all the positive half-planes or all the negative half-planes. More precisely, if $p_0, p_1$ and $p_2$ follows the clockwise direction, then the interior would be the intersection of all the positive half-planes, otherwise if $p_0, p_1$ and $p_2$ follows the counterclockwise direction, then the interior would be the intersection of all the negative half-planes.
+The key observation for testing whether a point is inside a triangle or test, is to notice that if we follow the three edge directions: $p_1 - p_0$, $p_2 - p_1$, and $p_0 - p_2$, and rotate them by 90 degrees in clockwise direction to obtain the normals $n_{01}$, $n_{12}$, and $n_{20}$, then the interior of the triangle is the intersection of all the positive half-planes or all the negative half-planes. More precisely, if $p_0, p_1$ and $p_2$ follows the clockwise direction, then the interior would be the intersection of all the positive half-planes, otherwise if $p_0, p_1$ and $p_2$ follows the counterclockwise direction, then the interior would be the intersection of all the negative half-planes (\cref{fig:tri_half_planes}).
 
 The remaining question is how do we rotate the edge directions to obtain the normals? Recall that the 2D counterclockwise rotation matrix is:
 \begin{equation}
@@ -464,7 +464,7 @@ The affine transformation matrix allows us to easily chain these operations and 
     \label{fig:spaces}
 \end{figure}
 
-The transformation matrix above can be seen as a relation between \emph{spaces}. We call the space before the transformation the \emph{object space} because this is where the space the original object is described in. Here, the tranformation (let's call it $F$) converts points in the object space to the \emph{screen space}. On the other hand, the \emph{inverse} of the transformation $F^{-1}$ (i.e., matrix inversion) converts points in the screen space to the object space. See Figure~\ref{fig:spaces} for a visualization.
+The transformation matrix above can be seen as a relation between \emph{spaces}. We call the space before the transformation the \emph{object space} because this is where the space the original object is described in. Here, the tranformation (let's call it $F$) converts points in the object space to the \emph{screen space}. On the other hand, the \emph{inverse} of the transformation $F^{-1}$ (i.e., matrix inversion) converts points in the screen space to the object space. See \cref{fig:spaces} for a visualization.
 
 The remaining question we need to address is: how do we test if the pixel center has hit the transformed shape? A main challenge is that the transformed shape may not be as easy to test compared to the original shape. For example, after linear transformations, a circle may become an ellipse. The trick we are going to test in the object space, instead of the screen space. Given a screen space point $x$ representing a pixel's center, we convert it to the object space using the inverse transform $F^{-1}$, then test whether it hits the object after the inverse transform. 
 
@@ -513,7 +513,7 @@ C = \alpha_0 C_0 + (1 - \alpha_0) B.
 
 What if we have two objects? We can see $\alpha$ as the amount of lights captured at that layer, and $1-\alpha$ as the amount of light pass through. So for two objects with alpha $\alpha_0$, $\alpha_1$ and color $C_0$ and $C_1$, and object $0$ is infront of object $1$, we can blend them as:
 \begin{equation}
-C = \alpha_0 C_0 + \alpha_1 (1 - \alpha_0) + (1 - \alpha_0) (1 - \alpha_1) B.
+C = \alpha_0 C_0 + \alpha_1 (1 - \alpha_0) C_1 + (1 - \alpha_0) (1 - \alpha_1) B.
 \end{equation}
 
 We'll let you figure out the general formula for arbitrary number of objects and turn it into code.
