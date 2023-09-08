@@ -23,12 +23,14 @@ set(SRCS src/3rdparty/json.hpp
          src/flexception.h
          src/hw1.h
          src/hw1_scenes.h
+         src/hw2.h
          src/image.h
          src/matrix.h
          src/timer.h
          src/vector.h
          src/hw1.cpp
          src/hw1_scenes.cpp
+         src/hw2.cpp
          src/image.cpp)
 
 add_library(balboa_lib STATIC ${SRCS})
