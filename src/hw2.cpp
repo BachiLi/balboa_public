@@ -1,7 +1,7 @@
 #include "hw2.h"
 
 Image3 hw_2_1(const std::vector<std::string> &params) {
-    // Homework 1.1: render a single 3D triangle
+    // Homework 2.1: render a single 3D triangle
 
     Image3 img(640 /* width */, 480 /* height */);
 
@@ -10,6 +10,7 @@ Image3 hw_2_1(const std::vector<std::string> &params) {
     Vector3 p2{0, 1, -1};
     Real s = 1; // scaling factor of the view frustrum
     Vector3 color = Vector3{1.0, 0.5, 0.5};
+    Real z_near = 1e-6; // distance of the near clipping plane
     for (int i = 0; i < (int)params.size(); i++) {
         if (params[i] == "-s") {
             s = std::stof(params[++i]);
@@ -30,6 +31,8 @@ Image3 hw_2_1(const std::vector<std::string> &params) {
             Real g = std::stof(params[++i]);
             Real b = std::stof(params[++i]);
             color = Vector3{r, g, b};
+        } else if (params[i] == "-znear") {
+            z_near = std::stof(params[++i]);
         }
     }
 
@@ -40,3 +43,4 @@ Image3 hw_2_1(const std::vector<std::string> &params) {
     }
     return img;
 }
+
