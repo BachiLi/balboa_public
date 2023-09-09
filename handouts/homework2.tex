@@ -49,10 +49,11 @@ Therefore, given a triangle with 3 vertices, we will project all three of them o
     \label{fig:camera_vs_image}
 \end{figure}
 
-There are a few other complications though. Firstly, the point $(x', y')$ is in the (projected) camera space after the projection. We will need to transform it into the screen space. Recall that our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_image}. So we need to further convert the point $(x', y')$ from the projected camera space to image space. Looking at \cref{fig:camera_vs_image}, we can see that the we need to translate the origin, scale the axes, and flip the y axis:
+There are a few other complications though. Firstly, the point $(x', y')$ is in the (projected) camera space after the projection. We will need to transform it into the screen space. Recall that our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_image}. So we need to further convert the point $(x', y')$ from the projected camera space to image space. Looking at \cref{fig:camera_vs_image}, we can see that the we need to translate the origin, scale the axes, and flip the $y$ axis. We will give you the formula for the $x$-axis, and you should figure out the $y$-axis formula yourself:
 \begin{equation}
-(x'', y'') = (w\frac{x'-sa}{sa}, -h\frac{y'-s}{s}).
+x'' = w\frac{x'+sa}{2sa},
 \end{equation}
+where $w$ is the width of the image.
 
 The second complication is that a triangle vertex can be behind the camera i.e., $z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: recall that in \cref{eq:projection}, we need to divide by $z$ for the projection. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. Hence, we consider all points such that $z < z_{\text{near}}$ tp be behind the camera. $z_{\text{near}}$ is usually called the \emph{near clipping plane}.
 
