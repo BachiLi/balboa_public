@@ -1,4 +1,5 @@
 #include "hw1.h"
+#include "hw2.h"
 #include "timer.h"
 #include <vector>
 #include <string>
