@@ -83,10 +83,13 @@ Balboa provides a few utitilies that will be useful for this homework: \lstinlin
 Vector2 v0 = ..., v1 = ...;
 v0 + v1; // vector addition
 v0 - v1; // subtraction
-v0 * Real(0.5) // multiply by a scalar
-v0 / Real(0.5) // divide by a scalar
-dot(v0, v1) // dot product between the two vectors
-normalize(v0) // returns a vector with same direction as v0, but with magnitude of 1
+v0 * Real(0.5); // multiply by a scalar
+v0 / Real(0.5); // divide by a scalar
+dot(v0, v1); // dot product between the two vectors
+normalize(v0); // returns a vector with same direction as v0, but with magnitude of 1
+length(v0); // return the magnitude of v0
+Vector3 v2 = ..., v3 = ...;
+cross(v2, v3); // cross product between v2 & v3
 \end{lstlisting}
 In balboa, we represent floating point numbers using the type \lstinline{Real}. It is by default defined to be a \lstinline{double}. It is designed such that when you want to switch to single precision float (maybe for less memory cost), you can switch a single line in \lstinline{balboa.h}.
 \begin{lstlisting}[language=C++]
