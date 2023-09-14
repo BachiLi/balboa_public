@@ -263,7 +263,19 @@ C = b_0 C_0 + b_1 C_1 + b_2 C_2.
 \end{equation}
 This is what people mean if they say they are doing \emph{perspective-corrected interpolation} in a renderer.
 
-That's all you need to know to implement vertex color rendering! (I hope it's easier than the previous two.) Go and implement it in \lstinline{hw_2_3}.
+That's all you need to know to implement vertex color rendering! (I hope it's easier than the previous two.) Go and implement it in \lstinline{hw_2_3}. Test it using
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 2_3 -s 1 -znear 1e-6 -scene_id 0
+\end{lstlisting}
+
+As usual, our rendering for \lstinline{scene_id 0} is in \cref{fig:hw2_3}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/hw_2_3.png}
+    \caption{Reference rendering for homework 2.3.}
+    \label{fig:hw2_3}
+\end{figure}
+
 
 \section{3D transformation}
 
