@@ -76,8 +76,8 @@ Image3 hw_2_2(const std::vector<std::string> &params) {
     return img;
 }
 
-Image3 hw_2_2(const std::vector<std::string> &params) {
-    // Homework 2.2: render a triangle mesh with vertex colors
+Image3 hw_2_3(const std::vector<std::string> &params) {
+    // Homework 2.3: render a triangle mesh with vertex colors
 
     Image3 img(640 /* width */, 480 /* height */);
 
