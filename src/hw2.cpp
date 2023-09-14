@@ -1,4 +1,7 @@
 #include "hw2.h"
+#include "hw2_scenes.h"
+
+using namespace hw2;
 
 Image3 hw_2_1(const std::vector<std::string> &params) {
     // Homework 2.1: render a single 3D triangle
@@ -44,3 +47,31 @@ Image3 hw_2_1(const std::vector<std::string> &params) {
     return img;
 }
 
+Image3 hw_2_2(const std::vector<std::string> &params) {
+    // Homework 2.2: render a triangle mesh
+
+    Image3 img(640 /* width */, 480 /* height */);
+
+    Real s = 1; // scaling factor of the view frustrum
+    Real z_near = 1e-6; // distance of the near clipping plane
+    int scene_id = 0;
+    for (int i = 0; i < (int)params.size(); i++) {
+        if (params[i] == "-s") {
+            s = std::stof(params[++i]);
+        } else if (params[i] == "-znear") {
+            z_near = std::stof(params[++i]);
+        } else if (params[i] == "-scene_id") {
+            scene_id = std::stoi(params[++i]);
+        }
+    }
+
+    TriangleMesh mesh = meshes[scene_id];
+    UNUSED(mesh); // silence warning, feel free to remove this
+
+    for (int y = 0; y < img.height; y++) {
+        for (int x = 0; x < img.width; x++) {
+            img(x, y) = Vector3{1, 1, 1};
+        }
+    }
+    return img;
+}

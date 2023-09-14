@@ -130,71 +130,71 @@ To get the area of a triangle, you can use the cross product between two of the 
     \label{fig:perspective_interpolate}
 \end{figure}
 
-As illustrated in \cref{fig:perspective_interpolate}, our goal is, given an image plane point $\mathbf{p}'$ and a triangle with three vertices $p_0$, $p_1$, and $p_2$, figure out the $z$ coordinate of the corresponding point $\mathbf{p}$. We want to use barycentric coordinates to help us. So we need to figure out what $b_0$, $b_1$, and $b_2$ are, so that we can interpolate the $z$ coordinates from $p_0$, $p_1$, and $p_2$. Unfortunately, we cannot directly use \cref{eq:barycentric_solve}, since we don't know $p$ (otherwise we would have know the answer already!). 
+As illustrated in \cref{fig:perspective_interpolate}, our goal is, given an image plane point $\mathbf{p}'$ and a triangle with three vertices $\mathbf{p}_0$, $\mathbf{p}_1$, and $\mathbf{p}_2$, figure out the $z$ coordinate of the corresponding point $\mathbf{p}$. We want to use barycentric coordinates to help us. So we need to figure out what $b_0$, $b_1$, and $b_2$ are, so that we can interpolate the $z$ coordinates from $\mathbf{p}_0$, $\mathbf{p}_1$, and $\mathbf{p}_2$. Unfortunately, we cannot directly use \cref{eq:barycentric_solve}, since we don't know $\mathbf{p}$ (otherwise we would have know the answer already!). 
 
-What we do know are the projected vertices $p_0'$, $p_1'$, and $p_2'$, and our image plane point $p'$. Furthermore, we know that $p$ projects to $p'$. Given the projected vertices and the image plane point, we can compute the projected barycentric coordinates $b_0'$, $b_1'$, $b_2'$. We want to relate the projected barycentric coordinates with the original ones.
+What we do know are the projected vertices $\mathbf{p}_0'$, $\mathbf{p}_1'$, and $\mathbf{p}_2'$, and our image plane point $\mathbf{p}'$. Furthermore, we know that $p$ projects to $p'$. Given the projected vertices and the image plane point, we can compute the projected barycentric coordinates $b_0'$, $b_1'$, $b_2'$. We want to relate the projected barycentric coordinates with the original ones.
 
-Since $p$ projects to $p'$, we know that
+Since $\mathbf{p}$ projects to $\mathbf{p}'$, we know that
 \begin{equation}
 \begin{aligned}
-p' &= \left(-\frac{p.x}{p.z}, -\frac{p.y}{p.z}, -1\right) \\
-p' &= -\frac{p}{p.z}.
+\mathbf{p}' &= \left(-\frac{\mathbf{p}.x}{\mathbf{p}.z}, -\frac{\mathbf{p}.y}{\mathbf{p}.z}, -1\right) \\
+\mathbf{p}' &= -\frac{\mathbf{p}}{\mathbf{p}.z}.
 \end{aligned}
 \end{equation}
 
-Plugging in $p = b_0 p_0 + b_1 p_1 + b_2 p_2$ and $p.z = b_0 p_0.z + b_1 p_1.z + b_2 p_2.z$:
+Plugging in $\mathbf{p} = b_0 \mathbf{p}_0 + b_1 \mathbf{p}_1 + b_2 \mathbf{p}_2$ and $\mathbf{p}.z = b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z$:
 \begin{equation}
-p' = -\frac{b_0 p_0 + b_1 p_1 + b_2 p_2}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z}.
+\mathbf{p}' = -\frac{b_0 \mathbf{p}_0 + b_1 \mathbf{p}_1 + b_2 \mathbf{p}_2}{b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z}.
 \end{equation}
 
-Next, we know that $p_0$ projects to $p_0'$, $p_1$ projects to $p_1'$, and $p_2$ projects to $p_2'$:
+Next, we know that $\mathbf{p}_0$ projects to $\mathbf{p}_0'$, $\mathbf{p}_1$ projects to $\mathbf{p}_1'$, and $\mathbf{p}_2$ projects to $\mathbf{p}_2'$:
 \begin{equation}
 \begin{aligned}
--\left(p_0.z\right) \left(p_0'\right) &= p_0 \\
--\left(p_1.z\right) \left(p_1'\right) &= p_1 \\
--\left(p_2.z\right) \left(p_2'\right) &= p_2.
+-\left(\mathbf{p}_0.z\right) \left(\mathbf{p}_0'\right) &= \mathbf{p}_0 \\
+-\left(\mathbf{p}_1.z\right) \left(\mathbf{p}_1'\right) &= \mathbf{p}_1 \\
+-\left(\mathbf{p}_2.z\right) \left(\mathbf{p}_2'\right) &= \mathbf{p}_2.
 \end{aligned}
 \end{equation}
 
 Plugging in, we get
 \begin{equation}
-p' = \frac{b_0 \left(p_0.z\right) p_0' + b_1 \left(p_1.z\right) p_1' + b_2 \left(p_2.z\right) p_2'}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z}.
+\mathbf{p}' = \frac{b_0 \left(\mathbf{p}_0.z\right) \mathbf{p}_0' + b_1 \left(\mathbf{p}_1.z\right) \mathbf{p}_1' + b_2 \left(\mathbf{p}_2.z\right) \mathbf{p}_2'}{b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z}.
 \end{equation}
 
 Compare the above with:
 \begin{equation}
-p' = b_0' p_0' + b_1' p_1' + b_2' p_2',
+\mathbf{p}' = b_0' \mathbf{p}_0' + b_1' \mathbf{p}_1' + b_2' \mathbf{p}_2',
 \end{equation}
 using the uniqueness of barycentric coordinates, we have:
 \begin{equation}
 \begin{aligned}
-b_0' &= \frac{b_0 p_0.z}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z} \\
-b_1' &= \frac{b_1 p_1.z}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z} \\
-b_2' &= \frac{b_2 p_2.z}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z}.
+b_0' &= \frac{b_0 \mathbf{p}_0.z}{b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z} \\
+b_1' &= \frac{b_1 \mathbf{p}_1.z}{b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z} \\
+b_2' &= \frac{b_2 \mathbf{p}_2.z}{b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z}.
 \end{aligned}
 \label{eq:projected_barycentric}
 \end{equation}
 
-We are almost there: we now want to express $b_0$, $b_1$, and $b_2$ using $b_0'$, $b_1'$, and $b_2'$. Let $B = b_0 p_0.z + b_1 p_1.z + b_2 p_2.z$, we have:
+We are almost there: we now want to express $b_0$, $b_1$, and $b_2$ using $b_0'$, $b_1'$, and $b_2'$. Let $B = b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z$, we have:
 \begin{equation}
 \begin{aligned}
-b_0 &= \frac{b_0' B}{p_0.z} \\
-b_1 &= \frac{b_1' B}{p_1.z} \\
-b_2 &= \frac{b_2' B}{p_2.z}
+b_0 &= \frac{b_0' B}{\mathbf{p}_0.z} \\
+b_1 &= \frac{b_1' B}{\mathbf{p}_1.z} \\
+b_2 &= \frac{b_2' B}{\mathbf{p}_2.z}
 \end{aligned}
 \end{equation}
 
 Furthermore, we know that $b_0 + b_1 + b_2 = 1$, so:
 \begin{equation}
-B = \frac{1}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}}.
+B = \frac{1}{\frac{b_0'}{\mathbf{p}_0.z} + \frac{b_1'}{\mathbf{p}_1.z} + \frac{b_2'}{\mathbf{p}_2.z}}.
 \end{equation}
 
 Rewriting \cref{eq:projected_barycentric} using the equation above, we have:
 \begin{equation}
 \begin{aligned}
-\frac{\frac{b_0'}{p_0.z}}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}} &= b_0 \\
-\frac{\frac{b_1'}{p_1.z}}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}} &= b_1 \\
-\frac{\frac{b_2'}{p_1.z}}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}} &= b_2
+\frac{\frac{b_0'}{\mathbf{p}_0.z}}{\frac{b_0'}{\mathbf{p}_0.z} + \frac{b_1'}{\mathbf{p}_1.z} + \frac{b_2'}{\mathbf{p}_2.z}} &= b_0 \\
+\frac{\frac{b_1'}{\mathbf{p}_1.z}}{\frac{b_0'}{\mathbf{p}_0.z} + \frac{b_1'}{\mathbf{p}_1.z} + \frac{b_2'}{\mathbf{p}_2.z}} &= b_1 \\
+\frac{\frac{b_2'}{\mathbf{p}_1.z}}{\frac{b_0'}{\mathbf{p}_0.z} + \frac{b_1'}{\mathbf{p}_1.z} + \frac{b_2'}{\mathbf{p}_2.z}} &= b_2
 \end{aligned}.
 \label{eq:inverse_depth_weighting}
 \end{equation}
@@ -202,13 +202,13 @@ The equation above has an intuitive meaning: \textbf{the original barycentric co
 
 Having the barycentric coordinates, we can finally get the desired depth:
 \begin{equation}
-p.z = b_0 p_0.z + b_1 p_1.z + b_2 p_2.z.
+\mathbf{p}.z = b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z.
 \label{eq:interpolated_depth}
 \end{equation}
 
 To recap: given an image plane point and a triangle, we first convert it from screen space to camera space (using the inverse of \cref{eq:camera_to_screen}, recall \cref{fig:camera_vs_image}). Then, we compute the projected barycentric coordinates $b_0'$, $b_1'$, and $b_2'$ using \cref{eq:barycentric_solve}. Using the projected barycentric coordinates and the depth at the three vertices, we convert them to the original barycentric coordinates using \cref{eq:inverse_depth_weighting}. Finally, we obtain the depth using \cref{eq:interpolated_depth} and use the depth to pick the triangle that is the closest to the pixel sample, but in front of the clipping plane.
 
-Now you should be ready to implement the rendering of a triangle mesh!
+Now you should be ready to implement the rendering of a triangle mesh! In this part, to specify the color of the triangles, in our triangle mesh, we further store a color per triangle. 
 
 \section{Perspective-corrected interpolation}
 
