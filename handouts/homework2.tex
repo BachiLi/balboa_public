@@ -28,17 +28,17 @@ Let's start simple and render just a single 3D triangle. Our plan is to first pr
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{imgs/perspective_transform.pdf}
-    \caption{To perform perspective projection, we setup the coordinate system of the camera space so that the origin of the camera is at $(0, 0, 0)$, the camera is facing negative $z$-axis, $x$-axis is pointing right, and $y$-axis is pointing up. We put the image plane at $z=-z_0$. The perspective projection of a point $(x, y, z)$ is then simply finding the intersection between the line formed by the point and the camera origin with the image plane. Since our image plane has a finite extent, we further clips all point outside of $[-sa, -s, -z_0] \times [sa, s, -z_0]$ where $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$) and $s$ is the scaling factor controlling the size of our image. The clipping defines a \emph{view frustrum}.}
+    \caption{To perform perspective projection, we setup the coordinate system of the camera space so that the origin of the camera is at $(0, 0, 0)$, the camera is facing negative $z$-axis, $x$-axis is pointing right, and $y$-axis is pointing up. We put the image plane at $z=-1$. The perspective projection of a point $(x, y, z)$ is then simply finding the intersection between the line formed by the point and the camera origin with the image plane. Since our image plane has a finite extent, we further clips all point outside of $[-sa, -s, -1] \times [sa, s, -1]$ where $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$) and $s$ is the scaling factor controlling the size of our image. The clipping defines a \emph{view frustrum}.}
     \label{fig:perspective_transform}
 \end{figure}
 
-How do we project the triangle then? It's significantly easier if we assume a particular coordinate system of our camera. We will lift this assumption in the later part of the homework (by, you guess it, applying 3D transformations). Let's assume in the \emph{camera space}, $x$-axis is pointing right, $y$-axis is pointing up, and $z$-axis is pointing away from the direction the camera is looking at. We also assume that the image plane is located at $z=-z_0$. \cref{fig:perspective_transform} shows that the perspective projection of a point $(x, y, z)$ boils down to computing the intersection between the line formed by the point and the camera origin with the image plane. The projected point $(x', y')$ is
+How do we project the triangle then? It's significantly easier if we assume a particular coordinate system of our camera. We will lift this assumption in the later part of the homework (by, you guess it, applying 3D transformations). Let's assume in the \emph{camera space}, $x$-axis is pointing right, $y$-axis is pointing up, and $z$-axis is pointing away from the direction the camera is looking at (the $z$ is specified this way so that we are following a \href{https://en.wikipedia.org/wiki/Right-hand_rule}{right-handed} coordinate system). We also assume that the image plane is located at $z=-1$. \cref{fig:perspective_transform} shows that the perspective projection of a point $(x, y, z)$ boils down to computing the intersection between the line formed by the point and the camera origin with the image plane. The projected point $(x', y')$ is
 \begin{equation}
 \left(x', y'\right) = \left(-\frac{x}{z}, -\frac{y}{z}\right).
 \label{eq:projection}
 \end{equation}
 
-Furthermore, we need to define the extent of the image plane (we can't have an image with infinite size!). Note that our image can be a rectangle (instead of a square). We define the extent of the image plane to be $[-sa, -s, -z_0] \times [sa, s, -z_0]$: $s$ is a scaling factor that controls the size of the image, and $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$). As we will later show, $s$ is related to the \href{https://en.wikipedia.org/wiki/Field_of_view}{field of view} of a camera. Any point that lands outside of the extend of the image plane is discarded and not going to show up in our image. We call the set of points that are going to land on the image planes the \emph{view frustrum}. \cref{fig:perspective_transform} also visualizes the view frustrum.
+Furthermore, we need to define the extent of the image plane (we can't have an image with infinite size!). Note that our image can be a rectangle (instead of a square). We define the extent of the image plane to be $[-sa, -s, -1] \times [sa, s, -1]$: $s$ is a scaling factor that controls the size of the image, and $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$). As we will later show, $s$ is related to the \href{https://en.wikipedia.org/wiki/Field_of_view}{field of view} of a camera. Any point that lands outside of the extend of the image plane is discarded and not going to show up in our image. We call the set of points that are going to land on the image planes the \emph{view frustrum}. \cref{fig:perspective_transform} also visualizes the view frustrum.
 
 Therefore, given a triangle with 3 vertices, we will project all three of them onto the image plane using \cref{eq:projection}. This generates a 2D triangle which we can then render using our previous homework's code.
 
@@ -52,6 +52,7 @@ Therefore, given a triangle with 3 vertices, we will project all three of them o
 There are a few other complications though. Firstly, the point $(x', y')$ is in the (projected) camera space after the projection. We will need to transform it into the screen space. Recall that our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_image}. So we need to further convert the point $(x', y')$ from the projected camera space to image space. Looking at \cref{fig:camera_vs_image}, we can see that the we need to translate the origin, scale the axes, and flip the $y$ axis. We will give you the formula for the $x$-axis, and you should figure out the $y$-axis formula yourself:
 \begin{equation}
 x'' = w\frac{x'+sa}{2sa},
+\label{eq:camera_to_screen}
 \end{equation}
 where $w$ is the width of the image.
 
@@ -66,13 +67,158 @@ Dealing with triangles with only one or two vertices behind the camera, and the 
     \label{fig:triangle_clipping}
 \end{figure}
 
+Implement your triangle rendering in \lstinline{hw_2_1()} in \lstinline{hw2.cpp}. To test your rendering, use the following command:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 2_1 -s 1 -p0 -1 -1 -3 -p1 0 1 -3 -p2 1 -1 -3 -color 0.7 0.3 0.4 -znear 1e-6
+\end{lstlisting}
+
+We'll use the same antialiasing scheme we used in Homework 1, i.e., a $4\times4$ supersampling.
+
+We provide our rendering in \cref{fig:hw2_1}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imgs/hw_2_1.png}
+    \caption{Reference rendering for homework 2.1.}
+    \label{fig:hw2_1}
+\end{figure}
+
 \paragraph{Bonus: triangle clipping.} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane.
 
 \section{Rendering a triangle mesh}
 
-\section{3D transformation}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imgs/triangle_mesh.pdf}
+    \caption{A triangle mesh contains a list of vertices (3D positions) and a list of faces (3 integers pointing towards the index of the vertices). The figure shows a case of a triangle mesh with 4 vertices and 4 faces/triangles. The first face represents the triangle on the right side, the second face represents the triangle at the back, the third face represents the triangle on the left, and the last face represents the triangle at the bottom.}
+    \label{fig:triangle_mesh}
+\end{figure}
 
-\section{Lighting}
+Next, we'll extend our previous code to handle more than one triangle. In computer graphics, we often store these triangles in a data structure called ``triangle mesh'' (\cref{fig:triangle_mesh}). Triangle mesh is a more efficient data structure than simply storing a list of triangles since many of the triangles would share vertices in graphics (really? when will it be better and when will it not be better?). To render triangle meshes, you need to go through the face array and loop through all the triangles. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imgs/cyclic.pdf}
+    \includegraphics[width=0.4\linewidth]{imgs/interpenetration.pdf}
+    \caption{We cannot globally sort all objects into a single order by depth. The objects can form a cyclic order (left) or they can have interpenetration (right).}
+    \label{fig:depth_order}
+\end{figure}
+
+An important difference, compared to the list of triangles we have in Homework 1, is to determine the depth order between all these triangles. That is, for a point inside a pixel, we need to decide which triangle is the one we actually see. The tricky part is, unlike Homework 1, it is impossible to globally sort the triangles to determine a depth order (\cref{fig:depth_order}).
+
+Therefore, we need to know the depth value of all the triangles overlapping with the point in the pixel. That is, given a image space point inside a projected triangle, we need to \emph{interpolate} from the depth values of the three vertices. This turns out to be slightly involved mathematically (code-wise it's actually just not that much though). 
+
+To explain how to find the desired depth value, we need to explain what are \href{https://en.wikipedia.org/wiki/Barycentric_coordinate_system}{barycentric coordinates}. Any point $\mathbf{p}$ inside a triangle with three vertices $\mathbf{p}_0$, $\mathbf{p}_1$, $\mathbf{p}_2$ can be expressed using linear combination of the three vertices:
+\begin{equation}
+\mathbf{p} = b_0 \mathbf{p}_0 + b_1 \mathbf{p}_1 + b_2 \mathbf{p}_2,
+\end{equation}
+where $b_0 + b_1 + b_2 = 1$, $b_0 \geq 0$, $b_1 \geq 0$, and $b_2 \geq 0$. Given a point $\mathbf{p}$, we can compute the \textbf{unique} coefficients using \href{https://en.wikipedia.org/wiki/Cramer%27s_rule}{Cramer's rule}:
+\begin{equation}
+\begin{aligned}
+b_0 &= \frac{\text{area}\left(p, p_1, p_2\right)}{\text{area}\left(p_0, p_1, p_2\right)} \\
+b_1 &= \frac{\text{area}\left(p_0, p, p_2\right)}{\text{area}\left(p_0, p_1, p_2\right)} \\
+b_2 &= \frac{\text{area}\left(p_0, p_1, p\right)}{\text{area}\left(p_0, p_1, p_2\right)}
+\end{aligned}
+\label{eq:barycentric_solve}
+\end{equation}
+
+To get the area of a triangle, you can use the cross product between two of the edge vectors, which will give you the area of the parallelogram, you can then divide the parallelogram area by two.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/perspective_interpolate.pdf}
+    \caption{Given a point on image plane $p$', and a triangle with three vertices $\mathbf{p}_0$, $\mathbf{p}_1$, $\mathbf{p}_2$, we want to know the depth, i.e., the $z$ coordinate at the corresponding point $\mathbf{p}$.}
+    \label{fig:perspective_interpolate}
+\end{figure}
+
+As illustrated in \cref{fig:perspective_interpolate}, our goal is, given an image plane point $\mathbf{p}'$ and a triangle with three vertices $p_0$, $p_1$, and $p_2$, figure out the $z$ coordinate of the corresponding point $\mathbf{p}$. We want to use barycentric coordinates to help us. So we need to figure out what $b_0$, $b_1$, and $b_2$ are, so that we can interpolate the $z$ coordinates from $p_0$, $p_1$, and $p_2$. Unfortunately, we cannot directly use \cref{eq:barycentric_solve}, since we don't know $p$ (otherwise we would have know the answer already!). 
+
+What we do know are the projected vertices $p_0'$, $p_1'$, and $p_2'$, and our image plane point $p'$. Furthermore, we know that $p$ projects to $p'$. Given the projected vertices and the image plane point, we can compute the projected barycentric coordinates $b_0'$, $b_1'$, $b_2'$. We want to relate the projected barycentric coordinates with the original ones.
+
+Since $p$ projects to $p'$, we know that
+\begin{equation}
+\begin{aligned}
+p' &= \left(-\frac{p.x}{p.z}, -\frac{p.y}{p.z}, -1\right) \\
+p' &= -\frac{p}{p.z}.
+\end{aligned}
+\end{equation}
+
+Plugging in $p = b_0 p_0 + b_1 p_1 + b_2 p_2$ and $p.z = b_0 p_0.z + b_1 p_1.z + b_2 p_2.z$:
+\begin{equation}
+p' = -\frac{b_0 p_0 + b_1 p_1 + b_2 p_2}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z}.
+\end{equation}
+
+Next, we know that $p_0$ projects to $p_0'$, $p_1$ projects to $p_1'$, and $p_2$ projects to $p_2'$:
+\begin{equation}
+\begin{aligned}
+-\left(p_0.z\right) \left(p_0'\right) &= p_0 \\
+-\left(p_1.z\right) \left(p_1'\right) &= p_1 \\
+-\left(p_2.z\right) \left(p_2'\right) &= p_2.
+\end{aligned}
+\end{equation}
+
+Plugging in, we get
+\begin{equation}
+p' = \frac{b_0 \left(p_0.z\right) p_0' + b_1 \left(p_1.z\right) p_1' + b_2 \left(p_2.z\right) p_2'}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z}.
+\end{equation}
+
+Compare the above with:
+\begin{equation}
+p' = b_0' p_0' + b_1' p_1' + b_2' p_2',
+\end{equation}
+using the uniqueness of barycentric coordinates, we have:
+\begin{equation}
+\begin{aligned}
+b_0' &= \frac{b_0 p_0.z}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z} \\
+b_1' &= \frac{b_1 p_1.z}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z} \\
+b_2' &= \frac{b_2 p_2.z}{b_0 p_0.z + b_1 p_1.z + b_2 p_2.z}.
+\end{aligned}
+\label{eq:projected_barycentric}
+\end{equation}
+
+We are almost there: we now want to express $b_0$, $b_1$, and $b_2$ using $b_0'$, $b_1'$, and $b_2'$. Let $B = b_0 p_0.z + b_1 p_1.z + b_2 p_2.z$, we have:
+\begin{equation}
+\begin{aligned}
+b_0 &= \frac{b_0' B}{p_0.z} \\
+b_1 &= \frac{b_1' B}{p_1.z} \\
+b_2 &= \frac{b_2' B}{p_2.z}
+\end{aligned}
+\end{equation}
+
+Furthermore, we know that $b_0 + b_1 + b_2 = 1$, so:
+\begin{equation}
+B = \frac{1}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}}.
+\end{equation}
+
+Rewriting \cref{eq:projected_barycentric} using the equation above, we have:
+\begin{equation}
+\begin{aligned}
+\frac{\frac{b_0'}{p_0.z}}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}} &= b_0 \\
+\frac{\frac{b_1'}{p_1.z}}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}} &= b_1 \\
+\frac{\frac{b_2'}{p_1.z}}{\frac{b_0'}{p_0.z} + \frac{b_1'}{p_1.z} + \frac{b_2'}{p_2.z}} &= b_2
+\end{aligned}.
+\label{eq:inverse_depth_weighting}
+\end{equation}
+The equation above has an intuitive meaning: \textbf{the original barycentric coordinates can be obtained by the projected barycentric coordinate weighted by inverse depth}. We will use these equations again later in the homework.
+
+Having the barycentric coordinates, we can finally get the desired depth:
+\begin{equation}
+p.z = b_0 p_0.z + b_1 p_1.z + b_2 p_2.z.
+\label{eq:interpolated_depth}
+\end{equation}
+
+To recap: given an image plane point and a triangle, we first convert it from screen space to camera space (using the inverse of \cref{eq:camera_to_screen}, recall \cref{fig:camera_vs_image}). Then, we compute the projected barycentric coordinates $b_0'$, $b_1'$, and $b_2'$ using \cref{eq:barycentric_solve}. Using the projected barycentric coordinates and the depth at the three vertices, we convert them to the original barycentric coordinates using \cref{eq:inverse_depth_weighting}. Finally, we obtain the depth using \cref{eq:interpolated_depth} and use the depth to pick the triangle that is the closest to the pixel sample, but in front of the clipping plane.
+
+Now you should be ready to implement the rendering of a triangle mesh!
+
+\section{Perspective-corrected interpolation}
+
+% Let's make our rendering a bit more colorful. Instead of rendering a constant color triangle mesh, we will assign a color to each vertex of the triangle, and interpolate them. We want to linearly interpolate the color on the 3D triangle using its \emph{barycentric coordinates}:
+% \begin{equation}
+% C = C_0 (1 - b_1 - b_2) + C_1 b_1 + C_2 b_2,
+% \end{equation}
+% where $C_0$, $C_1$ and $C_2$ are the colors associated with vertices $0$, $1$, and $2$. See \cref{fig:barycentric} for an illustration.
+
+\section{3D transformation}
 
 \section{Design your own scenes}
 
