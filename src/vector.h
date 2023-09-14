@@ -132,6 +132,16 @@ inline T dot(const TVector2<T> &v0, const TVector2<T> &v1) {
 }
 
 template <typename T>
+inline T length_squared(const TVector2<T> &v) {
+    return dot(v, v);
+}
+
+template <typename T>
+inline T length(const TVector2<T> &v) {
+    return sqrt(length_squared(v));
+}
+
+template <typename T>
 inline TVector2<T> normalize(const TVector2<T> &v0) {
     auto l = length(v0);
     if (l <= 0) {
@@ -242,6 +252,16 @@ inline TVector3<T>& operator/=(TVector3<T> &v, const T &s) {
 template <typename T>
 inline T dot(const TVector3<T> &v0, const TVector3<T> &v1) {
     return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
+}
+
+template <typename T>
+inline T length_squared(const TVector3<T> &v) {
+    return dot(v, v);
+}
+
+template <typename T>
+inline T length(const TVector3<T> &v) {
+    return sqrt(length_squared(v));
 }
 
 template <typename T>
