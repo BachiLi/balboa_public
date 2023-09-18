@@ -7,11 +7,11 @@
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.19\linewidth]{imgs/hw_1_2.png}
-    \includegraphics[width=0.19\linewidth]{imgs/hw_1_3.png}
-    \includegraphics[width=0.19\linewidth]{imgs/hw_1_4.png}
-    \includegraphics[width=0.19\linewidth]{imgs/hw_1_5after.png}
-    \includegraphics[width=0.19\linewidth]{imgs/hw_1_6.png}
+    \includegraphics[width=0.20\linewidth]{imgs/hw_1_2.png}
+    \includegraphics[width=0.20\linewidth]{imgs/hw_1_3.png}
+    \includegraphics[width=0.20\linewidth]{imgs/hw_1_4.png}
+    \includegraphics[width=0.20\linewidth]{imgs/hw_1_5after.png}
+    \includegraphics[width=0.15\linewidth]{imgs/hw_1_6.png}
     \caption{Images we will produce in this homework.}
     \label{fig:teaser}
 \end{figure}
@@ -29,9 +29,9 @@ In our first homework, we will implement a 2D renderer that takes a set of simpl
 
 Before you start coding, we recommend you to go through the whole handout to have some ideas of what needs to be done.
 
-\paragraph{Submission.} Submit your code and the outputs of your code through Canvas. In addition, for the quizzes below, answer them through the Gradescope (you can access it through Canvas).
+\paragraph{Submission.} Submit your code and the outputs of your code through Canvas.
 
-\paragraph{Grading.} We will compare your outputs to our reference solutions. The points of the quizes are included in the total points on the section titles.
+\paragraph{Grading.} We will compare your outputs to our reference solutions.
 
 \paragraph{Colloboration policy.} We expect you to write the code on your own. Feel free to discuss between the peers and ask us questions though!
 
@@ -72,9 +72,9 @@ We recommend you to quickly read through \lstinline{main.cpp} and \lstinline{hw1
     \caption{(a) The coordinate system of the ``canvas'' we will draw our shapes on. (b) The pixel center of for pixel $(x, y)$ locates at $(x+0.5, y+0.5)$.}
 \end{figure}
 
-In the first part of this homework, we will render a single circle on our image. We are given a white ``canvas'' (\cref{fig:canvas}), where in this part we assume it to be of size $640 \times 480$. We need a \textbf{coordinate system} to talk about points on this canvas. The usualy convention for an image is that the top left is the origin, and the x-axis points towards right, and the y-axis points downwards. We are futher given the center, radius, and color of the circle. These are command line arguments that we will parse for you.
+In the first part of this homework, we will render a single circle on our image. We are given a white ``canvas'' (\cref{fig:canvas}), where in this part we assume it to be of size $640 \times 480$. We need a \textbf{coordinate system} to talk about points on this canvas. The usually convention for an image is that the top left is the origin, and the x-axis points towards right, and the y-axis points downwards. We are futher given the center, radius, and color of the circle. These are command line arguments that we will parse for you.
 
-To render an image, we need to determine the color for each pixel. For this part, we focus on determining the color of the center of the pixel (\cref{fig:pixel}). To determine the pixel color, we decide whether the pixel center hits the circle or not. If it hits the circle, then we decide that the pixel's color is the circle's color. Otherwise, we decide that the pixel's color is the background color (by default, let's say it's $(1, 1, 1)$). How to decide whether the pixel center hits the circle? That's for you to figure out!
+To render an image, we need to determine the color for each pixel. For this part, we focus on determining the color of the center of the pixel (\cref{fig:pixel}). To determine the pixel color, we decide whether the pixel center hits the circle or not. If it hits the circle, then we decide that the pixel's color is the circle's color. Otherwise, we decide that the pixel's color is the background color (by default, let's say it's $(0.5, 0.5, 0.5)$). How to decide whether the pixel center hits the circle? That's for you to figure out!
 
 Balboa provides a few utitilies that will be useful for this homework: \lstinline{Vector2}, \lstinline{Vector3}, and \lstinline{Image3}. They are defined in \lstinline{vector.h} and \lstinline{image.h}. 
 
@@ -103,7 +103,7 @@ using Real = double;
     \label{fig:scanline}
 \end{figure}
 
-\paragraph{Images.} \lstinline{Image3} represents a 3-channel raster image (usually storing red, green, blue value at each channel respectively). We store the 2D image in a 1D array using a scanline (\cref{fig:scanline}). You can access the 2D image using the \lstinline{()} operator:
+\paragraph{Images.} \lstinline{Image3} represents a 3-channel raster image (usually storing red, green, blue values in each channel respectively). We store the 2D image in a 1D array using a scanline (\cref{fig:scanline}). You can access the 2D image using the \lstinline{()} operator:
 \begin{lstlisting}[language=C++]
 Image3 img(640 /* width */, 480 /* height */);
 Vector3 val = img(50, 20); // reading values from location (50, 20)
@@ -177,7 +177,7 @@ We show our rendering for scene 0 in \cref{fig:hw1_2}. We will grade your result
     \end{minipage}
 \end{figure}
 
-\paragraph{Bonus: accelerating rasterization using bounding boxes.} In practice, we may have a lot of circles and a lot of pixels. So we want to pick a way to render that is the fastest. Both loop structures can be sped up significantly. The observation is that most of the time, each pixel would only hits a small amount of circles. Or equivalently, each circle only will overlap with a small amount of pixels. It turns out that the acceleration for the first loop structure (ray tracing) is a bit more involved (we will discuss them in \href{https://cseweb.ucsd.edu/~tzli/cse168}{CSE 168}), so we will only talk about the acceleration for the rasterization part.
+\paragraph{Bonus: accelerating rasterization using bounding boxes.} In practice, we may have a lot of circles and a lot of pixels. So we want to pick a way to render them that is the fastest. Both loop structures can be sped up significantly. The observation is that most of the time, each pixel would only hit a small number of circles. Or equivalently, each circle only will overlap with a small amount of pixels. It turns out that the acceleration for the first loop structure (ray tracing) is a bit more involved (we will discuss them in \href{https://cseweb.ucsd.edu/~tzli/cse168}{CSE 168}), so we will only talk about the acceleration for the rasterization part.
 
 Notice that each circle usually only intersect with a small set of pixels. Therefore, we can modify the rasterization loop into the following:
 \begin{lstlisting}[language=Python]
@@ -196,7 +196,7 @@ For the bonus, implement the rasterization loop above, and report the speedup yo
 
 \section{Rendering more shapes (15 pts)}
 
-Next, we will add more types of shapes into our renderer. In particular, we will support rendering an (axis-aligned) rectangle and a triangle. Before that, let's introduce our scene file format, so that we don't have to hardcode our scenes in a C++ header. There is no a single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsible \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing scene 0 from the previous part in our scene format:
+Next, we will add more types of shapes into our renderer. In particular, we will support rendering an (axis-aligned) rectangle and a triangle. Before that, let's introduce our scene file format, so that we don't have to hardcode our scenes in a C++ header. There is no single standard way to represent a scene in computer graphics.\footnote{Though in 2D, \href{https://en.wikipedia.org/wiki/SVG}{Scalable Vector Graphics (SVG)} is the most popular, and in 3D, studios are converging towards the \href{https://en.wikipedia.org/wiki/Universal_Scene_Description}{Universal Scene Description}.} Thus, we will use an easily readable and parsable \href{https://en.wikipedia.org/wiki/JSON}{JSON} format to describe our scene. It's easiest to explain by showing scene 0 from the previous part in our scene format:
 \begin{lstlisting}[language=json]
 {
     "resolution": [640, 360],
@@ -301,7 +301,7 @@ A \lstinline{Rectangle} is axis-aligned and is defined by its top-left (\lstinli
     \end{minipage}
 \end{figure}
 
-A \lstinline{Triangle} is defined by three points (\lstinline{p0, p1} and \lstinline{p2}). Testing whether a point is inside a triangle is a bit more involved. There are more than one way to do it, but I like to do it by looking at the \emph{half-planes} formed by the three edges of a triangle. For each edge of the triangle, we can form a line that splits the whole 2D space into two parts, we call these parts half-planes (\cref{fig:half_planes}). We can determine whether a point $q$ is on the positive or negative half-planes by looking at the sign of the dot product between a vector formed by the point $q$ and the line, and a normal vector $n$ that is perpendicular to the direction of the line. 
+A \lstinline{Triangle} is defined by three points (\lstinline{p0, p1} and \lstinline{p2}). Testing whether a point is inside a triangle is a bit more involved. There are more than one ways to do it, but I like to do it by looking at the \emph{half-planes} formed by the three edges of a triangle. For each edge of the triangle, we can form a line that splits the whole 2D space into two parts, we call these parts half-planes (\cref{fig:half_planes}). We can determine whether a point $q$ is on the positive or negative half-planes by looking at the sign of the dot product between a vector formed by the point $q$ and the line, and a normal vector $n$ that is perpendicular to the direction of the line. 
 
 The key observation for testing whether a point is inside a triangle or test, is to notice that if we follow the three edge directions: $p_1 - p_0$, $p_2 - p_1$, and $p_0 - p_2$, and rotate them by 90 degrees in clockwise direction to obtain the normals $n_{01}$, $n_{12}$, and $n_{20}$, then the interior of the triangle is the intersection of all the positive half-planes or all the negative half-planes. More precisely, if $p_0, p_1$ and $p_2$ follows the clockwise direction, then the interior would be the intersection of all the positive half-planes, otherwise if $p_0, p_1$ and $p_2$ follows the counterclockwise direction, then the interior would be the intersection of all the negative half-planes (\cref{fig:tri_half_planes}).
 
