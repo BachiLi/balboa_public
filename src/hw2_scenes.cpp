@@ -106,7 +106,7 @@ Scene parse_scene(const fs::path &filename) {
         scene.camera.s = *s;
     }
     scene.camera.z_near = Real(1e-6);
-    if (auto z_near = camera->find("z_near"); s != camera->end()) {
+    if (auto z_near = camera->find("z_near"); z_near != camera->end()) {
         scene.camera.z_near = *z_near;
     }
 
