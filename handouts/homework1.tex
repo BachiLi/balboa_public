@@ -351,15 +351,27 @@ At this point, you should have enough knowledge to implement a renderer that can
   ./balboa -hw 1_3 ../scenes/hw1/three_shapes.json
 \end{lstlisting}
 
-We show our rendering of the \lstinline{three_shapes} scene in \cref{fig:hw1_3}. 
-We will grade your results using the following scenes.
-
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{imgs/hw_1_3.png}
     \caption{References for Homework 1.3.}
     \label{fig:hw1_3}
 \end{figure}
+
+We show our rendering of the \lstinline{three_shapes} scene in \cref{fig:hw1_3}. The \lstinline{three_circles} scene should be the same as \cref{fig:hw1_2}.
+We will grade your results using the following scenes:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_3 ../scenes/hw1/three_shapes_2.json
+  ./balboa -hw 1_3 ../scenes/hw1/cat.json
+  ./balboa -hw 1_3 ../scenes/hw1/robot.json
+\end{lstlisting}
+In your submission, save your renderings of the scenes above as
+\begin{lstlisting}[language=bash]
+outputs/hw_1_3_three_shapes_2.png
+outputs/hw_1_3_cat.png
+outputs/hw_1_3_robot.png
+\end{lstlisting}
+We will grade by comparing to our rendering.
 
 \section{2D transformation (20 pts)}
 
@@ -496,8 +508,19 @@ Test your rendering using the following commands:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_4 ../scenes/hw1/transformation.json
 \end{lstlisting}
+We show our rendering of the \lstinline{transformation} scene in \cref{fig:hw1_4}. 
 
-We show our rendering of the \lstinline{transformation} scene in \cref{fig:hw1_4}. We will grade your results using other scenes.
+We will grade your results using the following scenes:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_4 ../scenes/hw1/transformation_2.json
+  ./balboa -hw 1_4 ../scenes/hw1/sun.json
+\end{lstlisting}
+In your submission, save your renderings of the scenes above as
+\begin{lstlisting}[language=bash]
+outputs/hw_1_4_transformation_2.png
+outputs/hw_1_4_sun.png
+\end{lstlisting}
+We will grade by comparing to our rendering.
 
 \begin{figure}[ht]
     \centering
@@ -505,6 +528,8 @@ We show our rendering of the \lstinline{transformation} scene in \cref{fig:hw1_4
     \caption{References for Homework 1.4.}
     \label{fig:hw1_4}
 \end{figure}
+
+\paragraph{Bonus (15 pts).} Generate an animation by interpolating between transformations. Feel free to modify any part of the code in balboa. You can use \href{https://trac.ffmpeg.org/wiki/Slideshow}{ffmpeg} to convert a sequence of images into a video file.
 
 \section{Antialiasing (10 pts)}
 If you zoom in to the pictures you generated, you will find that there are some ugly jagged edges around the object boundaries. This phenomonon is called ``aliasing'' in signal processing literature (we will discuss this in depth in CSE 168). The solution to aliasing is called antialiasing. We are going to implement the simplest form of antialiasing called ``supersampling''. The idea is simple: instead of only testing/sampling the pixel center, we'll sample multiple points within a pixel, and take average between them. For this homework, we will do a $4\times4$ pattern: we subdivide a pixel into 16 subpixels, compute the color at the center of the subpixels, and take an average over them.
