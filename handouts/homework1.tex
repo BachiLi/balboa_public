@@ -442,6 +442,8 @@ b_0 \\ b_1
 
 Therefore, we can represent all affine transformations using the $3 \times 3$ matrix above. \cref{fig:transformation_affine} shows the corresponding version of the matrices for each transformation.
 
+Another cool feature about augmented matrices is that they allow us to distinguish between \emph{points} and \emph{vectors}. For points, we set the third component to be $1$. For vectors, we set the third component to be $0$. This allows us to \emph{turn off} translation for vectors: translating a vector should not affect its values! 
+
 To describe affine transformations in our scene files, for each object, we can have a \lstinline{transform} property:
 \begin{lstlisting}[language=json]
 {

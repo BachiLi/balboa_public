@@ -227,4 +227,4 @@ std::ostream& operator<<(std::ostream &os, const Scene &scene) {
     return os;
 }
 
-}
+} // namespace hw1

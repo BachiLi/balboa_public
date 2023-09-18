@@ -105,3 +105,19 @@ Image3 hw_2_3(const std::vector<std::string> &params) {
     return img;
 }
 
+Image3 hw_2_4(const std::vector<std::string> &params) {
+    // Homework 2.4: render a scene with transformation
+    Scene scene = parse_scene(params[0]);
+    std::cout << scene << std::endl;
+
+    Image3 img(scene.camera.resolution.x,
+               scene.camera.resolution.y);
+
+    for (int y = 0; y < img.height; y++) {
+        for (int x = 0; x < img.width; x++) {
+            img(x, y) = Vector3{1, 1, 1};
+        }
+    }
+    return img;
+}
+

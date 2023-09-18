@@ -32,6 +32,7 @@ set(SRCS src/3rdparty/json.hpp
          src/hw1.cpp
          src/hw1_scenes.cpp
          src/hw2.cpp
+         src/hw2_scenes.cpp
          src/image.cpp)
 
 add_library(balboa_lib STATIC ${SRCS})

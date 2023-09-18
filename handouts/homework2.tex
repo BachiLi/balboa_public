@@ -276,8 +276,328 @@ As usual, our rendering for \lstinline{scene_id 0} is in \cref{fig:hw2_3}.
     \label{fig:hw2_3}
 \end{figure}
 
-
 \section{3D transformation}
+
+So far we have assumed that everything is in the camera space and camera is always located at $(0, 0, 0)$ facing negative $z$ with up vector $y$. Let's add some transformations so that things are less restricted. Remember that in the 2D case in Homework 1, we use a $3 \times 3$ matrix to represent affine transformations. Here, we will use a $4 \times 4$ matrix. Like in 2D, we will support scaling, translation, and rotation (shearing is also possible, but we want to safe you some typing). Furthermore, we will support two kinds of new transformations: lookAt transform and perspective transform that we will talk about soon. The perspective transform implementation is optional, but implementing it might helpful understand parts of the next homework.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{imgs/3d_spaces.pdf}
+    \caption{Spaces and the transformations between them in 3D.}
+    \label{fig:3d_spaces}
+\end{figure}
+
+Before we explain the 3D transformations, we need to explain our spaces in 3D. Previously in 2D, we only had \emph{object space} and \emph{screen space}. The existence of the camera makes things slightly more complicated: the camera lives in the \emph{camera space} (the coordinate system in the previous parts), and the matrices now transform the objects into \emph{world space}. As a convention, we usually call the object-to-world transformation the \emph{model matrix} $M$, the world-to-camera transformation the \emph{view matrix} $V$, the camera-to-screen transformation the \emph{projection matrix} $P$ (yes, we can express the projection as a matrix! more on this later). Given a vertex $v$ on a 3D triangle mesh, we can chain the transformations to project it onto the screen space: $v'=PVMv$ (unfortunately, the combined matrix $PVM$ is usually called the MVP matrix). \cref{fig:3d_spaces} illustrates this.
+
+\paragraph{Scaling and translation.} Scaling and translations are basically the same as in 2D:
+\begin{equation}
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+s_x & 0 & 0 & 0 \\
+0 & s_y & 0 & 0 \\
+0 & 0 & s_z & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 0 & 0 & t_x \\
+0 & 1 & 0 & t_y \\
+0 & 0 & 1 & t_z \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1
+\end{bmatrix}
+\end{equation}
+
+\paragraph{Rotation.} Rotation in 3D is a lot more complicated. Unlike 2D, which we pretty much only have two ways to rotate (clockwise or counterclockwise), in 3D there are infinitely many ways to rotate. We will talk about a lot of them in the lectures, but for this homework we will focus on rotating over a given axis $\mathbf{a}$ by $\theta$ degree. This is usually called an Axis/Angle representation of rotation. The following derivation is taken from the book \href{https://www.pbr-book.org/3ed-2018/Geometry_and_Transformations/Transformations}{Physically-based Rendering: From Theory to Implementation}, which is based on the famous \href{https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula}{Rodrigues' rotation formula}. Also see \href{https://thenumb.at/Exponential-Rotations/}{this excellent article} from Max Slater if you want to read more.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imgs/rotate_axis.pdf}
+    \caption{To rotate a vector $\mathbf{v}$ about an axis $\mathbf{a}$, we construct a plane with normal $\mathbf{a}$ with coordinate basis $\mathbf{v}_1$ and $\mathbf{v}_2$. The rotation can then be expressed as $\mathbf{v}' = \mathbf{v}_c + \cos\theta \mathbf{v}_1 + \sin\theta \mathbf{v}_2$.}
+    \label{fig:rotate_axis}
+\end{figure}
+
+Our idea is to construct a coordinate system around the axis $\mathbf{a}$, then apply trigonometric identities in the 2D rotation plane. Instead of directly constructing the rotation matrix, it's easier to first derive what happens after we rotate a vector $\mathbf{v}$. \cref{fig:rotate_axis} illustrates the geometry: we first project the vector $\mathbf{v}$ to axis $\mathbf{a}$:
+\begin{equation}
+\mathbf{v}_c = \left(\mathbf{v} \cdot \mathbf{a}\right)\mathbf{a}.
+\end{equation}
+Next, we want to construct a coordinate system at $\mathbf{v}_c$. We choose the first axis to be:
+\begin{equation}
+\mathbf{v}_1 = \mathbf{v} - \mathbf{v}_c.
+\end{equation}
+The next axis $\mathbf{v}_2$ needs to be perpendicular to $\mathbf{v}_1$, so:
+\begin{equation}
+\mathbf{v}_2 = \mathbf{a} \times \mathbf{v}_1.
+\end{equation}
+
+With some trigonometry, we can then derive the rotated vector $\mathbf{v}'$:
+\begin{equation}
+\mathbf{v}' = \mathbf{v}_c + \cos\theta \mathbf{v}_1 + \sin\theta \mathbf{v}_2.
+\end{equation}
+(Note that our formulas are slightly different from the textbook above, since we use a right-handed coordinate system instead of a left-handed one.)
+
+We can do a quick sanity test: let $\mathbf{a}$ be the $z$ axis. We have $\mathbf{v}_c = \left(0, 0, \mathbf{v}.z\right)$, $\mathbf{v}_1 = \left(\mathbf{v}.x, \mathbf{v}.y, 0\right)$, and $\mathbf{v}_2 = \left(-\mathbf{v}.y, \mathbf{v}.x, 0\right)$. Thus $\mathbf{v}' = \left(\cos\theta \mathbf{v}.x - \sin\theta \mathbf{v}.y, \cos\theta \mathbf{v}.x + \sin\theta \mathbf{v}.y, \mathbf{v}.z\right)$. We've recovered the standard 2D rotation.
+
+To obtain the rotation matrix, we can plug in $\mathbf{v}=(1, 0, 0)$ to get the first column of the matrix, $\mathbf{v}=(0, 1, 0)$ to get the second column, and $\mathbf{v}=(0, 0, 1)$ to get the third column. Specifically, the first column of the $4\times4$ rotation matrix $R$ is given by:
+\begin{equation}
+\begin{bmatrix}
+\mathbf{a}.x \mathbf{a}.x + (1 - \mathbf{a}.x \mathbf{a}.x) \cos\theta \\
+\mathbf{a}.x \mathbf{a}.y (1 - \cos\theta) + \mathbf{a}.z \sin\theta \\
+\mathbf{a}.x \mathbf{a}.z (1 - \cos\theta) - \mathbf{a}.y \sin\theta \\
+0 
+\end{bmatrix}.
+\end{equation}
+The second column is
+\begin{equation}
+\begin{bmatrix}
+\mathbf{a}.y \mathbf{a}.x (1 - \cos\theta) - \mathbf{a}.z \sin\theta \\
+\mathbf{a}.y \mathbf{a}.y + (1 - \mathbf{a}.y \mathbf{a}.y) \cos\theta \\
+\mathbf{a}.y \mathbf{a}.z (1 - \cos\theta) + \mathbf{a}.x \sin\theta \\
+0
+\end{bmatrix}.
+\end{equation}
+The third column is
+\begin{equation}
+\begin{bmatrix}
+\mathbf{a}.z \mathbf{a}.x (1 - \cos\theta) + \mathbf{a}.y \sin\theta \\
+\mathbf{a}.z \mathbf{a}.y (1 - \cos\theta) - \mathbf{a}.x \sin\theta \\
+\mathbf{a}.z \mathbf{a}.z + (1 - \mathbf{a}.z\mathbf{a}.z) \cos\theta \\
+0
+\end{bmatrix}.
+\end{equation}
+
+% To rotate about a given axis $\mathbf{u}$, our idea is to decompose it into a bunch of 2D rotations, so that $\mathbf{u}$ becomes the $z$ axis after transformation. We can then rotate about $z$ using a 2D rotation with the desired angle. We then need to invert other rotation to turn the given axis back to the original space. Precisely, we perform the 3D rotation in the following steps (also see \href{https://www.eng.uc.edu/~beaucag/Classes/Properties/OptionalProjects/CoordinateTransformationCode/Rotate%20about%20an%20arbitrary%20axis%20(3%20dimensions).html}{this article} from Paul Bourke):
+% \begin{itemize}
+%     \item rotate about the $x$ axis so that $\mathbf{u}$ lies in the $xz$ plane.
+%     \item rotate about the $y$ axis so that $\mathbf{u}$ lies in the $z$ axis.
+%     \item rotate about the $z$ axis by $\theta$ degree.
+%     \item undo step (2).
+%     \item undo step (1).
+% \end{itemize}
+
+% To rotate about $x$-axis by $\theta_x$ degree, we can easily extend the 2D rotation matrix:
+% \begin{equation}
+% R_x =
+% \begin{bmatrix}
+% 1 & 0 & 0 & 0 \\
+% 0 & \cos \theta_x & -\sin \theta_x & 0 \\
+% 0 & \sin \theta_x & \cos \theta_x & 0 \\
+% 0 & 0 & 0 & 1
+% \end{bmatrix}.
+% \end{equation}
+
+% How do we know how much to rotate about the $x$ axis, so that $\mathbf{u}$ lies in the $xz$ plane? There are more geometric ways to derive it, but I like to do it algebraically. We know that after the rotation, the $y$ component of the rotated vector should be $0$. Therefore, by directly applying the matrix vector product, we have:
+% \begin{equation}
+% \mathbf{u}.y \cos \theta_x - \mathbf{u}.z \sin \theta_x = 0.
+% \end{equation}
+% The equation above plus the trignometric identity $\cos^2\theta_x + \sin^2\theta_x = 1$ gives us a solution to $\theta_x$:
+% \begin{equation}
+% \begin{aligned}
+% \cos \theta_x &= \frac{\mathbf{u}.z}{\sqrt{\mathbf{u}.y^2 + \mathbf{u}.z^2}} \\
+% \sin \theta_x &= \frac{\mathbf{u}.y}{\sqrt{\mathbf{u}.y^2 + \mathbf{u}.z^2}} 
+% \end{aligned}.
+% \end{equation}
+
+% We also need the inverse of the x rotation $R_x^{-1}$ for step (5) above.
+% \begin{equation}
+% R_x^{-1} =
+% \begin{bmatrix}
+% 1 & 0 & 0 & 0 \\
+% 0 & \cos \theta_x & \sin \theta_x & 0 \\
+% 0 & -\sin \theta_x & \cos \theta_x & 0 \\
+% 0 & 0 & 0 & 1
+% \end{bmatrix}.
+% \end{equation}
+% Here we use the identities $\cos -\theta_x = \cos \theta_x$ and $\sin -\theta_x = -\sin \theta_x$.
+
+% After rotating by $R_x$, our axis becomes:
+% \begin{equation}
+% \mathbf{u}_x = \left(\mathbf{u}.x, 0, \sqrt{\mathbf{u}.y^2 + \mathbf{u}.z^2}\right).
+% \end{equation}
+
+% We next need to rotate about the $y$-axis by $\theta_y$ degree, so that $\mathbf{u}$ lies in the $z$ axis. The $y$-axis rotation matrix is:
+% \begin{equation}
+% R_y =
+% \begin{bmatrix}
+% \cos \theta_y & 0 & -\sin \theta_y & 0 \\
+% 0 & 1 & 0 & 0 \\
+% \sin \theta_y & 0 & \cos \theta_y & 0 \\
+% 0 & 0 & 0 & 1
+% \end{bmatrix}.
+% \end{equation}
+
+% We can use the same trick to determine $\theta_y$: after applying $R_y$ to $\mathbf{u}_x$, the $x$ component needs to be zero (and the $z$ component needs to be $1$):
+% \begin{equation}
+% \mathbf{u}.x \cos \theta_y - \sqrt{\mathbf{u}.y^2 + \mathbf{u}.z^2} \sin \theta_y = 0.
+% \end{equation}
+% Solving for $\theta_y$ (together with $\cos^2\theta_y + \sin^2\theta_y = 1$) we have
+% \begin{equation}
+% \begin{aligned}
+% \cos \theta_y &= \sqrt{\mathbf{u}.y^2 + \mathbf{u}.z^2} \\
+% \sin \theta_y &= \mathbf{u}.x.
+% \end{aligned}
+% \end{equation}
+
+% The inverse $R_y^{-1}$ can be obtained similarly as $R_x^{-1}$.
+
+% At this point, our rotation axis is the $z$ axis. We can rotate about the $z$ axis by the desired angle $\theta$:
+% \begin{equation}
+% R_z =
+% \begin{bmatrix}
+% \cos \theta & -\sin \theta & 0 & 0 \\
+% \sin \theta & \cos \theta & 0 & 0 \\
+% 0 & 0 & 1 & 0 \\
+% 0 & 0 & 0 & 1
+% \end{bmatrix}.
+% \end{equation}
+
+% Remember that we still need to invert the $x$ and $y$ rotations. Thus, our final rotation matrix is:
+% \begin{equation}
+% R = R_y^{-1} R_x^{-1} R_z R_y R_x.
+% \end{equation}
+
+% If you plug in the matrix values and actually multiply the matrices, you get the famous \href{https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula}{Rodrigues' rotation formula}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imgs/lookat.pdf}
+    \caption{The LookAt transform maps a coordinate frame based on the parameters \lstinline{position}, \lstinline{target}, and \lstinline{up}. $-z$ axis is mapped to the \lstinline{direction} of \lstinline{target - position}, $x$ axis is mapped to the cross product of \lstinline{direction} and \lstinline{up}, and $y$ axis is mapped to the cross product of \lstinline{right} and \lstinline{direction}.}
+    \label{fig:lookat}
+\end{figure}
+
+
+\paragraph{LookAt.} The LookAt transform is useful for positioning cameras. The LookAt transform takes 2 3D points and a 3D vector as parameters: the \lstinline{position} of the object $\mathbf{p}$, the \lstinline{target} the object is looking at $\mathbf{t}$, and the \lstinline{up} vector $\mathbf{u}$ that describe the orientation of the object. \cref{fig:lookat} illustrates the geometry.
+
+Given the input, we first compute where the camera should be facing using $\mathbf{p}$ and $\mathbf{t}$:
+\begin{equation}
+\mathbf{d} = \text{normalize}(t - p).
+\end{equation} 
+Given the \lstinline{direction} $\mathbf{d}$, we can then compute the \lstinline{right} vector $\mathbf{r}$ using cross product with the given \lstinline{up} vector $\mathbf{u}$:
+\begin{equation}
+\mathbf{r} = \text{normalize}\left(\mathbf{d} \times \mathbf{u}\right).
+\end{equation}
+
+We are not done yet though. Since the up vector $\mathbf{u}$ is not necessarily perpendicular to the camera direction $\mathbf{d}$, we do not have an orthonormal basis yet. Thus we recompute the up vector using the cross product between the right vector and the camera direction:
+\begin{equation}
+\mathbf{u}' = \mathbf{r} \times \mathbf{u}.
+\end{equation}
+
+Given these information, we can build our transformation matrix:
+\begin{equation}
+L = 
+\begin{bmatrix}
+\mathbf{r}.x & \mathbf{u}'.x & -\mathbf{d}.x & \mathbf{p}.x \\
+\mathbf{r}.y & \mathbf{u}'.y & -\mathbf{d}.y & \mathbf{p}.y \\
+\mathbf{r}.z & \mathbf{u}'.z & -\mathbf{d}.z & \mathbf{p}.z \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\end{equation}
+
+The first column sends $x$ axis ($(1, 0, 0)$) to $\mathbf{r}$, the second column sends $y$ axis ($(0, 1, 0)$) to $\mathbf{u}'$, the third column sends $z$ axis to $\mathbf{d}$, and the last column translates the coordinate systems by $\mathbf{p}$.
+
+Note that when applied to cameras, the matrix $L$ is designed to transform from camera space to world space. When constructing the view matrix (\cref{fig:3d_spaces}), we need to go from world space to the camera space. 
+
+\paragraph{Perspective projection.}
+Now we are at the coolest part. It turns out that with some math tricks, we can turn the perspective projection we did in the first part (\cref{fig:perspective_transform}) into a matrix multiplication as well! The trick is to introduce something called the \href{https://en.wikipedia.org/wiki/Homogeneous_coordinates}{homogeneous coordinates}. The idea is to make use of the 4th component of the vector. So far, we always assumed that the 4th component to be either $1$ or $0$ (when it's $0$, it's a vector instead of a point). From now on, our vectors can have arbitrary 4th component:
+\begin{equation}
+\begin{bmatrix}
+x \\
+y \\
+z \\
+w
+\end{bmatrix}.
+\end{equation}
+The clever part is how we obtain the 3D vector from the 4D vector above: we define everything to be equivalent up to an arbitrary non-zero scaling:
+\begin{equation}
+\begin{bmatrix}
+x \\
+y \\
+z \\
+w
+\end{bmatrix} =
+\begin{bmatrix}
+\frac{x}{w} \\
+\frac{y}{w} \\
+\frac{z}{w} \\
+1
+\end{bmatrix}.
+\end{equation}
+
+Following this definition, we can implement \cref{eq:projection} using the following matrix multiplication:
+\begin{equation}
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+w'
+\end{bmatrix} =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & -1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+z \\
+1
+\end{bmatrix}.
+\end{equation}
+Notice that
+\begin{equation}
+\begin{bmatrix}
+x' \\
+y' \\
+z' \\
+w'
+\end{bmatrix}
+=
+\begin{bmatrix}
+x \\
+y \\
+1 \\
+-z
+\end{bmatrix}
+=
+\begin{bmatrix}
+-\frac{x}{z} \\
+-\frac{y}{z} \\
+-\frac{1}{z} \\
+1
+\end{bmatrix}.
+\end{equation}
+A bonus we get is that the new $z'$ component becomes the reciprocal of $-z$: we can directly use it for getting the barycentric coordinates (\cref{eq:inverse_depth_weighting})!
+
+Remember that the projection above only projects within the camera space. We need to further convert to screen space (\cref{eq:camera_to_screen}). I'll let you figure out how the matrix should look like! 
+
+Now you should have everything you need to complete this homework. 
 
 \section{Design your own scenes}
 

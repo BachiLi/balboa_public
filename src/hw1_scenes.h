@@ -64,4 +64,4 @@ Scene parse_scene(const fs::path &filename);
 std::ostream& operator<<(std::ostream &os, const Shape &shape);
 std::ostream& operator<<(std::ostream &os, const Scene &scene);
 
-}
+} // namespace hw1
