@@ -101,6 +101,14 @@ Scene parse_scene(const fs::path &filename) {
     }
     scene.camera.resolution = Vector2i{(*res)[0], (*res)[1]};
     scene.camera.view_matrix = inverse(parse_transformation(*camera));
+    scene.camera.s = 1;
+    if (auto s = camera->find("s"); s != camera->end()) {
+        scene.camera.s = *s;
+    }
+    scene.camera.z_near = Real(1e-6);
+    if (auto z_near = camera->find("z_near"); s != camera->end()) {
+        scene.camera.z_near = *z_near;
+    }
 
     auto background = data.find("background");
     scene.background = Vector3{1, 1, 1};
@@ -115,53 +123,52 @@ Scene parse_scene(const fs::path &filename) {
         if (it->find("type") == it->end()) {
             Error("Object with undefined type.");
         }
-        if ((*it)["type"] == "triangle_mesh") {
-            TriangleMesh mesh;
 
-            auto vertices_it = it->find("vertices");
-            if (vertices_it != it->end()) {
-                int num_vertices = vertices_it->size() / 3;
-                mesh.vertices.resize(num_vertices);
-                for (int i = 0; i < num_vertices; i++) {
-                    mesh.vertices[i] = Vector3{
-                        (*vertices_it)[3 * i + 0],
-                        (*vertices_it)[3 * i + 1],
-                        (*vertices_it)[3 * i + 2]
-                    };
-                }
-            }
-            auto faces_it = it->find("faces");
-            if (faces_it != it->end()) {
-                int num_triangles = faces_it->size() / 3;
-                mesh.faces.resize(num_triangles);
-                for (int i = 0; i < num_triangles; i++) {
-                    mesh.faces[i] = Vector3i{
-                        (*faces_it)[3 * i + 0],
-                        (*faces_it)[3 * i + 1],
-                        (*faces_it)[3 * i + 2]
-                    };
-                }
-            }
-            auto vertex_colors_it = it->find("vertex_colors");
-            if (vertex_colors_it != it->end()) {
-                int num_vertices = vertex_colors_it->size() / 3;
-                mesh.vertex_colors.resize(num_vertices);
-                if (mesh.vertex_colors.size() != mesh.vertices.size()) {
-                    Error("Mesh has different number of vertices and number of colors.");
-                    return scene;
-                }
-                for (int i = 0; i < num_vertices; i++) {
-                    mesh.vertex_colors[i] = Vector3{
-                        (*vertex_colors_it)[3 * i + 0],
-                        (*vertex_colors_it)[3 * i + 1],
-                        (*vertex_colors_it)[3 * i + 2]
-                    };
-                }
-            }
+        TriangleMesh mesh;
 
-            mesh.model_matrix = parse_transformation(*it);
-            scene.meshes.push_back(mesh);
+        auto vertices_it = it->find("vertices");
+        if (vertices_it != it->end()) {
+            int num_vertices = vertices_it->size() / 3;
+            mesh.vertices.resize(num_vertices);
+            for (int i = 0; i < num_vertices; i++) {
+                mesh.vertices[i] = Vector3{
+                    (*vertices_it)[3 * i + 0],
+                    (*vertices_it)[3 * i + 1],
+                    (*vertices_it)[3 * i + 2]
+                };
+            }
         }
+        auto faces_it = it->find("faces");
+        if (faces_it != it->end()) {
+            int num_triangles = faces_it->size() / 3;
+            mesh.faces.resize(num_triangles);
+            for (int i = 0; i < num_triangles; i++) {
+                mesh.faces[i] = Vector3i{
+                    (*faces_it)[3 * i + 0],
+                    (*faces_it)[3 * i + 1],
+                    (*faces_it)[3 * i + 2]
+                };
+            }
+        }
+        auto vertex_colors_it = it->find("vertex_colors");
+        if (vertex_colors_it != it->end()) {
+            int num_vertices = vertex_colors_it->size() / 3;
+            mesh.vertex_colors.resize(num_vertices);
+            if (mesh.vertex_colors.size() != mesh.vertices.size()) {
+                Error("Mesh has different number of vertices and number of colors.");
+                return scene;
+            }
+            for (int i = 0; i < num_vertices; i++) {
+                mesh.vertex_colors[i] = Vector3{
+                    (*vertex_colors_it)[3 * i + 0],
+                    (*vertex_colors_it)[3 * i + 1],
+                    (*vertex_colors_it)[3 * i + 2]
+                };
+            }
+        }
+
+        mesh.model_matrix = parse_transformation(*it);
+        scene.meshes.push_back(mesh);
     }
 
     return scene;

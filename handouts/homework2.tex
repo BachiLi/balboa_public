@@ -599,7 +599,86 @@ Remember that the projection above only projects within the camera space. We nee
 
 Now you should have everything you need to complete this homework. 
 
+Like Homework 1, we will describe the camera transformation and the meshes in a JSON scene file. 
+
+A scene file would look like this:
+
+\begin{lstlisting}[language=json]
+{
+    "camera":
+    {
+        "resolution": [640, 480],
+        "transform": [
+            {
+                "lookat":[
+                    {"position": [0, 0, 0]},
+                    {"target": [0, 0, -5]},
+                    {"up": [0, 1, 0]}
+                ]
+            }
+        ],
+        "s": 1,
+        "z_near": 1e-6
+    },
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "vertices": [
+                -1.7,  1.0, -5.0,
+                 1.0,  1.0, -5.0,
+                -0.5, -1.0, -5.0,
+                -1.0,  1.5, -4.0,
+                 0.2,  1.5, -4.0,
+                 0.2, -1.5, -4.0
+            ],
+            "faces": [
+                0, 1, 2,
+                3, 4, 5  
+            ],
+            "vertex_colors": [
+                0.75, 0.35, 0.35,
+                0.35, 0.75, 0.35,
+                0.35, 0.35, 0.75,
+                0.35, 0.75, 0.75,
+                0.75, 0.35, 0.75,
+                0.75, 0.75, 0.35
+            ],
+            "transform": [
+                {
+                    "rotate": [90, 0, 0, 1]
+                }
+            ]
+        }
+    ]
+}
+\end{lstlisting}
+
+The scene will be parsed into the following scene data structure:
+\begin{lstlisting}[language=C++]
+struct Camera {
+    Matrix4x4 view_matrix;
+    Vector2i resolution;
+    Real s;
+    Real z_near;
+};
+
+struct Scene {
+    Camera camera;
+    Vector3 background;
+    std::vector<TriangleMesh> meshes;
+};
+\end{lstlisting}
+
+Like in homework, your first task is to implement the transformations in \lstinline{parse_transformation} in \lstinline{hw2_scenes.cpp}. Next, you'll render the parsed scene in \lstinline{hw_2_4} in \lstinline{hw2.cpp}.
+
+Important: note that the \lstinline{transform} in the camera describes the transformation from camera to world. The \lstinline{view_matrix} in Camera stores the inverse of the transformation. We have inverted the parsed transformation for you in \lstinline{hw2_scenes.cpp}.
+
 \section{Design your own scenes}
+
+As usual, design a scene yourself and submit the scene and your rendering to us. We will give extra credits to people who impress us.
+
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
