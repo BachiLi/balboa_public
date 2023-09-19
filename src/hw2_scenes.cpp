@@ -133,9 +133,9 @@ Matrix4x4 parse_transformation(const json &node) {
             UNUSED(scale); // silence warning, feel free to remove it
         } else if (auto rotate_it = it->find("rotate"); rotate_it != it->end()) {
             Real angle = (*rotate_it)[0];
-            Vector3 axis = Vector3{
+            Vector3 axis = normalize(Vector3{
                 (*rotate_it)[0], (*rotate_it)[1], (*rotate_it)[2]
-            };
+            });
             // TODO (HW2.4): construct a rotation matrix and composite with F
             UNUSED(angle); // silence warning, feel free to remove it
             UNUSED(axis); // silence warning, feel free to remove it
