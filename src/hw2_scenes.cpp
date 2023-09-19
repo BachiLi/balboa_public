@@ -204,10 +204,6 @@ Scene parse_scene(const fs::path &filename) {
 
     auto objects = data.find("objects");
     for (auto it = objects->begin(); it != objects->end(); it++) {
-        if (it->find("type") == it->end()) {
-            Error("Object with undefined type.");
-        }
-
         TriangleMesh mesh;
 
         auto vertices_it = it->find("vertices");
