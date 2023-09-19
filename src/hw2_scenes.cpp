@@ -261,7 +261,7 @@ Scene parse_scene(const fs::path &filename) {
 }
 
 std::ostream& operator<<(std::ostream &os, const Camera &camera) {
-    os << "Camera[";
+    os << "Camera[" << std::endl;
     os << "\tcam_to_world=" << std::endl << camera.cam_to_world << std::endl;
     os << "\tresolution=" << camera.resolution << std::endl;
     os << "\ts=" << camera.s << std::endl;
@@ -271,7 +271,7 @@ std::ostream& operator<<(std::ostream &os, const Camera &camera) {
 }
 
 std::ostream& operator<<(std::ostream &os, const TriangleMesh &mesh) {
-    os << "TriangleMesh[";
+    os << "TriangleMesh[" << std::endl;
     os << "\tnum_vertices=" << mesh.vertices.size() << std::endl;
     os << "\tnum_faces=" << mesh.faces.size() << std::endl;
     os << "\ttransform=" << std::endl << mesh.model_matrix << std::endl;
@@ -280,7 +280,7 @@ std::ostream& operator<<(std::ostream &os, const TriangleMesh &mesh) {
 }
 
 std::ostream& operator<<(std::ostream &os, const Scene &scene) {
-    os << "Scene[";
+    os << "Scene[" << std::endl;
     os << "\t" << scene.camera << std::endl;
     os << "\tBackground:" << scene.background << std::endl;
     for (auto s : scene.meshes) {
