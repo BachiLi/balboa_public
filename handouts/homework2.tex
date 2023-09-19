@@ -38,7 +38,12 @@ How do we project the triangle then? It's significantly easier if we assume a pa
 \label{eq:projection}
 \end{equation}
 
-Furthermore, we need to define the extent of the image plane (we can't have an image with infinite size!). Note that our image can be a rectangle (instead of a square). We define the extent of the image plane to be $[-sa, -s, -1] \times [sa, s, -1]$: $s$ is a scaling factor that controls the size of the image, and $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$). As we will discuss in the lecture, $s$ is related to the \href{https://en.wikipedia.org/wiki/Field_of_view}{field of view} of a camera. Any point that lands outside of the extend of the image plane is discarded and not going to show up in our image. We call the set of points that are going to land on the image planes the \emph{view frustrum}. \cref{fig:perspective_transform} also visualizes the view frustrum.
+Furthermore, we need to define the extent of the image plane (we can't have an image with infinite size!). Note that our image can be a rectangle (instead of a square). We define the extent of the image plane to be $[-sa, -s, -1] \times [sa, s, -1]$: $s$ is a scaling factor that controls the size of the image (it's half of the sensor size), and $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$). $s$ is related to the vertical \href{https://en.wikipedia.org/wiki/Field_of_view}{field of view} $\alpha$ of a camera:
+\begin{equation}
+s = \tan\left(\frac{\alpha}{2}\right).
+\end{equation}
+
+Any point that lands outside of the extent of the image plane is discarded and not going to show up in our image. We call the set of points that are going to land on the image planes the \emph{view frustrum}. \cref{fig:perspective_transform} also visualizes the view frustrum.
 
 Therefore, given a triangle with 3 vertices, we will project all three of them onto the image plane using \cref{eq:projection}. This generates a 2D triangle which we can then render using our previous homework's code.
 
@@ -245,6 +250,7 @@ struct TriangleMesh {
     std::vector<Vector3i> faces; // indices of the triangles
     std::vector<Vector3> face_colors; // per-face color of the mesh, only used in HW 2.2
     std::vector<Vector3> vertex_colors; // per-vertex color of the mesh, used in HW 2.3 and later
+    Matrix4x4 model_matrix; // used in HW 2.4
 };
 \end{lstlisting}
 \lstinline{faces} and \lstinline{face_colors} will always be the same length.
@@ -273,6 +279,8 @@ outputs/hw_2_2_2.png
 outputs/hw_2_2_3.png
 \end{lstlisting}
 We'll compare your output with our rendering for grading.
+
+\paragraph{Bonus: occlusion culling (20 pts).} During rasterization-style rendering, if we can prove that a triangle is completely blocked by some other triangles (using the current Z buffer), we can completely skip the rendering of the triangle to speed up our rendering. This is called \href{https://en.wikipedia.org/wiki/Z-buffering#Z-culling}{occlusion culling} or Z-culling. Read the paper \href{https://dl.acm.org/doi/10.1145/166117.166147}{Hierarchical Z-Buffer Visibility} from Greene et al. and implement occlusion culling using a hierarchical Z buffer. Our test scenes do not have heavy occlusion, so you will need to design your own scenes to show the speedup.
 
 \section{Perspective-corrected interpolation}
 
@@ -318,7 +326,7 @@ So far we have assumed that everything is in the camera space and camera is alwa
     \label{fig:3d_spaces}
 \end{figure}
 
-Before we explain the 3D transformations, we need to explain our spaces in 3D. Previously in 2D, we only had \emph{object space} and \emph{screen space}. The existence of the camera makes things slightly more complicated: the camera lives in the \emph{camera space} (the coordinate system in the previous parts), and the matrices now transform the objects into \emph{world space}. As a convention, we usually call the object-to-world transformation the \emph{model matrix} $M$, the world-to-camera transformation the \emph{view matrix} $V$, the camera-to-screen transformation the \emph{projection matrix} $P$ (yes, we can express the projection as a matrix! more on this later). Given a vertex $v$ on a 3D triangle mesh, we can chain the transformations to project it onto the screen space: $v'=PVMv$ (unfortunately, the combined matrix $PVM$ is usually called the MVP matrix). \cref{fig:3d_spaces} illustrates this.
+Before we explain the 3D transformations, we need to explain our spaces in 3D. Previously in 2D, we only had \emph{object space} and \emph{screen space}. The existence of the camera makes things slightly more complicated: the camera lives in the \emph{camera space} (the coordinate system in the previous parts), and the matrices now transform the objects into \emph{world space}. As a convention, we usually call the object-to-world transformation the \emph{model matrix} $M$, the world-to-camera transformation the \emph{view matrix} $V$, the camera-to-screen transformation the \emph{projection matrix} $P$ (yes, we can express the projection as a matrix! more on this later). Given a vertex $v$ on a 3D triangle mesh, we can chain the transformations to project it onto the screen space: $v'=PVMv$ (unfortunately, the combined matrix $PVM$ is usually called the ``MVP'' matrix). \cref{fig:3d_spaces} illustrates this.
 
 \paragraph{Scaling and translation.} Scaling and translations are basically the same as in 2D:
 \begin{equation}
@@ -660,18 +668,21 @@ A scene file would look like this:
                 -1.7,  1.0, -5.0,
                  1.0,  1.0, -5.0,
                 -0.5, -1.0, -5.0,
+                -2.5, -1.0, -5.0,
                 -1.0,  1.5, -4.0,
                  0.2,  1.5, -4.0,
                  0.2, -1.5, -4.0
             ],
             "faces": [
                 0, 1, 2,
-                3, 4, 5  
+                0, 2, 3,
+                4, 5, 6  
             ],
             "vertex_colors": [
                 0.75, 0.35, 0.35,
                 0.35, 0.75, 0.35,
                 0.35, 0.35, 0.75,
+                0.75, 0.35, 0.75,
                 0.35, 0.75, 0.75,
                 0.75, 0.35, 0.75,
                 0.75, 0.75, 0.35
@@ -704,7 +715,7 @@ struct Scene {
 
 Like in homework, your first task is to implement the transformations in \lstinline{parse_transformation} in \lstinline{hw2_scenes.cpp}. Next, you'll render the parsed scene in \lstinline{hw_2_4} in \lstinline{hw2.cpp}.
 
-Important: note that the \lstinline{transform} in the camera describes the transformation from camera to world. The \lstinline{view_matrix} in Camera stores the inverse of the transformation. We have inverted the parsed transformation for you in \lstinline{hw2_scenes.cpp}.
+\textbf{Important}: the \lstinline{transform} in the camera describes the transformation from camera to world. The \lstinline{view_matrix} in Camera stores the inverse of the transformation. We have inverted the parsed transformation for you in \lstinline{hw2_scenes.cpp}.
 
 \section{Design your own scenes}
 

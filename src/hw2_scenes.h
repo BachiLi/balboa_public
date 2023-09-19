@@ -12,7 +12,7 @@ struct TriangleMesh {
     std::vector<Vector3i> faces; // indices of the triangles
     std::vector<Vector3> face_colors; // per-face color of the mesh, only used in HW 2.2
     std::vector<Vector3> vertex_colors; // per-vertex color of the mesh, used in HW 2.3 and later
-    Matrix4x4 model_matrix;
+    Matrix4x4 model_matrix; // used in HW 2.4
 };
 
 extern std::vector<TriangleMesh> meshes;
