@@ -544,7 +544,7 @@ Given the \lstinline{direction} $\mathbf{d}$, we can then compute the \lstinline
 
 We are not done yet though. Since the up vector $\mathbf{u}$ is not necessarily perpendicular to the camera direction $\mathbf{d}$, we do not have an orthonormal basis yet. Thus we recompute the up vector using the cross product between the right vector and the camera direction:
 \begin{equation}
-\mathbf{u}' = \mathbf{r} \times \mathbf{u}.
+\mathbf{u}' = \mathbf{r} \times \mathbf{d}.
 \end{equation}
 
 Given these information, we can build our transformation matrix:
