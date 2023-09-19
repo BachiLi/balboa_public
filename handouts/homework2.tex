@@ -287,6 +287,9 @@ This is what people mean if they say they are doing \emph{perspective-corrected 
 That's all you need to know to implement vertex color rendering! (I hope it's easier than the previous two.) Go and implement it in \lstinline{hw_2_3}. Test it using
 \begin{lstlisting}[language=bash]
   ./balboa -hw 2_3 -s 1 -znear 1e-6 -scene_id 0
+  ./balboa -hw 2_3 -s 1.5 -znear 1e-6 -scene_id 1
+  ./balboa -hw 2_3 -s 0.2 -znear 1e-6 -scene_id 2
+  ./balboa -hw 2_3 -s 0.2 -znear 1e-6 -scene_id 3
 \end{lstlisting}
 
 As usual, our rendering for \lstinline{scene_id 0} is in \cref{fig:hw2_3}.
@@ -296,6 +299,13 @@ As usual, our rendering for \lstinline{scene_id 0} is in \cref{fig:hw2_3}.
     \caption{Reference rendering for homework 2.3.}
     \label{fig:hw2_3}
 \end{figure}
+
+As usual, save your outputs for \lstinline{scene_id=1-3} as following.
+\begin{lstlisting}[language=bash]
+outputs/hw_2_3_1.png
+outputs/hw_2_3_2.png
+outputs/hw_2_3_3.png
+\end{lstlisting}
 
 \section{3D transformation}
 
