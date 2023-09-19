@@ -4,11 +4,12 @@
         "resolution": [640, 480],
         "transform": [
             {
-                "lookat":[
-                    {"position": [0, 1, 0]},
-                    {"target": [0, 0, -5]},
-                    {"up": [0, 1, 0]}
-                ]
+                "lookat":
+                {
+                    "position": [0, 1, 0],
+                    "target": [0, 0, -5],
+                    "up": [0, 1, 0]
+                }
             }
         ],
         "s": 1,
