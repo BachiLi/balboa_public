@@ -190,7 +190,7 @@ Scene parse_scene(const fs::path &filename) {
         return scene;
     }
     scene.camera.resolution = Vector2i{(*res)[0], (*res)[1]};
-    scene.camera.view_matrix = inverse(parse_transformation(*camera));
+    scene.camera.cam_to_world = parse_transformation(*camera);
     scene.camera.s = 1;
     if (auto s = camera->find("s"); s != camera->end()) {
         scene.camera.s = *s;
@@ -262,7 +262,7 @@ Scene parse_scene(const fs::path &filename) {
 
 std::ostream& operator<<(std::ostream &os, const Camera &camera) {
     os << "Camera[";
-    os << "\tview_matrix=" << std::endl << camera.view_matrix << std::endl;
+    os << "\tcam_to_world=" << std::endl << camera.cam_to_world << std::endl;
     os << "\tresolution=" << camera.resolution << std::endl;
     os << "\ts=" << camera.s << std::endl;
     os << "\tz_near=" << camera.z_near << std::endl;

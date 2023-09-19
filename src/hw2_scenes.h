@@ -18,7 +18,7 @@ struct TriangleMesh {
 extern std::vector<TriangleMesh> meshes;
 
 struct Camera {
-    Matrix4x4 view_matrix;
+    Matrix4x4 cam_to_world; // inverse of the view matrix
     Vector2i resolution;
     Real s;
     Real z_near;
