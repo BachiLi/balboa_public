@@ -1,0 +1,71 @@
+{
+    "resolution": [512, 512],
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 200,
+            "color": [0.3, 0.5, 0.8],
+            "alpha": 0.9
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 180,
+            "color": [0.8, 0.5, 0.3],
+            "alpha": 0.8
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 160,
+            "color": [0.3, 0.8, 0.5],
+            "alpha": 0.7
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 140,
+            "color": [0.5, 0.3, 0.8],
+            "alpha": 0.6
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 120,
+            "color": [0.8, 0.3, 0.5],
+            "alpha": 0.5
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 100,
+            "color": [0.5, 0.8, 0.3],
+            "alpha": 0.4
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 80,
+            "color": [0.3, 0.3, 0.8],
+            "alpha": 0.3
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 60,
+            "color": [0.8, 0.3, 0.3],
+            "alpha": 0.2
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 40,
+            "color": [0.3, 0.8, 0.3],
+            "alpha": 0.1
+        }
+    ]
+}

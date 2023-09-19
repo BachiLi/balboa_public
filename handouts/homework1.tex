@@ -572,6 +572,20 @@ We show our rendering of the \lstinline{antialiasing} scene in \cref{fig:hw1_5}.
     \label{fig:hw1_5}
 \end{figure}
 
+We will grade your results using the following scenes:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_5 ../scenes/hw1/transformation_2.json
+  ./balboa -hw 1_5 ../scenes/hw1/sun.json
+  ./balboa -hw 1_5 ../scenes/hw1/piggy.json
+\end{lstlisting}
+In your submission, save your renderings of the scenes above as
+\begin{lstlisting}[language=bash]
+outputs/hw_1_5_transformation_2.png
+outputs/hw_1_5_sun.png
+outputs/hw_1_5_piggy.png
+\end{lstlisting}
+We will grade by comparing to our rendering.
+
 \section{Alpha blending (10 pts)}
 Finally, let's add some transparency into the objects. In addition to the RGB color, now each object also equips an $\alpha$ (\lstinline{alpha}) value. The lower the alpha is, the more transparent the object. $\alpha=0$ means that the object is fully transparent (so you can't see it), and $\alpha=1$ means that the object is fully opaque (so it's the same as previous parts of the homework). 
 
@@ -587,12 +601,11 @@ C = \alpha_0 C_0 + \alpha_1 (1 - \alpha_0) C_1 + (1 - \alpha_0) (1 - \alpha_1) B
 
 We'll let you figure out the general formula for arbitrary number of objects and turn it into code.
 
-Go to \lstinline{hw_1_6} in \lstinline{hw1.cpp} and implement the alpha blending. Test your rendering using the following commands:
+Go to \lstinline{hw_1_6} in \lstinline{hw1.cpp} and implement the alpha blending. Test your rendering using the following command:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_6 ../scenes/hw1/alpha.json
 \end{lstlisting}
-
-We show our rendering of the \lstinline{alpha} scene in \cref{fig:hw1_6}. We will grade your results using other scenes.
+We show our rendering of the \lstinline{alpha} scene in \cref{fig:hw1_6}.
 
 \begin{figure}[ht]
     \centering
@@ -600,6 +613,20 @@ We show our rendering of the \lstinline{alpha} scene in \cref{fig:hw1_6}. We wil
     \caption{HW 1.6 reference.}
     \label{fig:hw1_6}
 \end{figure}
+
+We will grade your results using the following scenes:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 1_6 ../scenes/hw1/alpha_2.json
+  ./balboa -hw 1_6 ../scenes/hw1/alpha_circles.json
+  ./balboa -hw 1_6 ../scenes/hw1/alpha_triangles.json
+\end{lstlisting}
+In your submission, save your renderings of the scenes above as
+\begin{lstlisting}[language=bash]
+outputs/hw_1_6_alpha_2.png
+outputs/hw_1_6_alpha_cirlces.png
+outputs/hw_1_6_alpha_triangles.png
+\end{lstlisting}
+
 
 \section{Design your own scenes (10 pts)}
 
