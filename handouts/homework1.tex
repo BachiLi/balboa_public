@@ -627,10 +627,13 @@ outputs/hw_1_6_alpha_cirlces.png
 outputs/hw_1_6_alpha_triangles.png
 \end{lstlisting}
 
-
 \section{Design your own scenes (10 pts)}
 
 Design a scene yourself and submit the scene and your rendering to us. Be creative! We will give extra credits to people who impress us.
+
+\section{Bonus: line and B\'ezier curve rendering (15 pts)}
+
+Lines and curves are very useful primitives in 2D rendering. As a bonus, implement lines, quadratic B\'ezier curves, and cubic B\'ezier curves as new primitives. A line takes two points and a width (basically a rotated rectangle), a quadratic B\'ezier curve takes three control points and a width, and a cubic B\'ezier curve takes four control points and a width. Read \href{https://pomax.github.io/bezierinfo/#flattening}{A Primer on B\'ezier Curves} for the definition of B\'ezier curves and how to convert them to lines. Alternatively, you can directly compute the distance between a point and a B\'ezier curve: for quadratic curves, this boils down to a cubic equation root solve, and for cubic B\'ezier curve, this becomes a quintic equation root solve, and requires an iterative solver.
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
