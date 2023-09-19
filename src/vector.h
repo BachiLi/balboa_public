@@ -265,6 +265,16 @@ inline T length(const TVector3<T> &v) {
 }
 
 template <typename T>
+inline TVector3<T> normalize(const TVector3<T> &v0) {
+    auto l = length(v0);
+    if (l <= 0) {
+        return TVector3<T>{0, 0, 0};
+    } else {
+        return v0 / l;
+    }
+}
+
+template <typename T>
 inline TVector3<T> cross(const TVector3<T> &v0, const TVector3<T> &v1) {
     return TVector3<T>{
         v0[1] * v1[2] - v0[2] * v1[1],
