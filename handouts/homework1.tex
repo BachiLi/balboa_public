@@ -90,6 +90,7 @@ normalize(v0); // returns a vector with same direction as v0, but with magnitude
 length(v0); // return the magnitude of v0
 Vector3 v2 = ..., v3 = ...;
 cross(v2, v3); // cross product between v2 & v3
+std::cout << v0 << std::endl; // print the vector
 \end{lstlisting}
 In balboa, we represent floating point numbers using the type \lstinline{Real}. It is by default defined to be a \lstinline{double}. It is designed such that when you want to switch to single precision float (maybe for less memory cost), you can switch a single line in \lstinline{balboa.h}.
 \begin{lstlisting}[language=C++]
@@ -502,6 +503,25 @@ The transformation matrix above can be seen as a relation between \emph{spaces}.
 
 The remaining question we need to address is: how do we test if the pixel center has hit the transformed shape? A main challenge is that the transformed shape may not be as easy to test compared to the original shape. For example, after linear transformations, a circle may become an ellipse. The trick we are going to test in the object space, instead of the screen space. Given a screen space point $x$ representing a pixel's center, we convert it to the object space using the inverse transform $F^{-1}$, then test whether it hits the object after the inverse transform. 
 
+\paragraph{Matrices.} \lstinline{Matrix3x3} and \lstinline{Matrix4x4} (defined in \lstinline{matrix.h}) are balboa's matrix utilities. To access the $i$-th row and $j$-th column of a matrix $m$, you can use the $()$ operator $m(i, j)$ (zero-based):
+\begin{lstlisting}[language=C++]
+Matrix3x3 m; // initialize to all zeros
+m(1, 2) = 1; // set row 1 column 2 to 1
+Real m12 = m(1, 2); // get value from row 1 column 2
+m = Matrix3x3::identity(); // set matrix to identity
+m = inverse(m); // invert the matrix
+Vector3 v = ...;
+v = m * v; // matrix vector product
+std::cout << m << std::endl; // print the matrix
+\end{lstlisting}
+Internally, balboa stores these matrices in the \href{https://en.wikipedia.org/wiki/Row-_and_column-major_order}{column-major order}. This is to match the convention in OpenGL that we will use in Homework 3. This is realized in the implementation of the \lstinline{operator()}:
+\begin{lstlisting}[language=C++]
+T& operator()(int i, int j) {
+    // Column major!
+    return data[j][i];
+}
+\end{lstlisting}
+
 To complete your implementation, first go to \lstinline{hw1_scenes.cpp} and complete the function \lstinline{parse_transformation}: this function parses the sequence of transformations and combines them into a $3 \times 3$ matrix. Next, go to \lstinline{hw1.cpp} and finish your implementation to render transformed shapes.
 
 Test your rendering using the following commands:
@@ -514,11 +534,13 @@ We will grade your results using the following scenes:
 \begin{lstlisting}[language=bash]
   ./balboa -hw 1_4 ../scenes/hw1/transformation_2.json
   ./balboa -hw 1_4 ../scenes/hw1/sun.json
+  ./balboa -hw 1_4 ../scenes/hw1/piggy.json
 \end{lstlisting}
 In your submission, save your renderings of the scenes above as
 \begin{lstlisting}[language=bash]
 outputs/hw_1_4_transformation_2.png
 outputs/hw_1_4_sun.png
+outputs/hw_1_4_piggy.png
 \end{lstlisting}
 We will grade by comparing to our rendering.
 
