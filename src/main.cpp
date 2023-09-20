@@ -1,5 +1,6 @@
 #include "hw1.h"
 #include "hw2.h"
+#include "hw3.h"
 #include "timer.h"
 #include <vector>
 #include <string>
@@ -48,6 +49,8 @@ int main(int argc, char *argv[]) {
     } else if (hw_num == "2_4") {
         Image3 img = hw_2_4(parameters);
         imwrite("hw_2_4.png", img);
+    } else if (hw_num == "3_1") {
+        hw_3_1(parameters);
     }
 
     return 0;

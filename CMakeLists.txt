@@ -25,6 +25,7 @@ set(SRCS src/3rdparty/json.hpp
          src/hw1_scenes.h
          src/hw2.h
          src/hw2_scenes.h
+         src/hw3.h
          src/image.h
          src/matrix.h
          src/timer.h
@@ -33,9 +34,19 @@ set(SRCS src/3rdparty/json.hpp
          src/hw1_scenes.cpp
          src/hw2.cpp
          src/hw2_scenes.cpp
+         src/hw3.cpp
          src/image.cpp)
 
 add_library(balboa_lib STATIC ${SRCS})
 add_executable(balboa src/main.cpp)
 
-target_link_libraries(balboa balboa_lib)
+# GLFW settings
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+add_subdirectory(src/3rdparty/glfw)
+
+# OpenGL
+find_package(OpenGL REQUIRED)
+
+target_link_libraries(balboa balboa_lib glfw OpenGL::GL)
