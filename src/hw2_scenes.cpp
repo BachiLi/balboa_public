@@ -176,9 +176,9 @@ TriangleMesh parse_ply(const fs::path &filename) {
         uint8_t *data = (uint8_t*)vertex_colors->buffer.get();
         for (size_t i = 0; i < vertex_colors->count; i++) {
             mesh.vertex_colors[i] = Vector3{
-                std::pow(Real(data[3 * i]) / 255, Real(2.2)),
-                std::pow(Real(data[3 * i + 1]) / 255, Real(2.2)),
-                std::pow(Real(data[3 * i + 2]) / 255, Real(2.2))};
+                Real(data[3 * i]) / 255,
+                Real(data[3 * i + 1]) / 255,
+                Real(data[3 * i + 2]) / 255};
         }
     } else {
         Error(std::string("Unknown type of vertex colors in ") + filename.string());

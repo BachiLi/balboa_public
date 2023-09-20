@@ -12,7 +12,7 @@
                 }
             }
         ],
-        "s": 1.5,
+        "s": 0.4,
         "z_near": 1e-6
     },
     "background": [
@@ -20,10 +20,11 @@
     ],
     "objects": [
         {
-            "filename": "tetrahedron.ply",
+            "filename": "cube.ply",
             "transform": [
-                {"scale": [1.5, 0.8, 0.7]},
-                {"translate": [0.1, -0.1, 0.05]}
+                {"scale": [0.9, 1.1, 0.8]},
+                {"translate": [-0.2, -0.2, 0.2]},
+                {"rotate": [30, -1, 1, 1]}
             ]
         }
     ]
