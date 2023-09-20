@@ -1,0 +1,31 @@
+{
+    "camera":
+    {
+        "resolution": [640, 480],
+        "transform": [
+            {
+                "lookat":
+                {
+                    "position": [1, -0.5, 0],
+                    "target": [0, 0, -5],
+                    "up": [0, 1, 0]
+                }
+            }
+        ],
+        "s": 0.5,
+        "z_near": 1e-6
+    },
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "filename": "prism.ply",
+            "transform": [
+                {"scale": [1.1, 1.2, 1.1]},
+                {"rotate": [-10, -1, 1, -1]},
+                {"translate": [0.2, -0.1, -0.2]}
+            ]
+        }
+    ]
+}
