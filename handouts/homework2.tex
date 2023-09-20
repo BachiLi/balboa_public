@@ -698,6 +698,65 @@ A scene file would look like this:
 }
 \end{lstlisting}
 
+Instead of directly specifying the vertices/faces in the JSON file, we can also use the \href{https://en.wikipedia.org/wiki/PLY_(file_format)}{Stanford PLY format}:
+\begin{lstlisting}[language=json]
+{
+    "camera":
+    {
+        "resolution": [640, 480],
+        "transform": [
+            {
+                "lookat":
+                {
+                    "position": [1, 1, 0],
+                    "target": [0, 0, -5],
+                    "up": [0, 1, 0]
+                }
+            }
+        ],
+        "s": 1,
+        "z_near": 1e-6
+    },
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "filename": "tetrahedron.ply",
+            "transform": [
+                {"scale": [1.5, 0.8, 0.7]},
+                {"translate": [0.5, -0.3, 0.2]}
+            ]
+        }
+    ]
+}
+\end{lstlisting}
+The PLY file is human readable and looks like this:
+\begin{lstlisting}
+ply
+format ascii 1.0
+comment Created by Blender 3.4.1 - www.blender.org
+element vertex 4
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+property uchar alpha
+element face 4
+property list uchar uint vertex_indices
+end_header
+-0.483444 0.826069 -2.307457 255 92 236 255
+1.152029 -1.111880 -1.928058 192 255 143 255
+1.485437 0.880605 -2.239198 150 110 255 255
+0.594299 0.143237 -1.466344 255 54 79 255
+3 0 1 2
+3 1 3 2
+3 3 1 0
+3 2 3 0
+\end{lstlisting}
+
 The scene will be parsed into the following scene data structure:
 \begin{lstlisting}[language=C++]
 struct Camera {
@@ -717,6 +776,12 @@ struct Scene {
 Like in homework, your first task is to implement the transformations in \lstinline{parse_transformation} in \lstinline{hw2_scenes.cpp}. Next, you'll render the parsed scene in \lstinline{hw_2_4} in \lstinline{hw2.cpp}.
 
 \textbf{Important}: the \lstinline{transform} in the camera describes the transformation from camera to world, and that's what we store in \lstinline{Camera::cam_to_world}. The ``view matrix'' in \cref{fig:3d_spaces} is the inverse of \lstinline{cam_to_world}.
+
+To test your rendering, use the following commands:
+\begin{lstlisting}[language=bash]
+  ./balboa -hw 2_4 ../scenes/two_shapes.json
+  ./balboa -hw 2_4 ../scenes/tetrahedron.json
+\end{lstlisting}
 
 \section{Design your own scenes}
 

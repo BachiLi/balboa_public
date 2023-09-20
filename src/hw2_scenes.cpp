@@ -1,5 +1,7 @@
 #include "hw2_scenes.h"
 #include "3rdparty/json.hpp"
+#define TINYPLY_IMPLEMENTATION
+#include "3rdparty/tinyply.h"
 #include "flexception.h"
 #include "matrix.h"
 #include <fstream>
@@ -114,6 +116,118 @@ TriangleMesh mesh3 {
 
 std::vector<TriangleMesh> meshes = {mesh0, mesh1, mesh2, mesh3};
 
+TriangleMesh parse_ply(const fs::path &filename) {
+    std::ifstream ifs(filename);
+    tinyply::PlyFile ply_file;
+    ply_file.parse_header(ifs);
+
+    std::shared_ptr<tinyply::PlyData> vertices, faces, vertex_colors;
+    try {
+        vertices = ply_file.request_properties_from_element("vertex", { "x", "y", "z" }); 
+    } catch (const std::exception & e) { 
+        Error(std::string("Vertex positions not found in ") + filename.string());
+    }
+    try {
+        faces = ply_file.request_properties_from_element("face", { "vertex_indices" }); 
+    } catch (const std::exception & e) { 
+        Error(std::string("Vertex indices not found in ") + filename.string());
+    }
+    try {
+        vertex_colors = ply_file.request_properties_from_element("vertex", { "red", "green", "blue" });
+    } catch (const std::exception & e) {
+        Error(std::string("Vertex colors not found in ") + filename.string());
+    }
+    assert(vertices->count == vertex_colors->count);
+
+    ply_file.read(ifs);
+
+    TriangleMesh mesh;
+    mesh.vertices.resize(vertices->count);
+    if (vertices->t == tinyply::Type::FLOAT32) {
+        float *data = (float*)vertices->buffer.get();
+        for (size_t i = 0; i < vertices->count; i++) {
+            mesh.vertices[i] = Vector3{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (vertices->t == tinyply::Type::FLOAT64) {
+        double *data = (double*)vertices->buffer.get();
+        for (size_t i = 0; i < vertices->count; i++) {
+            mesh.vertices[i] = Vector3{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else {
+        Error(std::string("Unknown type of vertex positions in ") + filename.string());
+    }
+
+    mesh.vertex_colors.resize(vertex_colors->count);
+    if (vertex_colors->t == tinyply::Type::FLOAT32) {
+        float *data = (float*)vertex_colors->buffer.get();
+        for (size_t i = 0; i < vertex_colors->count; i++) {
+            mesh.vertex_colors[i] = Vector3{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (vertex_colors->t == tinyply::Type::FLOAT64) {
+        double *data = (double*)vertex_colors->buffer.get();
+        for (size_t i = 0; i < vertex_colors->count; i++) {
+            mesh.vertex_colors[i] = Vector3{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (vertex_colors->t == tinyply::Type::UINT8) {
+        uint8_t *data = (uint8_t*)vertex_colors->buffer.get();
+        for (size_t i = 0; i < vertex_colors->count; i++) {
+            mesh.vertex_colors[i] = Vector3{
+                std::pow(Real(data[3 * i]) / 255, Real(2.2)),
+                std::pow(Real(data[3 * i + 1]) / 255, Real(2.2)),
+                std::pow(Real(data[3 * i + 2]) / 255, Real(2.2))};
+        }
+    } else {
+        Error(std::string("Unknown type of vertex colors in ") + filename.string());
+    }
+    
+    mesh.faces.resize(faces->count);
+    if (faces->t == tinyply::Type::INT8) {
+        int8_t *data = (int8_t*)faces->buffer.get();
+        for (size_t i = 0; i < faces->count; i++) {
+            mesh.faces[i] = Vector3i{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (faces->t == tinyply::Type::UINT8) {
+        uint8_t *data = (uint8_t*)faces->buffer.get();
+        for (size_t i = 0; i < faces->count; i++) {
+            mesh.faces[i] = Vector3i{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (faces->t == tinyply::Type::INT16) {
+        int16_t *data = (int16_t*)faces->buffer.get();
+        for (size_t i = 0; i < faces->count; i++) {
+            mesh.faces[i] = Vector3i{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (faces->t == tinyply::Type::UINT16) {
+        uint16_t *data = (uint16_t*)faces->buffer.get();
+        for (size_t i = 0; i < faces->count; i++) {
+            mesh.faces[i] = Vector3i{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (faces->t == tinyply::Type::INT32) {
+        int32_t *data = (int32_t*)faces->buffer.get();
+        for (size_t i = 0; i < faces->count; i++) {
+            mesh.faces[i] = Vector3i{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else if (faces->t == tinyply::Type::UINT32) {
+        uint32_t *data = (uint32_t*)faces->buffer.get();
+        for (size_t i = 0; i < faces->count; i++) {
+            mesh.faces[i] = Vector3i{
+                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+        }
+    } else {
+        Error(std::string("Unknown type of faces in ") + filename.string());
+    }
+
+    return mesh;
+}
+
 Matrix4x4 parse_transformation(const json &node) {
     // Homework 2.4: parse a sequence of linear transformation and 
     // combine them into a 4x4 transformation matrix
@@ -163,9 +277,9 @@ Matrix4x4 parse_transformation(const json &node) {
                 };
             }
             if (up_it != lookat_it->end()) {
-                up = Vector3{
+                up = normalize(Vector3{
                     (*up_it)[0], (*up_it)[1], (*up_it)[2]
-                };
+                });
             }
             // TODO (HW2.4): construct a lookat matrix and composite with F
         }
@@ -176,8 +290,13 @@ Matrix4x4 parse_transformation(const json &node) {
 Scene parse_scene(const fs::path &filename) {
     std::ifstream f(filename.string().c_str());
     json data = json::parse(f);
+
+    // back up the current working directory and switch to the parent folder of the file
+    fs::path old_path = fs::current_path();
+    fs::current_path(filename.parent_path());
+
     Scene scene;
-    
+
     auto camera = data.find("camera");
     if (camera == data.end()) {
         Error("Scene does not contain the field \"camera\".");
@@ -211,52 +330,57 @@ Scene parse_scene(const fs::path &filename) {
     auto objects = data.find("objects");
     for (auto it = objects->begin(); it != objects->end(); it++) {
         TriangleMesh mesh;
-
-        auto vertices_it = it->find("vertices");
-        if (vertices_it != it->end()) {
-            int num_vertices = vertices_it->size() / 3;
-            mesh.vertices.resize(num_vertices);
-            for (int i = 0; i < num_vertices; i++) {
-                mesh.vertices[i] = Vector3{
-                    (*vertices_it)[3 * i + 0],
-                    (*vertices_it)[3 * i + 1],
-                    (*vertices_it)[3 * i + 2]
-                };
+        if (auto fn_it = it->find("filename"); fn_it != it->end()) {
+            mesh = parse_ply(std::string(*fn_it));
+        } else {
+            auto vertices_it = it->find("vertices");
+            if (vertices_it != it->end()) {
+                int num_vertices = vertices_it->size() / 3;
+                mesh.vertices.resize(num_vertices);
+                for (int i = 0; i < num_vertices; i++) {
+                    mesh.vertices[i] = Vector3{
+                        (*vertices_it)[3 * i + 0],
+                        (*vertices_it)[3 * i + 1],
+                        (*vertices_it)[3 * i + 2]
+                    };
+                }
+            }
+            auto faces_it = it->find("faces");
+            if (faces_it != it->end()) {
+                int num_triangles = faces_it->size() / 3;
+                mesh.faces.resize(num_triangles);
+                for (int i = 0; i < num_triangles; i++) {
+                    mesh.faces[i] = Vector3i{
+                        (*faces_it)[3 * i + 0],
+                        (*faces_it)[3 * i + 1],
+                        (*faces_it)[3 * i + 2]
+                    };
+                }
+            }
+            auto vertex_colors_it = it->find("vertex_colors");
+            if (vertex_colors_it != it->end()) {
+                int num_vertices = vertex_colors_it->size() / 3;
+                mesh.vertex_colors.resize(num_vertices);
+                if (mesh.vertex_colors.size() != mesh.vertices.size()) {
+                    Error("Mesh has different number of vertices and number of colors.");
+                    return scene;
+                }
+                for (int i = 0; i < num_vertices; i++) {
+                    mesh.vertex_colors[i] = Vector3{
+                        (*vertex_colors_it)[3 * i + 0],
+                        (*vertex_colors_it)[3 * i + 1],
+                        (*vertex_colors_it)[3 * i + 2]
+                    };
+                }
             }
         }
-        auto faces_it = it->find("faces");
-        if (faces_it != it->end()) {
-            int num_triangles = faces_it->size() / 3;
-            mesh.faces.resize(num_triangles);
-            for (int i = 0; i < num_triangles; i++) {
-                mesh.faces[i] = Vector3i{
-                    (*faces_it)[3 * i + 0],
-                    (*faces_it)[3 * i + 1],
-                    (*faces_it)[3 * i + 2]
-                };
-            }
-        }
-        auto vertex_colors_it = it->find("vertex_colors");
-        if (vertex_colors_it != it->end()) {
-            int num_vertices = vertex_colors_it->size() / 3;
-            mesh.vertex_colors.resize(num_vertices);
-            if (mesh.vertex_colors.size() != mesh.vertices.size()) {
-                Error("Mesh has different number of vertices and number of colors.");
-                return scene;
-            }
-            for (int i = 0; i < num_vertices; i++) {
-                mesh.vertex_colors[i] = Vector3{
-                    (*vertex_colors_it)[3 * i + 0],
-                    (*vertex_colors_it)[3 * i + 1],
-                    (*vertex_colors_it)[3 * i + 2]
-                };
-            }
-        }
-
+        
         mesh.model_matrix = parse_transformation(*it);
         scene.meshes.push_back(mesh);
     }
 
+    // switch back to the old current working directory
+    fs::current_path(old_path);
     return scene;
 }
 
