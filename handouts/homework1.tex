@@ -55,7 +55,7 @@ It will generate an image \lstinline{hw_1_1.png} that is completely white.
 
 We recommend you to quickly read through \lstinline{main.cpp} and \lstinline{hw1.cpp} to understand the structure of the code.
 
-\section{Rendering a single circle (10 pts)}
+\section{Rendering a single circle (15 pts)}
 
 \begin{figure}[h]
     \centering
@@ -586,7 +586,7 @@ outputs/hw_1_5_piggy.png
 \end{lstlisting}
 We will grade by comparing to our rendering.
 
-\section{Alpha blending (10 pts)}
+\section{Alpha blending (15 pts)}
 Finally, let's add some transparency into the objects. In addition to the RGB color, now each object also equips an $\alpha$ (\lstinline{alpha}) value. The lower the alpha is, the more transparent the object. $\alpha=0$ means that the object is fully transparent (so you can't see it), and $\alpha=1$ means that the object is fully opaque (so it's the same as previous parts of the homework). 
 
 For objects with $0 < \alpha < 1$, we need to blend their colors. If there is only one object with alpha $\alpha_0$ and color $C_0$, we blend it with the background color $B$ and obtain the final color $C$ as:

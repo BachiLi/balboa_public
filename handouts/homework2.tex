@@ -22,7 +22,7 @@ To facilitate the projection, we will focus on representing 3D surfaces, instead
     \label{fig:perspective}
 \end{figure}
 
-\section{Rendering a single 3D triangle}
+\section{Rendering a single 3D triangle (20 pts)}
 Let's start simple and render just a single 3D triangle. Our plan is to first project the triangle to a 2D image plane, then we can directly use the code from our previous homework to render the projected triangle.
 
 \begin{figure}[h]
@@ -100,7 +100,7 @@ We'll compare your output with our rendering for grading.
 
 \paragraph{Bonus: triangle clipping.} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane.
 
-\section{Rendering a triangle mesh}
+\section{Rendering a triangle mesh (20 pts)}
 
 \begin{figure}[h]
     \centering
@@ -282,7 +282,7 @@ We'll compare your output with our rendering for grading.
 
 \paragraph{Bonus: occlusion culling (20 pts).} During rasterization-style rendering, if we can prove that a triangle is completely blocked by some other triangles (using the current Z buffer), we can completely skip the rendering of the triangle to speed up our rendering. This is called \href{https://en.wikipedia.org/wiki/Z-buffering#Z-culling}{occlusion culling} or Z-culling. Read the paper \href{https://dl.acm.org/doi/10.1145/166117.166147}{Hierarchical Z-Buffer Visibility} from Greene et al. and implement occlusion culling using a hierarchical Z buffer. Our test scenes do not have heavy occlusion, so you will need to design your own scenes to show the speedup.
 
-\section{Perspective-corrected interpolation}
+\section{Perspective-corrected interpolation (20 pts)}
 
 So far, we have been rendering constant color triangles. It's time to make things more colorful. Instead of specifying \emph{face colors}, we'll specify \emph{vertex colors}, and interpolate them using barycentric coordinates.
 
@@ -315,7 +315,7 @@ outputs/hw_2_3_2.png
 outputs/hw_2_3_3.png
 \end{lstlisting}
 
-\section{3D transformation}
+\section{3D transformation (20 pts)}
 
 So far we have assumed that everything is in the camera space and camera is always located at $(0, 0, 0)$ facing negative $z$ with up vector $y$. Let's add some transformations so that things are less restricted. Remember that in the 2D case in Homework 1, we use a $3 \times 3$ matrix to represent affine transformations. Here, we will use a $4 \times 4$ matrix. Like in 2D, we will support scaling, translation, and rotation (shearing is also possible, but we want to safe you some typing). Furthermore, we will support two kinds of new transformations: lookAt transform and perspective transform that we will talk about soon. The perspective transform implementation is optional, but implementing it might helpful understand parts of the next homework.
 
@@ -794,7 +794,6 @@ Our renderings of the \lstinline{two_shapes} and \lstinline{tetrahedron} scenes 
     \label{fig:hw2_4}
 \end{figure}
 
-
 Save your outputs for the scenes above as following.
 \begin{lstlisting}[language=bash]
 outputs/hw_2_4_cube.png
@@ -802,7 +801,9 @@ outputs/hw_2_4_prism.png
 outputs/hw_2_4_teapot.png
 \end{lstlisting}
 
-\section{Design your own scenes}
+Note that the last teapot scene contains 1570 triangles, so it might take a bit of time to render it (it took 30 seconds in my implementation).
+
+\section{Design your own scenes (20 pts)}
 
 As usual, design a scene yourself and submit the scene and your rendering to us. We will give extra credits to people who impress us.
 
