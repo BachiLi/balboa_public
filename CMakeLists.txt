@@ -17,10 +17,13 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(SRCS src/3rdparty/json.hpp
+set(SRCS src/3rdparty/glad.h
+         src/3rdparty/json.hpp
+         src/3rdparty/khrplatform.h
          src/3rdparty/stb_image.h
          src/3rdparty/stb_image_write.h
          src/flexception.h
+         src/3rdparty/glad.c
          src/hw1.h
          src/hw1_scenes.h
          src/hw2.h
