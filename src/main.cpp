@@ -51,6 +51,8 @@ int main(int argc, char *argv[]) {
         imwrite("hw_2_4.png", img);
     } else if (hw_num == "3_1") {
         hw_3_1(parameters);
+    } else if (hw_num == "3_2") {
+        hw_3_2(parameters);
     }
 
     return 0;
