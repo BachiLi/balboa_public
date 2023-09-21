@@ -121,7 +121,7 @@ TriangleMesh parse_ply(const fs::path &filename) {
 }
 
 Matrix4x4 parse_transformation(const json &node) {
-    // Homework 3.2: take the code from Homework 2.4 and copy paste it here
+    // Homework 3.3: take the code from Homework 2.4 and copy paste it here
     Matrix4x4 F = Matrix4x4::identity();
     auto transform_it = node.find("transform");
     if (transform_it == node.end()) {
@@ -134,21 +134,21 @@ Matrix4x4 parse_transformation(const json &node) {
             Vector3 scale = Vector3{
                 (*scale_it)[0], (*scale_it)[1], (*scale_it)[2]
             };
-            // TODO (HW3.2): construct a scale matrix and composite with F
+            // TODO (HW3.3): construct a scale matrix and composite with F
             UNUSED(scale); // silence warning, feel free to remove it
         } else if (auto rotate_it = it->find("rotate"); rotate_it != it->end()) {
             Real angle = (*rotate_it)[0];
             Vector3 axis = normalize(Vector3{
                 (*rotate_it)[1], (*rotate_it)[2], (*rotate_it)[3]
             });
-            // TODO (HW3.2): construct a rotation matrix and composite with F
+            // TODO (HW3.3): construct a rotation matrix and composite with F
             UNUSED(angle); // silence warning, feel free to remove it
             UNUSED(axis); // silence warning, feel free to remove it
         } else if (auto translate_it = it->find("translate"); translate_it != it->end()) {
             Vector3 translate = Vector3{
                 (*translate_it)[0], (*translate_it)[1], (*translate_it)[2]
             };
-            // TODO (HW3.2): construct a translation matrix and composite with F
+            // TODO (HW3.3): construct a translation matrix and composite with F
             UNUSED(translate); // silence warning, feel free to remove it
         } else if (auto lookat_it = it->find("lookat"); lookat_it != it->end()) {
             Vector3 position{0, 0, 0};
@@ -172,7 +172,7 @@ Matrix4x4 parse_transformation(const json &node) {
                     (*up_it)[0], (*up_it)[1], (*up_it)[2]
                 });
             }
-            // TODO (HW3.2): construct a lookat matrix and composite with F
+            // TODO (HW3.3): construct a lookat matrix and composite with F
         }
     }
     return F;
