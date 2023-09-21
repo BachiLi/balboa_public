@@ -74,6 +74,7 @@ using Vector2i = TVector2<int>;
 using Vector2 = TVector2<Real>;
 using Vector3uc = TVector3<uint8_t>;
 using Vector3i = TVector3<int>;
+using Vector3ui = TVector3<uint32_t>;
 using Vector3f = TVector3<float>;
 using Vector3d = TVector3<double>;
 using Vector3 = TVector3<Real>;
