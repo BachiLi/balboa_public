@@ -22,6 +22,14 @@ struct TVector2 {
         return *(&x + i);
     }
 
+    T* ptr() {
+        return &x;
+    }
+
+    const T* ptr() const {
+        return &x;
+    }
+
     T x, y;
 };
 
@@ -41,6 +49,14 @@ struct TVector3 {
 
     T operator[](int i) const {
         return *(&x + i);
+    }
+
+    T* ptr() {
+        return &x;
+    }
+
+    const T* ptr() const {
+        return &x;
     }
 
     T x, y, z;
@@ -63,6 +79,14 @@ struct TVector4 {
 
     T operator[](int i) const {
         return *(&x + i);
+    }
+
+    T* ptr() {
+        return &x;
+    }
+
+    const T* ptr() const {
+        return &x;
     }
 
     T x, y, z, w;
@@ -284,6 +308,76 @@ inline TVector3<T> cross(const TVector3<T> &v0, const TVector3<T> &v1) {
 }
 
 template <typename T>
+inline TVector4<T> operator+(const TVector4<T> &v0, const TVector4<T> &v1) {
+    return TVector4<T>(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z, v0.w + v1.w);
+}
+
+template <typename T>
+inline TVector4<T> operator+(const TVector4<T> &v, Real s) {
+    return TVector4<T>(v.x + s, v.y + s, v.z + s, v.w + s);
+}
+
+template <typename T>
+inline TVector4<T> operator+(Real s, const TVector4<T> &v) {
+    return TVector2<T>(s + v.x, s + v.y, s + v.z, s + v.w);
+}
+
+template <typename T>
+inline TVector4<T> operator-(const TVector4<T> &v0, const TVector4<T> &v1) {
+    return TVector4<T>(v0.x - v1.x, v0.y - v1.y, v0.z - v1.z, v0.w - v1.w);
+}
+
+template <typename T>
+inline TVector4<T> operator-(const TVector4<T> &v, Real s) {
+    return TVector2<T>(v.x - s, v.y - s, v.z - s, v.z - w);
+}
+
+template <typename T>
+inline TVector4<T> operator-(Real s, const TVector4<T> &v) {
+    return TVector2<T>(s - v.x, s - v.y, s - v.z, s - v.w);
+}
+
+template <typename T>
+inline TVector4<T> operator*(const T &s, const TVector4<T> &v) {
+    return TVector2<T>(s * v[0], s * v[1], s * v[2], s * v[3]);
+}
+
+template <typename T>
+inline TVector4<T> operator*(const TVector4<T> &v, const T &s) {
+    return TVector2<T>(v[0] * s, v[1] * s, v[2] * s, v[3] * s);
+}
+
+template <typename T>
+inline TVector4<T> operator/(const TVector4<T> &v, const T &s) {
+    return TVector2<T>(v[0] / s, v[1] / s, v[2] / s, v[3] / s);
+}
+
+template <typename T>
+inline T dot(const TVector4<T> &v0, const TVector4<T> &v1) {
+    return v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2] + v0[3] * v1[3];
+}
+
+template <typename T>
+inline T length_squared(const TVector4<T> &v) {
+    return dot(v, v);
+}
+
+template <typename T>
+inline T length(const TVector4<T> &v) {
+    return sqrt(length_squared(v));
+}
+
+template <typename T>
+inline TVector4<T> normalize(const TVector4<T> &v0) {
+    auto l = length(v0);
+    if (l <= 0) {
+        return TVector4<T>{0, 0, 0, 0};
+    } else {
+        return v0 / l;
+    }
+}
+
+template <typename T>
 inline bool isnan(const TVector2<T> &v) {
     return isnan(v[0]) || isnan(v[1]);
 }
@@ -294,6 +388,11 @@ inline bool isnan(const TVector3<T> &v) {
 }
 
 template <typename T>
+inline bool isnan(const TVector4<T> &v) {
+    return isnan(v[0]) || isnan(v[1]) || isnan(v[2]) || isnan(v[3]);
+}
+
+template <typename T>
 inline bool isfinite(const TVector2<T> &v) {
     return isfinite(v[0]) || isfinite(v[1]);
 }
@@ -301,6 +400,11 @@ inline bool isfinite(const TVector2<T> &v) {
 template <typename T>
 inline bool isfinite(const TVector3<T> &v) {
     return isfinite(v[0]) || isfinite(v[1]) || isfinite(v[2]);
+}
+
+template <typename T>
+inline bool isfinite(const TVector4<T> &v) {
+    return isfinite(v[0]) || isfinite(v[1]) || isfinite(v[2]) || isfinite(v[3]);
 }
 
 template <typename T>
@@ -315,5 +419,5 @@ inline std::ostream& operator<<(std::ostream &os, const TVector3<T> &v) {
 
 template <typename T>
 inline std::ostream& operator<<(std::ostream &os, const TVector4<T> &v) {
-    return os << "(" << v[0] << ", " << v[1] << ", " << v[2] << "," << v[3] << ")";
+    return os << "(" << v[0] << ", " << v[1] << ", " << v[2] << ", " << v[3] << ")";
 }
