@@ -312,3 +312,8 @@ template <typename T>
 inline std::ostream& operator<<(std::ostream &os, const TVector3<T> &v) {
     return os << "(" << v[0] << ", " << v[1] << ", " << v[2] << ")";
 }
+
+template <typename T>
+inline std::ostream& operator<<(std::ostream &os, const TVector4<T> &v) {
+    return os << "(" << v[0] << ", " << v[1] << ", " << v[2] << "," << v[3] << ")";
+}
