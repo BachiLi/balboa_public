@@ -20,7 +20,7 @@
     ],
     "objects": [
         {
-            "filename": "teapot.ply"
+            "filename": "teapot_decimated.ply"
         }
     ]
 }
