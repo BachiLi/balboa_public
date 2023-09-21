@@ -1,0 +1,22 @@
+\input{preamble}
+
+\begin{document}
+
+\header{3}{3D OpenGL Rendering}
+
+As you can probably tell from the previous homeworks, rendering requires computing interactions between millions of pixels and billions of triangles. This leads to significant challenges in performance, especially when we want to interact with the content in real-time. To make things really fast, pioneers in computer graphics came up with the solution to use \emph{domain-specific hardware} to speedup rendering. Instead of using a general purpose computer to compute everything, we build chips that specialize at rendering. These processors are called the Graphics Processing Units (GPUs). The idea of GPUs can be traced back to more than 40 years ago: The first GPU, \href{https://www.computer.org/publications/tech-news/chasing-pixels/geometry-engine}{Geometry Engine} was developed by Jim Clark and Marc Hannah in 1981. Jim Clark formed the company Silicon Graphics Inc (SGI) in the same year and SGI was one of the most important computer graphics companies in the history. Nowadays, GPUs are found to be general enough to compute very wide-range of computation, including deep learning and many scientific computing tasks, and they are indispensable to the human society. GPU is one of the most successful examples of domain-specific hardware.
+
+In this homework, we will write code to render things using GPUs on your computer. To command your GPUs, we need to send commands to it using some sort of ``Application Programming Interface'' (API). These interfaces are collectively decided by the GPU companies and some other organizations, and each hardware will come with some ``drivers'' that actually implement these interfaces using underlying hardware instructions. The most popular APIs are: \href{https://en.wikipedia.org/wiki/OpenGL}{OpenGL}, \href{https://en.wikipedia.org/wiki/DirectX}{DirectX}, \href{https://en.wikipedia.org/wiki/Metal_(API)}{Metal}, \href{https://en.wikipedia.org/wiki/Vulkan}{Vulkan}, and \href{https://en.wikipedia.org/wiki/WebGPU}{WebGPU}. Among these, DirectX is Windows only, Metal is MacOS only, WebGPU is only for browsers, and Vulkan is extremely low-level and very verbose for providing fine-grained control (it takes literally a thousand lines to render a single triangle in Vulkan). Therefore, we will use OpenGL in this homework: even though DirectX, Metal, and Vulkan are more update to date (the lastest version of OpenGL is 6 years ago), OpenGL is still use in practice and supported by all major GPUs and OSes, and it is significantly easier to learn compared to other lower-level APIs. Just like programming languages, it'll be a lot easier to learn other APIs once you've learned OpenGL.
+
+In this homework, we will mostly follow an online tutorial: \href{https://learnopengl.com/}{learnopengl.com}, because they likely write significantly better tutorials than me. We will implement what we did in the previous homework in OpenGL and hopefully see significant speedup. We will also create a Graphics User Interface (GUI) and enable real-time interaction.
+
+\section{Creating a window}
+
+Our first task, instead of rendering a single triangle, is to create a window! Read the chapters of \href{https://learnopengl.com/Getting-started/OpenGL}{OpenGL}, \href{https://learnopengl.com/Getting-started/Creating-a-window}{Creating a window}, and \href{https://learnopengl.com/Getting-started/Hello-Window}{Hello Window} in learnopengl.com to see how to create a window with OpenGL context using GLFW. We have included GLFW and glad in balboa, so you shouldn't have to download them. 
+
+Once you are done, take a screenshot of the window you created and save it as \lstinline{outputs/hw_3_1.png}.
+
+%\bibliographystyle{plain}
+%\bibliography{refs}
+
+\end{document}
