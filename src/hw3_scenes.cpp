@@ -279,4 +279,35 @@ Scene parse_scene(const fs::path &filename) {
     return scene;
 }
 
+std::ostream& operator<<(std::ostream &os, const Camera &camera) {
+    os << "Camera[" << std::endl;
+    os << "\tcam_to_world=" << std::endl << camera.cam_to_world << std::endl;
+    os << "\tresolution=" << camera.resolution << std::endl;
+    os << "\ts=" << camera.s << std::endl;
+    os << "\tz_near=" << camera.z_near << std::endl;
+    os << "\tz_far=" << camera.z_far << std::endl;
+    os << "]";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const TriangleMesh &mesh) {
+    os << "TriangleMesh[" << std::endl;
+    os << "\tnum_vertices=" << mesh.vertices.size() << std::endl;
+    os << "\tnum_faces=" << mesh.faces.size() << std::endl;
+    os << "\ttransform=" << std::endl << mesh.model_matrix << std::endl;
+    os << "]";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const Scene &scene) {
+    os << "Scene[" << std::endl;
+    os << "\t" << scene.camera << std::endl;
+    os << "\tBackground:" << scene.background << std::endl;
+    for (auto s : scene.meshes) {
+        os << "\t" << s << std::endl;
+    }
+    os << "]";
+    return os;
+}
+
 } // namespace hw3

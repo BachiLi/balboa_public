@@ -107,6 +107,10 @@ Image3 hw_2_3(const std::vector<std::string> &params) {
 
 Image3 hw_2_4(const std::vector<std::string> &params) {
     // Homework 2.4: render a scene with transformation
+    if (params.size() == 0) {
+        return Image3(0, 0);
+    }
+
     Scene scene = parse_scene(params[0]);
     std::cout << scene << std::endl;
 
