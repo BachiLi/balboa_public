@@ -23,7 +23,17 @@ Once you are done, take a screenshot of the window you created and save it as \l
 
 \section{Rendering a single 2D triangle}
 
-Yeah, it's that time again! 
+Yeah, it's that time again! Read the \href{https://learnopengl.com/Getting-started/Hello-Triangle}{Hello Triangle} chapter and render a single triangle with constant color. Just to make things slightly different so that we are not just copy and pasting code, let the triangle rotate in the image plane over time (it can be clockwise or counterclockwise, your choice). For the rotation, you can do it whichever way you want, but I recommend you do it in the vertex shader. Read the \href{https://learnopengl.com/Getting-started/Shaders}{Shaders} chapter and understand how to pass in a \lstinline{uniform} variable, then you can use the uniform variable as the rotation angle.  
+
+\paragraph{float vs. double} By default, balboa uses double precision floats through the \lstinline{Real} type. However, by default, GLSL uses single precision floats. Be careful of this discrepancy. You can use \lstinline{Vector3f}/\lstinline{Matrix3x3f} if you want to switch to float. In GLSL, use \lstinline{dvec3} if you want to stick with doubles. Also feel free to use the \href{https://github.com/g-truc/glm}{glm} library which is used in the tutorial.
+
+Implement your code in \lstinline{hw_3_2} in \lstinline{hw3.cpp}. Test it using
+\begin{lstlisting}[language=bash]
+./balboa -hw 3_2
+\end{lstlisting}
+
+This time, do a screen recording of your rotating triangle and save it as \lstinline{outputs/hw_3_2.mp4} (or whatever encoding you are using).
+
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
