@@ -329,7 +329,7 @@ inline TVector4<T> operator-(const TVector4<T> &v0, const TVector4<T> &v1) {
 
 template <typename T>
 inline TVector4<T> operator-(const TVector4<T> &v, Real s) {
-    return TVector2<T>(v.x - s, v.y - s, v.z - s, v.z - w);
+    return TVector2<T>(v.x - s, v.y - s, v.z - s, v.z - v.w);
 }
 
 template <typename T>
