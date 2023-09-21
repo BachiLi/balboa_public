@@ -64,6 +64,10 @@ struct TMatrix3x3 {
         return m;
     }
 
+    T* ptr() {
+        return &data[0][0];
+    }
+
     T data[3][3];
 };
 
@@ -200,6 +204,10 @@ struct TMatrix4x4 {
                         0, 0, 1, 0,
                         0, 0, 0, 1);
         return m;
+    }
+
+    T* ptr() {
+        return &data[0][0];
     }
 
     T data[4][4];
