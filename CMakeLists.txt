@@ -22,6 +22,7 @@ set(SRCS src/3rdparty/glad.h
          src/3rdparty/khrplatform.h
          src/3rdparty/stb_image.h
          src/3rdparty/stb_image_write.h
+         src/3rdparty/tinyply.h
          src/flexception.h
          src/3rdparty/glad.c
          src/hw1.h
@@ -29,15 +30,18 @@ set(SRCS src/3rdparty/glad.h
          src/hw2.h
          src/hw2_scenes.h
          src/hw3.h
+         src/hw3_scenes.h
          src/image.h
          src/matrix.h
          src/timer.h
          src/vector.h
+         src/3rdparty/tinyply.cpp
          src/hw1.cpp
          src/hw1_scenes.cpp
          src/hw2.cpp
          src/hw2_scenes.cpp
          src/hw3.cpp
+         src/hw3_scenes.cpp
          src/image.cpp)
 
 add_library(balboa_lib STATIC ${SRCS})

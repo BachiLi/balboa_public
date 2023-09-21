@@ -9,3 +9,7 @@ void hw_3_1(const std::vector<std::string> &params) {
 void hw_3_2(const std::vector<std::string> &params) {
     // HW 3.2: Render a single 2D triangle
 }
+
+void hw_3_3(const std::vector<std::string> &params) {
+    // HW 3.3: Render a scene
+}

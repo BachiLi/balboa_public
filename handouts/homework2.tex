@@ -98,7 +98,7 @@ outputs/hw_2_1_3.png
 \end{lstlisting}
 We'll compare your output with our rendering for grading.
 
-\paragraph{Bonus: triangle clipping (15 pts).} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane.
+\paragraph{Bonus: triangle clipping (15 pts).} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane. To speed up the computation, clipping is also often done with the entire 3D \href{https://en.wikipedia.org/wiki/Viewing_frustum}{view frustum}, discarding any triangles that are outside of the screen or too far away from the camera. We don't do it in this homework. 
 
 \section{Rendering a triangle mesh (20 pts)}
 
@@ -731,7 +731,7 @@ Instead of directly specifying the vertices/faces in the JSON file, we can also 
     ]
 }
 \end{lstlisting}
-The PLY file is human readable and looks like this:
+The PLY file is human readable (when in the ``ascii'' mode) and looks like this:
 \begin{lstlisting}
 ply
 format ascii 1.0
