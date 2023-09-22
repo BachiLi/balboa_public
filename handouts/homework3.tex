@@ -48,7 +48,7 @@ Below are some notes and tips:
 \begin{equation}
 \begin{bmatrix}
 \frac{1}{as} & 0 & 0 & 0 \\
-0 & \frac{1}{s} & 0 & 0 \
+0 & \frac{1}{s} & 0 & 0 \\
 0 & 0 & -\frac{z_{\text{far}}}{z_{\text{far}} - z_{\text{near}}} & -\frac{z_{\text{far}} z_{\text{near}}}{z_{\text{far}} - z_{\text{near}}} \\
 0 & 0 & -1 & 0
 \end{bmatrix},
@@ -116,9 +116,9 @@ outputs/hw_3_3_buddha.mp4
 \paragraph{Bonus: textures (15 pts).} Read the \href{https://learnopengl.com/Getting-started/Textures}{Textures} chapter of learnopengl.com and implement textures for the shapes above. I have provided the UV maps for the models except \lstinline{two_shapes} and \lstinline{cube}. I have also included the original textures I used to produce the vertex colors for teapot, bunny, and buddha.
 
 \section{Lighting (25 pts)}
-For this part, read the chapters of \href{https://learnopengl.com/Lighting/Colors}{Colors} and \href{https://learnopengl.com/Lighting/Basic-Lighting}{Basic Lighting} in the tutorial, and implement some basic lighting in our viewer. Be careful about the transformation of the normals! Use the vertex colors or texture colors as the \lstinline{objectColor} equivalent in the tutorial. Let's assume \lstinline{ambientStrength=0.1} and \lstinline{lightPos} is always at the camera position (you can extract the camera position by looking at the fourth column of \lstinline{cam_to_world}).
+For this part, read the chapters of \href{https://learnopengl.com/Lighting/Colors}{Colors} and \href{https://learnopengl.com/Lighting/Basic-Lighting}{Basic Lighting} in the tutorial, and implement some basic lighting in our viewer. Be careful about the transformation of the normals! Use the vertex colors or texture colors as the \lstinline{objectColor} equivalent in the tutorial. Let's assume \lstinline{ambientStrength=0.1}, \lstinline{specularStrength=0.5} and \lstinline{lightDir} is at \lstinline{normalize(vec3(1, 1, 1))}. Note that you can extract the camera position by looking at the fourth column of \lstinline{cam_to_world}.
 
-The way the tutorial does the lighting requires defining vertex normals. We have provided vertex normals for the following scenes:
+The way the tutorial does the lighting requires defining vertex normals (an alternative is to use face normals, but it often looks uglier). We have provided vertex normals for the following scenes:
 \begin{lstlisting}[language=bash]
 ./balboa -hw 3_4 ../scenes/hw3/spheres.json
 ./balboa -hw 3_4 ../scenes/hw3/teapot.json
@@ -128,10 +128,10 @@ The way the tutorial does the lighting requires defining vertex normals. We have
 
 Save your output as screenshots:
 \begin{lstlisting}[language=bash]
-outputs/hw3/spheres.png
-outputs/hw3/teapot.png
-outputs/hw3/bunny.png
-outputs/hw3/buddha.png
+outputs/hw_3_4_spheres.png
+outputs/hw_3_4_teapot.png
+outputs/hw_3_4_bunny.png
+outputs/hw_3_4_buddha.png
 \end{lstlisting}
 
 \section{Design your own scenes (10 pts)}
