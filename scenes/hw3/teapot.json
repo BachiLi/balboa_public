@@ -1,7 +1,7 @@
 {
     "camera":
     {
-        "resolution": [320, 240],
+        "resolution": [800, 600],
         "transform": [
             {
                 "lookat":

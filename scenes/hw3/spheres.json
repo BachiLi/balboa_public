@@ -1,12 +1,12 @@
 {
     "camera":
     {
-        "resolution": [640, 480],
+        "resolution": [800, 600],
         "transform": [
             {
                 "lookat":
                 {
-                    "position": [0, 0, -5],
+                    "position": [0, 0, -8],
                     "target": [0, 0, 0],
                     "up": [0, 1, 0]
                 }
@@ -23,7 +23,7 @@
         {
             "filename": "sphere.ply",
             "transform": [
-                {"translate": [-2, 0, 0]}
+                {"translate": [-3, 0, 0]}
             ]
         },
         {
@@ -35,7 +35,7 @@
         {
             "filename": "sphere.ply",
             "transform": [
-                {"translate": [2, 0, 0]}
+                {"translate": [3, 0, 0]}
             ]
         }
     ]
