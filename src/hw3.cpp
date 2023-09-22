@@ -22,3 +22,13 @@ void hw_3_3(const std::vector<std::string> &params) {
     Scene scene = parse_scene(params[0]);
     std::cout << scene << std::endl;
 }
+
+void hw_3_4(const std::vector<std::string> &params) {
+    // HW 3.4: Render a scene with lighting
+    if (params.size() == 0) {
+        return;
+    }
+
+    Scene scene = parse_scene(params[0]);
+    std::cout << scene << std::endl;
+}

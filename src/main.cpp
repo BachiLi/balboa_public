@@ -55,6 +55,8 @@ int main(int argc, char *argv[]) {
         hw_3_2(parameters);
     } else if (hw_num == "3_3") {
         hw_3_3(parameters);
+    } else if (hw_num == "3_4") {
+        hw_3_4(parameters);
     }
 
     return 0;

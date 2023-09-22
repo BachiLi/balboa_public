@@ -40,6 +40,8 @@ This time, do a screen recording of your rotating triangle and save it as \lstin
 
 Next, we'll use OpenGL to render the type of scenes we handled in the previous homework. Read the chapters \href{https://learnopengl.com/Getting-started/Transformations}{Transformations}, \href{https://learnopengl.com/Getting-started/Coordinate-Systems}{Coordinate systems}, and \href{https://learnopengl.com/Getting-started/Camera}{cameras}, and that should give you enough knowledge to render the JSON scenes like the ones in the previous homeworks. 
 
+This part is a big jump from the previous parts. I would recommend you to do things incrementally. E.g., handle two 2D triangles first, add projection matrix, add view matrix, add model matrix, handle multiple triangle meshes, and finally add camera interaction.
+
 Below are some notes and tips:
 
 \paragraph{Clip space.} In Homework 2, our projection matrix convert from camera space directly to the screen space. In OpenGL, the hardware expects the projection to convert from camera space to the \emph{clip space}, which by default ranges from $-1$ to $1$ for $x$, $y$, and $z$ axes. Everything outside of the clip space is clipped. Note that the clipping happens at the far side of $z$ as well -- we use the \lstinline{z_far} parameter in the camera in our JSON scene to specify this. The difference in spaces means that we need to use a different projection matrix:
