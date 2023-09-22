@@ -21,19 +21,19 @@
     ],
     "objects": [
         {
-            "filename": "sphere.json",
+            "filename": "sphere.ply",
             "transform": [
                 {"translate": [-2, 0, 0]}
             ]
         },
         {
-            "filename": "sphere.json",
+            "filename": "sphere.ply",
             "transform": [
                 {"translate": [0, 0, 0]}
             ]
         },
         {
-            "filename": "sphere.json",
+            "filename": "sphere.ply",
             "transform": [
                 {"translate": [2, 0, 0]}
             ]
