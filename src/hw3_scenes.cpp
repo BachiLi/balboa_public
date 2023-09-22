@@ -13,7 +13,7 @@ TriangleMesh parse_ply(const fs::path &filename) {
     tinyply::PlyFile ply_file;
     ply_file.parse_header(ifs);
 
-    std::shared_ptr<tinyply::PlyData> vertices, faces, vertex_colors, uvs, normals;
+    std::shared_ptr<tinyply::PlyData> vertices, faces, vertex_colors, uvs, vertex_normals;
     try {
         vertices = ply_file.request_properties_from_element("vertex", { "x", "y", "z"}); 
     } catch (const std::exception &e) { 
@@ -35,7 +35,7 @@ TriangleMesh parse_ply(const fs::path &filename) {
         // Some meshes may not have UVs
     }
     try {
-        normals = ply_file.request_properties_from_element("vertex", {"nx", "ny", "nz"});
+        vertex_normals = ply_file.request_properties_from_element("vertex", {"nx", "ny", "nz"});
     } catch (const std::exception &e) {
         // Some meshes may not have vertex normals
     }
@@ -60,7 +60,7 @@ TriangleMesh parse_ply(const fs::path &filename) {
         Error(std::string("Unknown type of vertex positions in ") + filename.string());
     }
 
-    if (uvs->count > 0) {
+    if (vertex_colors && vertex_colors->count > 0) {
         mesh.vertex_colors.resize(vertex_colors->count);
         if (vertex_colors->t == tinyply::Type::FLOAT32) {
             float *data = (float*)vertex_colors->buffer.get();
@@ -86,31 +86,42 @@ TriangleMesh parse_ply(const fs::path &filename) {
             Error(std::string("Unknown type of vertex colors in ") + filename.string());
         }
     }
-    
-    if (vertex_colors->count > 0) {
-        mesh.vertex_colors.resize(vertex_colors->count);
-        if (vertex_colors->t == tinyply::Type::FLOAT32) {
-            float *data = (float*)vertex_colors->buffer.get();
-            for (size_t i = 0; i < vertex_colors->count; i++) {
-                mesh.vertex_colors[i] = Vector3f{
-                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+
+    if (uvs && uvs->count > 0) {
+        mesh.uvs.resize(uvs->count);
+        if (uvs->t == tinyply::Type::FLOAT32) {
+            float *data = (float*)uvs->buffer.get();
+            for (size_t i = 0; i < uvs->count; i++) {
+                mesh.uvs[i] = Vector2f{
+                    data[2 * i], data[2 * i + 1]};
             }
-        } else if (vertex_colors->t == tinyply::Type::FLOAT64) {
-            double *data = (double*)vertex_colors->buffer.get();
-            for (size_t i = 0; i < vertex_colors->count; i++) {
-                mesh.vertex_colors[i] = Vector3f{
-                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
-            }
-        } else if (vertex_colors->t == tinyply::Type::UINT8) {
-            uint8_t *data = (uint8_t*)vertex_colors->buffer.get();
-            for (size_t i = 0; i < vertex_colors->count; i++) {
-                mesh.vertex_colors[i] = Vector3f{
-                    std::pow(float(data[3 * i]) / 255, 2.2f),
-                    std::pow(float(data[3 * i + 1]) / 255, 2.2f),
-                    std::pow(float(data[3 * i + 2]) / 255, 2.2f)};
+        } else if (uvs->t == tinyply::Type::FLOAT64) {
+            double *data = (double*)uvs->buffer.get();
+            for (size_t i = 0; i < uvs->count; i++) {
+                mesh.uvs[i] = Vector2f{
+                    data[2 * i], data[2 * i + 1]};
             }
         } else {
-            Error(std::string("Unknown type of vertex colors in ") + filename.string());
+            Error(std::string("Unknown type of UV in ") + filename.string());
+        }
+    }
+
+    if (vertex_normals && vertex_normals->count > 0) {
+        mesh.vertex_normals.resize(vertex_normals->count);
+        if (vertex_normals->t == tinyply::Type::FLOAT32) {
+            float *data = (float*)vertex_normals->buffer.get();
+            for (size_t i = 0; i < vertex_normals->count; i++) {
+                mesh.vertex_normals[i] = Vector3f{
+                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+            }
+        } else if (vertex_normals->t == tinyply::Type::FLOAT64) {
+            double *data = (double*)vertex_normals->buffer.get();
+            for (size_t i = 0; i < vertex_normals->count; i++) {
+                mesh.vertex_normals[i] = Vector3f{
+                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+            }
+        } else {
+            Error(std::string("Unknown type of vertex normals in ") + filename.string());
         }
     }
 
