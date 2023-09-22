@@ -12,7 +12,7 @@ In this homework, we will mostly follow an online tutorial: \href{https://learno
 
 This homework is also more ``open-ended'' compared to the previous ones. We do not ask you to produce the exact same output as we do. At this point, you should be familiar with the theory of rasterization. We're just wrangling with hardware interface, so allowing a bit of creativity seems reasonable.
 
-\section{Creating a window}
+\section{Creating a window (15 pts)}
 
 Our first task, instead of rendering a single triangle, is to create a window! Read the chapters of \href{https://learnopengl.com/Getting-started/OpenGL}{OpenGL}, \href{https://learnopengl.com/Getting-started/Creating-a-window}{Creating a window}, and \href{https://learnopengl.com/Getting-started/Hello-Window}{Hello Window} in learnopengl.com to see how to create a window with OpenGL context using GLFW. Pick your favoriate background color. We have included GLFW and glad in balboa, so you shouldn't have to download them. We're using OpenGL 3.3, but feel free to use the version you like.
 
@@ -23,7 +23,7 @@ Implement your code in \lstinline{hw_3_1} in \lstinline{hw3.cpp}. Test it using
 
 Once you are done, take a screenshot of the window you created and save it as \lstinline{outputs/hw_3_1.png}.
 
-\section{Rendering a single 2D triangle}
+\section{Rendering a single 2D triangle (15 pts)}
 
 Yeah, it's that time again! Read the \href{https://learnopengl.com/Getting-started/Hello-Triangle}{Hello Triangle} chapter and render a single triangle with constant color (pick one that you like the most). Just to make things slightly different so that we are not just copy and pasting code, let the triangle rotate in the image plane over time (it can be clockwise or counterclockwise, your choice). For the rotation, you can do it whichever way you want, but I recommend you do it in the vertex shader. Read the \href{https://learnopengl.com/Getting-started/Shaders}{Shaders} chapter and understand how to pass in a \lstinline{uniform} variable, then you can use the uniform variable as the rotation angle.  
 
@@ -36,7 +36,7 @@ Implement your code in \lstinline{hw_3_2} in \lstinline{hw3.cpp}. Test it using
 
 This time, do a screen recording of your rotating triangle and save it as \lstinline{outputs/hw_3_2.mp4} (or whatever encoding you are using).
 
-\section{Rendering 3D triangle meshes with transformations}
+\section{Rendering 3D triangle meshes with transformations (35 pts)}
 
 Next, we'll use OpenGL to render the type of scenes we handled in the previous homework. Read the chapters \href{https://learnopengl.com/Getting-started/Transformations}{Transformations}, \href{https://learnopengl.com/Getting-started/Coordinate-Systems}{Coordinate systems}, and \href{https://learnopengl.com/Getting-started/Camera}{cameras}, and that should give you enough knowledge to render the JSON scenes like the ones in the previous homeworks. 
 
@@ -79,7 +79,11 @@ You only need one VAO per mesh regardless.
 
 \paragraph{Gamma correction.} When we save the image in balboa, we perform a gamma correction by taking a power of $\frac{1}{2.2}$. OpenGL does not by default do this. To enable gamma correction, use \lstinline{glEnable(GL_FRAMEBUFFER_SRGB)}. Read the \href{https://learnopengl.com/Advanced-Lighting/Gamma-Correction}{gamma correction} chapter in learnopengl.com to learn more.
 
-\paragraph{Camera interaction.} Implement a simple camera interaction scheme. It can be as simple as a translation of the camera position.
+\paragraph{Camera interaction.} Like the tutorial, you should also implement a simple camera interaction scheme, see the \href{https://learnopengl.com/Getting-started/Camera}{Camera} chapter. A simple WSAD style translation suffices. To obtain the camera direction and right vector, you can look at the columns of the \lstinline{cam_to_world} matrix.
+
+As a \textbf{bonus} (15 pts), add camera rotation based on mouse input like the tutorial. Note that the rotation in the tutorial assumes a particular camera frame and would not work for our case. I recommend doing the following: 1) store \lstinline{yaw} and \lstinline{pitch} angles and the original \lstinline{cam_to_world} matrix from the scene. 2) update the \lstinline{yaw} and \lstinline{pitch} based on the mouse movement offsets like in the tutorial. 3) form a rotation matrix \lstinline{R} based on \lstinline{yaw} and \lstinline{pitch}, then form a new \lstinline{cam_to_world} matrix by multiplying the original \lstinline{cam_to_world} matrix with \lstinline{R}. (Don't overwrite the original \lstinline{cam_to_world} matrix!) 
+
+For rotation, it might be tempting to keep only one \lstinline{cam_to_world} matrix by keep multiplying it with new rotation matrices. However, this is going to produce unintuitive behavior (try it!) since yaw and pitch rotations are not \emph{commutative}: applying yaw first then pitch will produce different result compared to applying pitch first then yaw. As a result, when you chain together many pitches and yaws matrix rotations, they will not represent the desired rotation. Yes, rotation is weird.
 
 \paragraph{Debugging.} Debugging OpenGL (and other graphics API) programs is painful: if you do one thing wrong, you'll likely get a black screen. The learnopengl tutorial provides \href{https://learnopengl.com/In-Practice/Debugging}{useful tips} for debugging. To debug shaders, it's particularly useful to use a debugger such as \href{https://renderdoc.org/}{renderdoc}. Unfortunately, none of the existing OpenGL debuggers work on MacOS anymore (Apple makes it extremely hard to develop OpenGL on MacOS because they want people to use Metal). For MacOS users, a potential debugging strategy is to emulate the shader on CPU: write the same code on CPU and print out the values, and see if it does what you expect. It's going to be painful regardless, I'm sorry. On the other hand, this is a fruitful research area that awaits innovation to make things better!
 
@@ -95,8 +99,6 @@ Test your OpenGL rendering using the following commands:
 ./balboa -hw 3_3 ../scenes/hw3/buddha.json
 \end{lstlisting}
 
-The scenes 
-
 For \lstinline{two_shapes} and \lstinline{cube}, they should render to the same images as the previous homework (before you move the camera yourself). The rest are new scenes. (\lstinline{teapot.json} is a higher-resolution version that has 10 times more triangles!) Record a video of you moving the camera for each scene and save them as:
 \begin{lstlisting}[language=bash]
 outputs/hw_3_3_two_shapes.mp4
@@ -109,9 +111,29 @@ outputs/hw_3_3_buddha.mp4
 
 \paragraph{Acknowledgement.} The bunny model was scanned by Greg Turk and Marc Levoy back in 1994 at Stanford, so it is sometimes called the \href{https://en.wikipedia.org/wiki/Stanford_bunny}{Stanford bunny}. The texture of the bunny model was made by \lstinline{KickAir_8p} who posted the scene in \href{https://blenderartists.org/t/uv-unwrapped-stanford-bunny-happy-spring-equinox/1101297}{blenderarists.org}. The buddha texture was generated by Kun Zhou et al. for their \href{http://kunzhou.net/tex-models.htm}{Texturemontage} paper.
 
-\paragraph{Bonus: textures.} Read the \href{https://learnopengl.com/Getting-started/Textures}{Textures} chapter of learnopengl.com and implement textures for the shapes above. I have provided the UV maps for the models except \lstinline{two_shapes} and \lstinline{cube}. I have also included the original textures I used to produce the vertex colors for teapot, bunny, and buddha.
+\paragraph{Bonus: textures (15 pts).} Read the \href{https://learnopengl.com/Getting-started/Textures}{Textures} chapter of learnopengl.com and implement textures for the shapes above. I have provided the UV maps for the models except \lstinline{two_shapes} and \lstinline{cube}. I have also included the original textures I used to produce the vertex colors for teapot, bunny, and buddha.
 
-\section{Lighting}
+\section{Lighting (25 pts)}
+For this part, read the chapters of \href{https://learnopengl.com/Lighting/Colors}{Colors} and \href{https://learnopengl.com/Lighting/Basic-Lighting}{Basic Lighting} in the tutorial, and implement some basic lighting in our viewer. Be careful about the transformation of the normals! Use the vertex colors or texture colors as the \lstinline{objectColor} equivalent in the tutorial. Let's assume \lstinline{ambientStrength=0.1} and \lstinline{lightPos} is always at the camera position (you can extract the camera position by looking at the fourth column of \lstinline{cam_to_world}).
+
+The way the tutorial does the lighting requires defining vertex normals. We have provided vertex normals for the following scenes:
+\begin{lstlisting}[language=bash]
+./balboa -hw 3_4 ../scenes/hw3/spheres.json
+./balboa -hw 3_4 ../scenes/hw3/teapot.json
+./balboa -hw 3_4 ../scenes/hw3/bunny.json
+./balboa -hw 3_4 ../scenes/hw3/buddha.json
+\end{lstlisting}
+
+Save your output as screenshots:
+\begin{lstlisting}[language=bash]
+outputs/hw3/spheres.png
+outputs/hw3/teapot.png
+outputs/hw3/bunny.png
+outputs/hw3/buddha.png
+\end{lstlisting}
+
+\section{Design your own scenes (10 pts)}
+We're at the fun part again. Design your own scene and render it using your new renderer!
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
