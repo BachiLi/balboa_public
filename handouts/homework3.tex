@@ -10,6 +10,8 @@ In this homework, we will write code to render things using GPUs on your compute
 
 In this homework, we will mostly follow an online tutorial: \href{https://learnopengl.com/}{learnopengl.com}, because they likely write significantly better tutorials than me. We will implement what we did in the previous homework in OpenGL and hopefully see significant speedup. We will also create a Graphics User Interface (GUI) and enable real-time interaction.
 
+This homework is also more ``open-ended'' compared to the previous ones. We do not ask you to produce the exact same output as we do. At this point, you should be familiar with the theory of rasterization. We're just wrangling with hardware interface, so allowing a bit of creativity seems reasonable.
+
 \section{Creating a window}
 
 Our first task, instead of rendering a single triangle, is to create a window! Read the chapters of \href{https://learnopengl.com/Getting-started/OpenGL}{OpenGL}, \href{https://learnopengl.com/Getting-started/Creating-a-window}{Creating a window}, and \href{https://learnopengl.com/Getting-started/Hello-Window}{Hello Window} in learnopengl.com to see how to create a window with OpenGL context using GLFW. Pick your favoriate background color. We have included GLFW and glad in balboa, so you shouldn't have to download them. We're using OpenGL 3.3, but feel free to use the version you like.
@@ -23,7 +25,7 @@ Once you are done, take a screenshot of the window you created and save it as \l
 
 \section{Rendering a single 2D triangle}
 
-Yeah, it's that time again! Read the \href{https://learnopengl.com/Getting-started/Hello-Triangle}{Hello Triangle} chapter and render a single triangle with constant color. Just to make things slightly different so that we are not just copy and pasting code, let the triangle rotate in the image plane over time (it can be clockwise or counterclockwise, your choice). For the rotation, you can do it whichever way you want, but I recommend you do it in the vertex shader. Read the \href{https://learnopengl.com/Getting-started/Shaders}{Shaders} chapter and understand how to pass in a \lstinline{uniform} variable, then you can use the uniform variable as the rotation angle.  
+Yeah, it's that time again! Read the \href{https://learnopengl.com/Getting-started/Hello-Triangle}{Hello Triangle} chapter and render a single triangle with constant color (pick one that you like the most). Just to make things slightly different so that we are not just copy and pasting code, let the triangle rotate in the image plane over time (it can be clockwise or counterclockwise, your choice). For the rotation, you can do it whichever way you want, but I recommend you do it in the vertex shader. Read the \href{https://learnopengl.com/Getting-started/Shaders}{Shaders} chapter and understand how to pass in a \lstinline{uniform} variable, then you can use the uniform variable as the rotation angle.  
 
 \paragraph{float vs. double} By default, balboa uses double precision floats through the \lstinline{Real} type. However, by default, GLSL uses single precision floats. Be careful of this discrepancy. You can use \lstinline{Vector3f}/\lstinline{Matrix3x3f} to switch to float in balboa. Also feel free to use the \href{https://github.com/g-truc/glm}{glm} library which is used in the tutorial.
 
@@ -36,16 +38,78 @@ This time, do a screen recording of your rotating triangle and save it as \lstin
 
 \section{Rendering 3D triangle meshes with transformations}
 
-\paragraph{Clip space.}
+Next, we'll use OpenGL to render the type of scenes we handled in the previous homework. Read the chapters \href{https://learnopengl.com/Getting-started/Transformations}{Transformations}, \href{https://learnopengl.com/Getting-started/Coordinate-Systems}{Coordinate systems}, and \href{https://learnopengl.com/Getting-started/Camera}{cameras}, and that should give you enough knowledge to render the JSON scenes like the ones in the previous homeworks. 
 
-\paragraph{Depth test.}
+Below are some notes and tips:
 
-\paragraph{Multiple meshes.}
+\paragraph{Clip space.} In Homework 2, our projection matrix convert from camera space directly to the screen space. In OpenGL, the hardware expects the projection to convert from camera space to the \emph{clip space}, which by default ranges from $-1$ to $1$ for $x$, $y$, and $z$ axes. Everything outside of the clip space is clipped. Note that the clipping happens at the far side of $z$ as well -- we use the \lstinline{z_far} parameter in the camera in our JSON scene to specify this. The difference in spaces means that we need to use a different projection matrix:
+\begin{equation}
+\begin{bmatrix}
+\frac{1}{as} & 0 & 0 & 0 \\
+0 & \frac{1}{s} & 0 & 0 \
+0 & 0 & -\frac{z_{\text{far}}}{z_{\text{far}} - z_{\text{near}}} & -\frac{z_{\text{far}} z_{\text{near}}}{z_{\text{far}} - z_{\text{near}}} \\
+0 & 0 & -1 & 0
+\end{bmatrix},
+\end{equation} 
+where $s$ is the scaling/film size parameter as before, and $a$ is the aspect ratio. The first row and the second row scale the $x$ and $y$ clipping plane to $[-1, 1]$ respectively. The third row compresses $z$ values from $-z_{\text{near}}$ to $-z_{\text{far}}$ to $[-1, 1]$. The fourth row is the perspective projection using homogeneous coordinates.
 
-\paragraph{Window resizing.}
+\paragraph{Depth test.} By default, OpenGL does not reject triangles when they are occluded. Remember to turn on depth testing using \lstinline{glEnable(GL_DEPTH_TEST)}.
 
-\paragraph{Debugging.} 
-% https://learnopengl.com/In-Practice/Debugging
+\paragraph{Vertex colors.} In contrast to the learnopengl tutorial, balboa stores the vertex color in a separate array. Therefore it's likely more convienent to create two VBOs:
+\begin{lstlisting}[language=C++]
+unsigned int VBO_vertex;
+glGenBuffers(1, &VBO_vertex);
+glBindBuffer(GL_ARRAY_BUFFER, VBO_vertex);
+glBufferData(GL_ARRAY_BUFFER, ...);
+glVertexAttribPointer(0 /* layout index */,
+                      3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+unsigned int VBO_color;
+glGenBuffers(1, &VBO_color);
+glBindBuffer(GL_ARRAY_BUFFER, VBO_color);
+glBufferData(GL_ARRAY_BUFFER, ...);
+glVertexAttribPointer(1 /* layout index */,
+                      3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+\end{lstlisting}
+You only need one VAO per mesh regardless.
+
+\paragraph{Multiple meshes.} To handle multiple meshes in a scene, create a VAO for each mesh.
+
+\paragraph{Window resizing.} We don't require you to handle window resizing in this homework. It's annoying because you'll need to regenerate the projection matrix every time the aspect ratio changes.
+
+\paragraph{Gamma correction.} When we save the image in balboa, we perform a gamma correction by taking a power of $\frac{1}{2.2}$. OpenGL does not by default do this. To enable gamma correction, use \lstinline{glEnable(GL_FRAMEBUFFER_SRGB)}. Read the \href{https://learnopengl.com/Advanced-Lighting/Gamma-Correction}{gamma correction} chapter in learnopengl.com to learn more.
+
+\paragraph{Camera interaction.} Implement a simple camera interaction scheme. It can be as simple as a translation of the camera position.
+
+\paragraph{Debugging.} Debugging OpenGL (and other graphics API) programs is painful: if you do one thing wrong, you'll likely get a black screen. The learnopengl tutorial provides \href{https://learnopengl.com/In-Practice/Debugging}{useful tips} for debugging. To debug shaders, it's particularly useful to use a debugger such as \href{https://renderdoc.org/}{renderdoc}. Unfortunately, none of the existing OpenGL debuggers work on MacOS anymore (Apple makes it extremely hard to develop OpenGL on MacOS because they want people to use Metal). For MacOS users, a potential debugging strategy is to emulate the shader on CPU: write the same code on CPU and print out the values, and see if it does what you expect. It's going to be painful regardless, I'm sorry. On the other hand, this is a fruitful research area that awaits innovation to make things better!
+
+For the 3D transformation, copy your Homework 2 code to the \lstinline{parse_transformation} function in \lstinline{hw3_scenes.cpp}. Implement the rest in \lstinline{hw_3_3} in \lstinline{hw3.cpp}.
+
+Test your OpenGL rendering using the following commands:
+\begin{lstlisting}[language=bash]
+./balboa -hw 3_3 ../scenes/two_shapes.json
+./balboa -hw 3_3 ../scenes/cube.json
+./balboa -hw 3_3 ../scenes/spheres.json
+./balboa -hw 3_3 ../scenes/teapot.json
+./balboa -hw 3_3 ../scenes/bunny.json
+./balboa -hw 3_3 ../scenes/buddha.json
+\end{lstlisting}
+
+The scenes 
+
+For \lstinline{two_shapes} and \lstinline{cube}, they should render to the same images as the previous homework (before you move the camera yourself). The rest are new scenes. (\lstinline{teapot.json} is a higher-resolution version that has 10 times more triangles!) Record a video of you moving the camera for each scene and save them as:
+\begin{lstlisting}[language=bash]
+outputs/hw_3_3_two_shapes.mp4
+outputs/hw_3_3_cube.mp4
+outputs/hw_3_3_spheres.mp4
+outputs/hw_3_3_teapot.mp4
+outputs/hw_3_3_bunny.mp4
+outputs/hw_3_3_buddha.mp4
+\end{lstlisting}
+
+\paragraph{Acknowledgement.} The bunny model was scanned by Greg Turk and Marc Levoy back in 1994 at Stanford, so it is sometimes called the \href{https://en.wikipedia.org/wiki/Stanford_bunny}{Stanford bunny}. The texture of the bunny model was made by KickAir_8p who posted the scene in \href{https://blenderartists.org/t/uv-unwrapped-stanford-bunny-happy-spring-equinox/1101297}{blenderarists.org}. The buddha texture was generated by Kun Zhou et al. for their \href{http://kunzhou.net/tex-models.htm}{Texturemontage} paper.
+
+\paragraph{Bonus: textures.} Read the \href{https://learnopengl.com/Getting-started/Textures}{Textures} chapter of learnopengl.com and implement textures for the shapes above. I have provided the UV maps for the models except \lstinline{two_shapes} and \lstinline{cube}. I have also included the original textures I used to produce the vertex colors for teapot, bunny, and buddha.
 
 \section{Lighting}
 

@@ -13,23 +13,32 @@ TriangleMesh parse_ply(const fs::path &filename) {
     tinyply::PlyFile ply_file;
     ply_file.parse_header(ifs);
 
-    std::shared_ptr<tinyply::PlyData> vertices, faces, vertex_colors;
+    std::shared_ptr<tinyply::PlyData> vertices, faces, vertex_colors, uvs, normals;
     try {
-        vertices = ply_file.request_properties_from_element("vertex", { "x", "y", "z" }); 
-    } catch (const std::exception & e) { 
+        vertices = ply_file.request_properties_from_element("vertex", { "x", "y", "z"}); 
+    } catch (const std::exception &e) { 
         Error(std::string("Vertex positions not found in ") + filename.string());
     }
     try {
-        faces = ply_file.request_properties_from_element("face", { "vertex_indices" }); 
-    } catch (const std::exception & e) { 
+        faces = ply_file.request_properties_from_element("face", { "vertex_indices"}); 
+    } catch (const std::exception &e) { 
         Error(std::string("Vertex indices not found in ") + filename.string());
     }
     try {
-        vertex_colors = ply_file.request_properties_from_element("vertex", { "red", "green", "blue" });
-    } catch (const std::exception & e) {
-        Error(std::string("Vertex colors not found in ") + filename.string());
+        vertex_colors = ply_file.request_properties_from_element("vertex", { "red", "green", "blue"});
+    } catch (const std::exception &e) {
+        // Some meshes may not have vertex colors
     }
-    assert(vertices->count == vertex_colors->count);
+    try {
+        uvs = ply_file.request_properties_from_element("vertex", {"s", "t"});
+    } catch (const std::exception &e) {
+        // Some meshes may not have UVs
+    }
+    try {
+        normals = ply_file.request_properties_from_element("vertex", {"nx", "ny", "nz"});
+    } catch (const std::exception &e) {
+        // Some meshes may not have vertex normals
+    }
 
     ply_file.read(ifs);
 
@@ -51,31 +60,60 @@ TriangleMesh parse_ply(const fs::path &filename) {
         Error(std::string("Unknown type of vertex positions in ") + filename.string());
     }
 
-    mesh.vertex_colors.resize(vertex_colors->count);
-    if (vertex_colors->t == tinyply::Type::FLOAT32) {
-        float *data = (float*)vertex_colors->buffer.get();
-        for (size_t i = 0; i < vertex_colors->count; i++) {
-            mesh.vertex_colors[i] = Vector3f{
-                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+    if (uvs->count > 0) {
+        mesh.vertex_colors.resize(vertex_colors->count);
+        if (vertex_colors->t == tinyply::Type::FLOAT32) {
+            float *data = (float*)vertex_colors->buffer.get();
+            for (size_t i = 0; i < vertex_colors->count; i++) {
+                mesh.vertex_colors[i] = Vector3f{
+                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+            }
+        } else if (vertex_colors->t == tinyply::Type::FLOAT64) {
+            double *data = (double*)vertex_colors->buffer.get();
+            for (size_t i = 0; i < vertex_colors->count; i++) {
+                mesh.vertex_colors[i] = Vector3f{
+                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+            }
+        } else if (vertex_colors->t == tinyply::Type::UINT8) {
+            uint8_t *data = (uint8_t*)vertex_colors->buffer.get();
+            for (size_t i = 0; i < vertex_colors->count; i++) {
+                mesh.vertex_colors[i] = Vector3f{
+                    std::pow(float(data[3 * i]) / 255, 2.2f),
+                    std::pow(float(data[3 * i + 1]) / 255, 2.2f),
+                    std::pow(float(data[3 * i + 2]) / 255, 2.2f)};
+            }
+        } else {
+            Error(std::string("Unknown type of vertex colors in ") + filename.string());
         }
-    } else if (vertex_colors->t == tinyply::Type::FLOAT64) {
-        double *data = (double*)vertex_colors->buffer.get();
-        for (size_t i = 0; i < vertex_colors->count; i++) {
-            mesh.vertex_colors[i] = Vector3f{
-                data[3 * i], data[3 * i + 1], data[3 * i + 2]};
-        }
-    } else if (vertex_colors->t == tinyply::Type::UINT8) {
-        uint8_t *data = (uint8_t*)vertex_colors->buffer.get();
-        for (size_t i = 0; i < vertex_colors->count; i++) {
-            mesh.vertex_colors[i] = Vector3f{
-                std::pow(float(data[3 * i]) / 255, 2.2f),
-                std::pow(float(data[3 * i + 1]) / 255, 2.2f),
-                std::pow(float(data[3 * i + 2]) / 255, 2.2f)};
-        }
-    } else {
-        Error(std::string("Unknown type of vertex colors in ") + filename.string());
     }
     
+    if (vertex_colors->count > 0) {
+        mesh.vertex_colors.resize(vertex_colors->count);
+        if (vertex_colors->t == tinyply::Type::FLOAT32) {
+            float *data = (float*)vertex_colors->buffer.get();
+            for (size_t i = 0; i < vertex_colors->count; i++) {
+                mesh.vertex_colors[i] = Vector3f{
+                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+            }
+        } else if (vertex_colors->t == tinyply::Type::FLOAT64) {
+            double *data = (double*)vertex_colors->buffer.get();
+            for (size_t i = 0; i < vertex_colors->count; i++) {
+                mesh.vertex_colors[i] = Vector3f{
+                    data[3 * i], data[3 * i + 1], data[3 * i + 2]};
+            }
+        } else if (vertex_colors->t == tinyply::Type::UINT8) {
+            uint8_t *data = (uint8_t*)vertex_colors->buffer.get();
+            for (size_t i = 0; i < vertex_colors->count; i++) {
+                mesh.vertex_colors[i] = Vector3f{
+                    std::pow(float(data[3 * i]) / 255, 2.2f),
+                    std::pow(float(data[3 * i + 1]) / 255, 2.2f),
+                    std::pow(float(data[3 * i + 2]) / 255, 2.2f)};
+            }
+        } else {
+            Error(std::string("Unknown type of vertex colors in ") + filename.string());
+        }
+    }
+
     mesh.faces.resize(faces->count);
     if (faces->t == tinyply::Type::INT8) {
         int8_t *data = (int8_t*)faces->buffer.get();

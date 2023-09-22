@@ -11,6 +11,8 @@ struct TriangleMesh {
     std::vector<Vector3f> vertices; // 3D positions of the vertices
     std::vector<Vector3i> faces; // indices of the triangles
     std::vector<Vector3f> vertex_colors; // per-vertex color of the mesh
+    std::vector<Vector2f> uvs; // UV coordinates (for bonus)
+    std::vector<Vector3f> normals; // vertex normals (for lighting in 3.4)
     Matrix4x4f model_matrix;
 };
 
