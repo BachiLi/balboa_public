@@ -122,6 +122,13 @@ inline TVector2<T> operator+(Real s, const TVector2<T> &v) {
 }
 
 template <typename T>
+inline TVector2<T>& operator+=(TVector2<T> &v0, const TVector3<T> &v1) {
+    v0.x += v1.x;
+    v0.y += v1.y;
+    return v0;
+}
+
+template <typename T>
 inline TVector2<T> operator-(const TVector2<T> &v0, const TVector2<T> &v1) {
     return TVector2<T>(v0.x - v1.x, v0.y - v1.y);
 }
@@ -134,6 +141,13 @@ inline TVector2<T> operator-(const TVector2<T> &v, Real s) {
 template <typename T>
 inline TVector2<T> operator-(Real s, const TVector2<T> &v) {
     return TVector2<T>(s - v.x, s - v.y);
+}
+
+template <typename T>
+inline TVector2<T>& operator-=(TVector2<T> &v0, const TVector3<T> &v1) {
+    v0.x -= v1.x;
+    v0.y -= v1.y;
+    return v0;
 }
 
 template <typename T>
@@ -214,10 +228,17 @@ inline TVector3<T> operator-(const TVector3<T> &v, Real s) {
     return TVector3<T>(v.x - s, v.y - s, v.z - s);
 }
 
-
 template <typename T>
 inline TVector3<T> operator-(const TVector3<T> &v) {
     return TVector3<T>(-v.x, -v.y, -v.z);
+}
+
+template <typename T>
+inline TVector3<T>& operator-=(TVector3<T> &v0, const TVector3<T> &v1) {
+    v0.x -= v1.x;
+    v0.y -= v1.y;
+    v0.z -= v1.z;
+    return v0;
 }
 
 template <typename T>
@@ -319,7 +340,16 @@ inline TVector4<T> operator+(const TVector4<T> &v, Real s) {
 
 template <typename T>
 inline TVector4<T> operator+(Real s, const TVector4<T> &v) {
-    return TVector2<T>(s + v.x, s + v.y, s + v.z, s + v.w);
+    return TVector4<T>(s + v.x, s + v.y, s + v.z, s + v.w);
+}
+
+template <typename T>
+inline TVector4<T>& operator+=(TVector4<T> &v0, const TVector4<T> &v1) {
+    v0.x += v1.x;
+    v0.y += v1.y;
+    v0.z += v1.z;
+    v0.w += v1.w;
+    return v0;
 }
 
 template <typename T>
@@ -329,27 +359,36 @@ inline TVector4<T> operator-(const TVector4<T> &v0, const TVector4<T> &v1) {
 
 template <typename T>
 inline TVector4<T> operator-(const TVector4<T> &v, Real s) {
-    return TVector2<T>(v.x - s, v.y - s, v.z - s, v.z - v.w);
+    return TVector4<T>(v.x - s, v.y - s, v.z - s, v.z - v.w);
 }
 
 template <typename T>
 inline TVector4<T> operator-(Real s, const TVector4<T> &v) {
-    return TVector2<T>(s - v.x, s - v.y, s - v.z, s - v.w);
+    return TVector4<T>(s - v.x, s - v.y, s - v.z, s - v.w);
+}
+
+template <typename T>
+inline TVector4<T>& operator-=(TVector4<T> &v0, const TVector4<T> &v1) {
+    v0.x -= v1.x;
+    v0.y -= v1.y;
+    v0.z -= v1.z;
+    v0.w -= v1.w;
+    return v0;
 }
 
 template <typename T>
 inline TVector4<T> operator*(const T &s, const TVector4<T> &v) {
-    return TVector2<T>(s * v[0], s * v[1], s * v[2], s * v[3]);
+    return TVector4<T>(s * v[0], s * v[1], s * v[2], s * v[3]);
 }
 
 template <typename T>
 inline TVector4<T> operator*(const TVector4<T> &v, const T &s) {
-    return TVector2<T>(v[0] * s, v[1] * s, v[2] * s, v[3] * s);
+    return TVector4<T>(v[0] * s, v[1] * s, v[2] * s, v[3] * s);
 }
 
 template <typename T>
 inline TVector4<T> operator/(const TVector4<T> &v, const T &s) {
-    return TVector2<T>(v[0] / s, v[1] / s, v[2] / s, v[3] / s);
+    return TVector4<T>(v[0] / s, v[1] / s, v[2] / s, v[3] / s);
 }
 
 template <typename T>
