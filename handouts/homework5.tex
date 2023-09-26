@@ -65,7 +65,7 @@ Notice that there are two different distance thresholds: $d_s$ and $d_v$. The se
 
 The boundary force $\mathbf{F}_b$ makes boids turn around when flying towards the domain boundary:
 \begin{equation}
-\mathbf{F}_b = \left(\left[\mathbf{p}_j.x < d_{\text{left}}\right] - \left[\mathbf{p}_j.x > d_{\text{right}}\right], \left[\mathbf{p}_j.y < d_{\text{top}}\right] - \left[\mathbf{p}_j > d_{\text{bottom}}\right]\right).
+\mathbf{F}_b = \left(\left[\mathbf{p}_j.x < d_{\text{left}}\right] - \left[\mathbf{p}_j.x > d_{\text{right}}\right], \left[\mathbf{p}_j.y < d_{\text{top}}\right] - \left[\mathbf{p}_j.y > d_{\text{bottom}}\right]\right).
 \end{equation}
 
 We are almost done. As a last step, let's impose a maximum and minimum speed $s_{\text{max}}$ and $s_{\text{min}}$ to the boids after we update the velocity so that they don't fly too fast or too slow:
