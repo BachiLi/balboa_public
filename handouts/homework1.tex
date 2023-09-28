@@ -46,7 +46,8 @@ All you need to do is to clone the repo and build it using CMake (assuming you a
   cmake ..
   make -j
 \end{lstlisting}
-For Windows users, directly loading \lstinline{CMakeLists.txt} in your Visual Studio should work. 
+For Windows users, either directly loading \lstinline{CMakeLists.txt} in your Visual Studio, or you can execute the commands above until \lstinline{make -j}, and open the solution file. See Readme for more information.
+% For Windows users, directly loading \lstinline{CMakeLists.txt} in your Visual Studio should work. 
 
 Note that balboa uses submodule for the GLFW dependency. If you cloned the repository without the \lstinline{--recurse-submodules} flag, you can download the submodule using
 \begin{lstlisting}[language=bash]
