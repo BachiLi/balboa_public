@@ -12,7 +12,37 @@ make -j
 ```
 It requires compilers that support C++17 (gcc version >= 8, clang version >= 7, Apple Clang version >= 11.0, MSVC version >= 19.14).
 
-For Windows users, directly loading CMakeLists.txt in your Visual Studio should work.
+For Windows users:
+1. Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) and [Visual Studio Code](https://code.visualstudio.com/). Choose "Desktop development with C++" and check "C++ CMake tools for Windows" on the recipe. 
+2. `git clone --recurse-submodules https://github.com/BachiLi/balboa_public`
+3. `mkdir build; cd build`
+4. `cmake ..`
+5. At this point, you can either open up the `balboa.sln` in `build` folder and use Visual Studio as your IDE, or work with Visual Studio Code. 
+
+(optional) To build, run, and debug in VS Code: 
+
+1. In the bottom bar, configure CMake as follows (from left to right): 
+    - Build variant: `RelWithDebInfo`. 
+    - Active kit: `Visual Studio ... x64`, choose the appropriate one depending on your architecture. 
+    - Default build target: `balboa`. 
+2. Create a `launch.json` in `.vscode` folder: 
+    ```
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "hw1", 
+                "type": "cppvsdbg", 
+                "request": "launch", 
+                "program": "${workspaceFolder}/build/${command:cmake.buildType}/balboa.exe",
+                "cwd": "${workspaceFolder}/build/${command:cmake.buildType}", 
+                "args": ["-hw", "1_1"]
+            }
+        ]
+    }
+    ```
+    You can pass arguments using `args`. 
+3. Press `Ctrl+Shift+D` to start the debugger. You can set breakpoints, inspect variables, and trace callstack, etc. 
 
 # Run
 Try 
