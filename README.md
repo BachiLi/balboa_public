@@ -12,10 +12,11 @@ make -j
 ```
 It requires compilers that support C++17 (gcc version >= 8, clang version >= 7, Apple Clang version >= 11.0, MSVC version >= 19.14).
 
-For Windows users:
+---
+### For Windows users:
 1. Install [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) and [Visual Studio Code](https://code.visualstudio.com/). Choose "Desktop development with C++" and check "C++ CMake tools for Windows" on the recipe. 
 2. `git clone --recurse-submodules https://github.com/BachiLi/balboa_public`
-3. `mkdir build; cd build`
+3. `cd balboa_public; mkdir build; cd build`
 4. `cmake ..`
 5. At this point, you can either open up the `balboa.sln` in `build` folder and use Visual Studio as your IDE, or work with Visual Studio Code. 
 
@@ -31,7 +32,7 @@ For Windows users:
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "hw1", 
+                "name": "hw1_1", 
                 "type": "cppvsdbg", 
                 "request": "launch", 
                 "program": "${workspaceFolder}/build/${command:cmake.buildType}/balboa.exe",
