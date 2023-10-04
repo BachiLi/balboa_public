@@ -122,7 +122,7 @@ inline TVector2<T> operator+(Real s, const TVector2<T> &v) {
 }
 
 template <typename T>
-inline TVector2<T>& operator+=(TVector2<T> &v0, const TVector3<T> &v1) {
+inline TVector2<T>& operator+=(TVector2<T> &v0, const TVector2<T> &v1) {
     v0.x += v1.x;
     v0.y += v1.y;
     return v0;
@@ -144,7 +144,7 @@ inline TVector2<T> operator-(Real s, const TVector2<T> &v) {
 }
 
 template <typename T>
-inline TVector2<T>& operator-=(TVector2<T> &v0, const TVector3<T> &v1) {
+inline TVector2<T>& operator-=(TVector2<T> &v0, const TVector2<T> &v1) {
     v0.x -= v1.x;
     v0.y -= v1.y;
     return v0;
