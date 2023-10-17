@@ -61,7 +61,7 @@ x'' = w\frac{x'+sa}{2sa},
 \end{equation}
 where $w$ is the width of the image.
 
-The second complication is that a triangle vertex can be behind the camera i.e., $z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: recall that in \cref{eq:projection}, we need to divide by $z$ for the projection. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. Hence, we consider all points such that $z < z_{\text{near}}$ tp be behind the camera. $z_{\text{near}}$ is usually called the \emph{near clipping plane}.
+The second complication is that a triangle vertex can be behind the camera i.e., $-z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: recall that in \cref{eq:projection}, we need to divide by $-z$ for the projection. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. Hence, we consider all points such that $-z < z_{\text{near}}$ to be behind the camera. $z_{\text{near}}$ is usually called the \emph{near clipping plane}.
 
 Dealing with triangles with only one or two vertices behind the camera, and the other in front of the camera is tricky: we will need to implement \emph{clipping} (described below as a bonus). Instead, in this homework, we only require you only render the triangles where all three vertices are in front of the near plane. If even one of the vertices of a triangle is behind the near clipping plane, you should reject the triangle and not render it.
 
