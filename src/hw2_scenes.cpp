@@ -115,7 +115,7 @@ TriangleMesh mesh3 {
 std::vector<TriangleMesh> meshes = {mesh0, mesh1, mesh2, mesh3};
 
 TriangleMesh parse_ply(const fs::path &filename) {
-    std::ifstream ifs(filename);
+    std::ifstream ifs(filename, std::ios::binary);
     tinyply::PlyFile ply_file;
     ply_file.parse_header(ifs);
 
