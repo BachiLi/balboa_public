@@ -30,7 +30,7 @@ Now the question is how to compute the force $\mathbf{F}$. We model $\mathbf{F}$
 \end{enumerate}
 Below we assume a 2D Boids model, but 3D is similar.
 
-More specifically, the force $\mathbf{F}$ is the sum of the three separate forces:
+More specifically, the force $\mathbf{F}$ is the sum of the four separate forces:
 \begin{equation}
 \mathbf{F} = \alpha_s \mathbf{F}_s + \alpha_c \mathbf{F}_c + \alpha_a \mathbf{F}_a + \alpha_b \mathbf{F}_b,
 \end{equation}
@@ -99,10 +99,10 @@ d_{\text{bottom}} &= \text{resolution.y} - 160.0 \\
 
 To submit, send us a link to your own Shadertoy implementation of Boids (you might need to register). For reference, I have recorded my own implementation in \href{https://cseweb.ucsd.edu/~tzli/cse167/boids.webm}{this link}.
 
-\paragraph{Bonus: 3D Boids (20 pts).} Modify the algorithm above to 3D. You might need one more fragment shader to represent both position and velocity in textures.
+\paragraph{Bonus: 3D Boids (20 pts).} Modify the algorithm above to 3D. You might need to output position and velocity in different location of the texture (say, position in the even location, and velocity in the odd location) since Shadertoy only allows for 4D outputs.
 
 \paragraph{Bonus: User Interaction (15 pts).} Add user interaction to the algorithm above. For example, you can add a force to guide where the boids should go to by clicking on a screen position.
 
-\paragraph{Bonus: Predators (15 pts).} Make the Boids flee from a randomly moving predator by adding a fourth force. 
+\paragraph{Bonus: Predators (15 pts).} Make the Boids flee from a randomly moving predator by adding an extra force. 
 
 \end{document}
