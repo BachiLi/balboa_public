@@ -1,0 +1,35 @@
+{
+    "resolution": [640, 360],
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "type": "circle",
+            "color": [0.3, 0.5, 0.8],
+            "transform": [
+                {"scale": [200, 100]},
+                {"rotate": 45},
+                {"translate": [320, 180]}
+            ]
+        },
+        {
+            "type": "rectangle",
+            "color": [0.8, 0.2, 0.8],
+            "transform": [
+                {"scale": [200, 200]},
+                {"shear_x": -1},
+                {"translate": [100, 50]}
+            ]
+        },
+        {
+            "type": "triangle",
+            "color": [0.2, 0.2, 0.8],
+            "transform": [
+                {"scale": [100, 200]},
+                {"shear_y": 1},
+                {"translate": [500, 100]}
+            ]
+        }
+    ]
+}

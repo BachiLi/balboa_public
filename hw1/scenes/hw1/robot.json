@@ -1,0 +1,33 @@
+{
+    "resolution": [600, 450],
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "type": "rectangle",
+            "p_min": [150, 100],
+            "p_max": [450, 350],
+            "color": [0.2, 0.2, 0.2]
+        },
+        {
+            "type": "circle",
+            "center": [235, 180],
+            "radius": 40,
+            "color": [0.8, 0.8, 0.8]
+        },
+        {
+            "type": "circle",
+            "center": [365, 180],
+            "radius": 40,
+            "color": [0.8, 0.8, 0.8]
+        },
+        {
+            "type": "triangle",
+            "p0": [235, 315],
+            "p1": [365, 315],
+            "p2": [300, 290],
+            "color": [0.4, 0.4, 0.8]
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "resolution": [1920,1080],
+    "background": [
+        0,0,0
+    ],
+    "objects": [
+        {
+            "type": "rectangle",
+            "p_min": [910, 150],
+                "p_max": [980, 950],
+            "color": [1, 1, 1],
+            "alpha": 1,
+            "transform":[
+                {"shear_x": -1},
+                {"translate": [500,0]}
+            ]
+        },
+        {
+            "type": "rectangle",
+            "p_min": [700, 150],
+                "p_max": [960, 950],
+            "color": [1, 1, 1],
+            "alpha": 1,
+            "transform":[
+                {"shear_x": 1},
+                {"translate": [-500,0]}
+            ]
+        },
+        {
+            "type": "rectangle",
+            "p_min": [750, 180],
+                "p_max": [900, 910],
+            "color": [0, 0, 0],
+            "alpha": 1,
+            "transform":[
+                {"shear_x": 1},
+                {"translate": [-500,0]}
+            ]
+        }
+    ]
+
+}

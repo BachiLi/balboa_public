@@ -1,0 +1,3 @@
+https://support.ucsd.edu/services?id=kb_article_view&sysparm_article=KB0030426
+
+ssh -X -L 5899:localhost:5900 zhh013@ieng6-247.ucsd.edu

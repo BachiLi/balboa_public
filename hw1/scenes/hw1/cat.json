@@ -1,0 +1,58 @@
+{
+    "resolution": [800, 450],
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "type": "triangle",
+            "p0": [190, 30],
+            "p1": [355, 105],
+            "p2": [280, 150],
+            "color": [0.4, 0.3, 0.2]
+        },
+        {
+            "type": "triangle",
+            "p0": [610, 30],
+            "p1": [455, 105],
+            "p2": [520, 150],
+            "color": [0.4, 0.3, 0.2]
+        },
+        {
+            "type": "circle",
+            "center": [400, 225],
+            "radius": 160,
+            "color": [0.3, 0.3, 0.3]
+        },
+        {
+            "type": "circle",
+            "center": [315, 175],
+            "radius": 40,
+            "color": [1, 1, 1]
+        },
+        {
+            "type": "circle",
+            "center": [485, 175],
+            "radius": 40,
+            "color": [1, 1, 1]
+        },
+        {
+            "type": "circle",
+            "center": [315, 175],
+            "radius": 5,
+            "color": [0.5, 0.5, 0.0]
+        },
+        {
+            "type": "circle",
+            "center": [485, 175],
+            "radius": 5,
+            "color": [0.5, 0.5, 0.0]
+        },
+        {
+            "type": "circle",
+            "center": [400, 300],
+            "radius": 10,
+            "color": [0.1, 0.1, 0.1]
+        }
+    ]
+}

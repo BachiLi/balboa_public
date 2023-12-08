@@ -1,0 +1,27 @@
+{
+    "camera":
+    {
+        "resolution": [800, 600],
+        "transform": [
+            {
+                "lookat":
+                {
+                    "position": [0, -300, -800],
+                    "target": [0, 0, 0.0],
+                    "up": [0, -1, 0]
+                }
+            }
+        ],
+        "s": 0.4,
+        "z_near": 1,
+        "z_far": 1000
+    },
+    "background": [
+        0.5, 0.5, 0.5
+    ],
+    "objects": [
+        {
+            "filename": "buddha.ply"
+        }
+    ]
+}

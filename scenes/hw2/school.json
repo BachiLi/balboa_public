@@ -1,0 +1,42 @@
+{
+    "camera":
+    {
+        "resolution": [1920, 1080],
+        "transform": [
+            {
+                "lookat":
+                {
+                    "position": [10, 5, 10],
+                    "target": [0, 0, 0],
+                    "up": [0, 1, 0]
+                }
+            }
+        ],
+        "s": 1.0,
+        "z_near": 0.1
+    },
+    "background": [0.7, 0.8, 1.0],
+    "objects": [
+        {
+            "filename": "school_building.obj",
+            "transform": [
+                {"scale": [1.0, 1.0, 1.0]},
+                {"translate": [0, 0, 0]}
+            ]
+        },
+        {
+            "filename": "school_fence.obj",
+            "transform": [
+                {"scale": [1.0, 1.0, 1.0]},
+                {"translate": [5, 0, 2]}
+            ]
+        },
+        {
+            "filename": "school_trees.obj",
+            "transform": [
+                {"scale": [1.0, 1.0, 1.0]},
+                {"translate": [-2, 0, 6]}
+            ]
+        }
+    ]
+}
