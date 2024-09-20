@@ -45,6 +45,13 @@ It requires compilers that support C++17 (gcc version >= 8, clang version >= 7, 
     You can pass arguments using `args`. 
 3. Press `Ctrl+Shift+D` to start the debugger. You can set breakpoints, inspect variables, and trace callstack, etc. 
 
+---
+### For Linux users (or Windows users using WSL):
+You may need the following packages
+```
+sudo apt install g++ cmake libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
+```
+
 # Run
 Try 
 ```
