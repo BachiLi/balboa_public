@@ -64,6 +64,10 @@ Image3 hw_2_2(const std::vector<std::string> &params) {
             scene_id = std::stoi(params[++i]);
         }
     }
+    // silence warnings, feel free to remove these
+    UNUSED(s); 
+    UNUSED(z_near);
+    UNUSED(scene_id);
 
     TriangleMesh mesh = meshes[scene_id];
     UNUSED(mesh); // silence warning, feel free to remove this
@@ -93,6 +97,10 @@ Image3 hw_2_3(const std::vector<std::string> &params) {
             scene_id = std::stoi(params[++i]);
         }
     }
+    // silence warnings, feel free to remove these
+    UNUSED(s); 
+    UNUSED(z_near);
+    UNUSED(scene_id);
 
     TriangleMesh mesh = meshes[scene_id];
     UNUSED(mesh); // silence warning, feel free to remove this

@@ -4,7 +4,7 @@
 
 \header{2}{3D Software Rendering}
 
-The previous homework focused on 2D graphics (which is already quite important!). In this homework, we're going 3D. We will define shapes in 3D, project them onto the screen space, and render them. The projection is going to simulate how a camera (or our eyes) works. In particular, we will implement a \href{https://en.wikipedia.org/wiki/Pinhole_camera}{pinhole camera}. The light coming from an object goes through a very small hole and projects on a film (\cref{fig:pinhole}). 
+The previous homework focused on 2D graphics (which is already quite important!). In this homework, we're going 3D. We will define shapes in 3D, project them onto the screen, and render them. The projection is going to simulate how a camera (or our eyes) works. In particular, we will implement a \href{https://en.wikipedia.org/wiki/Pinhole_camera}{pinhole camera}. The light coming from an object goes through a very small hole and projects on a film (\cref{fig:pinhole}). 
 
 \begin{figure}[h]
     \centering
@@ -23,6 +23,8 @@ To facilitate the projection, we will focus on representing 3D surfaces, instead
 \end{figure}
 
 \section{Rendering a single 3D triangle (20 pts)}
+\label{sec:single_triangle}
+
 Let's start simple and render just a single 3D triangle. Our plan is to first project the triangle to a 2D image plane, then we can directly use the code from our previous homework to render the projected triangle.
 
 \begin{figure}[h]
@@ -42,6 +44,7 @@ Furthermore, we need to define the extent of the image plane (we can't have an i
 \begin{equation}
 s = \tan\left(\frac{\alpha}{2}\right).
 \end{equation}
+(A common bug in the previous year, when calculating the aspect ratio $a$, is that in C++, dividing two integers will round the results to an integer, e.g., $9/16=0$ in C++. Make sure you convert the types.)
 
 Any point that lands outside of the extent of the image plane is discarded and not going to show up in our image. We call the set of points that are going to land on the image planes the \emph{view frustrum}. \cref{fig:perspective_transform} also visualizes the view frustrum.
 
@@ -49,12 +52,12 @@ Therefore, given a triangle with 3 vertices, we will project all three of them o
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\linewidth]{imgs/camera_vs_image.pdf}
-    \caption{The different coordinate systems between our camera space and image space.}
-    \label{fig:camera_vs_image}
+    \includegraphics[width=0.9\linewidth]{imgs/camera_vs_screen.pdf}
+    \caption{The different coordinate systems between our projected camera space and screen space.}
+    \label{fig:camera_vs_screen}
 \end{figure}
 
-There are a few other complications though. Firstly, the point $(x', y')$ is in the (projected) camera space after the projection. We will need to transform it into the screen space. Recall that our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_image}. So we need to further convert the point $(x', y')$ from the projected camera space to image space. Looking at \cref{fig:camera_vs_image}, we can see that the we need to translate the origin, scale the axes, and flip the $y$ axis. We will give you the formula for the $x$-axis, and you should figure out the $y$-axis formula yourself:
+There are a few other complications though. Firstly, the point $(x', y')$ is in the projected camera space after the projection. We will need to transform it into the screen space. Recall that our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_screen}. So we need to further convert the point $(x', y')$ from the projected camera space to screen space. Looking at \cref{fig:camera_vs_screen}, we can see that the we need to translate the origin, scale the axes, and flip the $y$ axis. We will give you the formula for the $x$-axis, and you should figure out the $y$-axis formula yourself:
 \begin{equation}
 x'' = w\frac{x'+sa}{2sa},
 \label{eq:camera_to_screen}
@@ -72,7 +75,7 @@ Dealing with triangles with only one or two vertices behind the camera, and the 
     \label{fig:triangle_clipping}
 \end{figure}
 
-We'll use the same antialiasing scheme we used in Homework 1, i.e., a $4\times4$ supersampling.
+We'll use the same antialiasing scheme we used in Homework 1, i.e., a $4\times4$ supersampling, for this entire homework. Make the background gray (0.5, 0.5, 0.5).
 
 Implement your triangle rendering in \lstinline{hw_2_1()} in \lstinline{hw2.cpp}. To test your rendering, use the following commands:
 \begin{lstlisting}[language=bash]
@@ -101,6 +104,7 @@ We'll compare your output with our rendering for grading.
 \paragraph{Bonus: triangle clipping (15 pts).} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane. To speed up the computation, clipping is also often done with the entire 3D \href{https://en.wikipedia.org/wiki/Viewing_frustum}{view frustum}, discarding any triangles that are outside of the screen or too far away from the camera. We don't do it in this homework. 
 
 \section{Rendering a triangle mesh (20 pts)}
+\label{sec:triangle_mesh}
 
 \begin{figure}[h]
     \centering
@@ -121,7 +125,7 @@ Next, we'll extend our previous code to handle more than one triangle. In comput
 
 An important difference, compared to the list of triangles we have in Homework 1, is to determine the depth order between all these triangles. That is, for a point inside a pixel, we need to decide which triangle is the one we actually see. The tricky part is, unlike Homework 1, it is impossible to globally sort the triangles to determine a depth order (\cref{fig:depth_order}).
 
-Therefore, we need to know the depth value of all the triangles overlapping with the point in the pixel. That is, given a image space point inside a projected triangle, we need to \emph{interpolate} from the depth values of the three vertices. This turns out to be slightly involved mathematically (code-wise it's actually not that much though, my implementation of the depth interpolation takes around 70 lines including lots of comments). 
+Therefore, we need to know the depth value of all the triangles overlapping with the point in the pixel. That is, given a screen space point inside a projected triangle, we need to \emph{interpolate} from the depth values of the three vertices. This turns out to be slightly involved mathematically (code-wise it's actually not that much though, my implementation of the depth interpolation takes around 70 lines including lots of comments). 
 
 To explain how to find the desired depth value, we need to explain what are \href{https://en.wikipedia.org/wiki/Barycentric_coordinate_system}{barycentric coordinates}. Any point $\mathbf{p}$ inside a triangle with three vertices $\mathbf{p}_0$, $\mathbf{p}_1$, $\mathbf{p}_2$ can be expressed using linear combination of the three vertices:
 \begin{equation}
@@ -155,6 +159,7 @@ Since $\mathbf{p}$ projects to $\mathbf{p}'$, we know that
 \mathbf{p}' = \left(-\frac{\mathbf{p}.x}{\mathbf{p}.z}, -\frac{\mathbf{p}.y}{\mathbf{p}.z}, -1\right) 
 = -\frac{\mathbf{p}}{\mathbf{p}.z}.
 \end{equation}
+(We use $\mathbf{p}.z$ to denote the z coordinate of point $\mathbf{p}$.)
 
 Plugging in $\mathbf{p} = b_0 \mathbf{p}_0 + b_1 \mathbf{p}_1 + b_2 \mathbf{p}_2$ and $\mathbf{p}.z = b_0 \mathbf{p}_0.z + b_1 \mathbf{p}_1.z + b_2 \mathbf{p}_2.z$:
 \begin{equation}
@@ -220,9 +225,19 @@ Having the barycentric coordinates, we can finally get the desired depth:
 \label{eq:interpolated_depth}
 \end{equation}
 
-To recap: given an image plane point and a triangle, we first convert it from screen space to camera space (using the inverse of \cref{eq:camera_to_screen}, recall \cref{fig:camera_vs_image}). Then, we compute the projected barycentric coordinates $b_0'$, $b_1'$, and $b_2'$ using \cref{eq:barycentric_solve}. Using the projected barycentric coordinates and the depth at the three vertices, we convert them to the original barycentric coordinates using \cref{eq:inverse_depth_weighting}. Finally, we obtain the depth using \cref{eq:interpolated_depth} and use the depth to pick the triangle that is the closest to the pixel sample, but in front of the clipping plane.
+% To recap: given an image plane point and a triangle, we first convert it from screen space to camera space (using the inverse of \cref{eq:camera_to_screen}, recall \cref{fig:camera_vs_screen}). Then, we compute the projected barycentric coordinates $b_0'$, $b_1'$, and $b_2'$ using \cref{eq:barycentric_solve}. Using the projected barycentric coordinates and the depth at the three vertices, we convert them to the original barycentric coordinates using \cref{eq:inverse_depth_weighting}. Finally, we obtain the depth using \cref{eq:interpolated_depth} and use the depth to pick the triangle that is the closest to the pixel sample, but in front of the clipping plane.
 
-One final detail, remember we discussed two variants for rendering multiple objects in a scene? The depth testing makes the two variants differ more. For the \emph{ray tracing} style (i.e., for each pixel, check all triangles), you need to maintain a minimal $z$ value when traversing all the triangles. For the \emph{rasterization} style (i.e., for each triangle, check all pixels), you need to maintain a whole image of $z$ values, and this is usually called the \emph{Z-buffer}. 
+To summarize, given an image plane point (e.g., pixel or subpixel center) and a triangle, we do the following:
+\begin{enumerate}
+    \item We first project triangle vertices to screen space, using the inverse of \cref{eq:camera_to_screen}, recall \cref{fig:camera_vs_screen}.
+    \item If the image plane point is inside the triangle, we do the following:
+    \item We convert the current image plane point from screen space to the projected camera space.
+    \item We compute the projected barycentric coordinates $b_0'$, $b_1'$, and $b_2'$ using \cref{eq:barycentric_solve}.
+    \item Using the projected barycentric coordinates and the depth at the three vertices, we convert them to the original barycentric coordinates using \cref{eq:inverse_depth_weighting}.
+    \item Finally, we obtain the depth using \cref{eq:interpolated_depth} and use the depth to pick the triangle that is the closest to the pixel sample, but in front of the clipping plane.
+\end{enumerate}
+
+One final detail, remember we discussed two variants for rendering multiple objects in a scene? The depth testing makes the two variants differ more. For the \emph{ray tracing} style (i.e., for each pixel, check all triangles), you need to maintain the closest $z$ value when traversing all the triangles. For the \emph{rasterization} style (i.e., for each triangle, check all pixels), you need to maintain a whole image of $z$ values, and this is usually called the \emph{Z-buffer}. 
 \begin{lstlisting}[language=Python]
 # For each pixel, check all triangles
 for each pixel:
@@ -280,6 +295,8 @@ outputs/hw_2_2_3.png
 \end{lstlisting}
 We'll compare your output with our rendering for grading.
 
+This part is more involved than the previous part. A way to debug is to render the same triangle as in \cref{sec:single_triangle} using your \cref{sec:triangle_mesh} code -- if they are different, then something is wrong and you can check what led to that problem. 
+
 \paragraph{Bonus: occlusion culling (20 pts).} During rasterization-style rendering, if we can prove that a triangle is completely blocked by some other triangles (using the current Z buffer), we can completely skip the rendering of the triangle to speed up our rendering. This is called \href{https://en.wikipedia.org/wiki/Z-buffering#Z-culling}{occlusion culling} or Z-culling. Read the paper \href{https://dl.acm.org/doi/10.1145/166117.166147}{Hierarchical Z-Buffer Visibility} from Greene et al. and implement occlusion culling using a hierarchical Z buffer. Our test scenes do not have heavy occlusion, so you will need to design your own scenes to show the speedup.
 
 \section{Perspective-corrected interpolation (20 pts)}
@@ -326,7 +343,7 @@ So far we have assumed that everything is in the camera space and camera is alwa
     \label{fig:3d_spaces}
 \end{figure}
 
-Before we explain the 3D transformations, we need to explain our spaces in 3D. Previously in 2D, we only had \emph{object space} and \emph{screen space}. The existence of the camera makes things slightly more complicated: the camera lives in the \emph{camera space} (the coordinate system in the previous parts), and the matrices now transform the objects into \emph{world space}. As a convention, we usually call the object-to-world transformation the \emph{model matrix} $M$, the world-to-camera transformation the \emph{view matrix} $V$, the camera-to-screen transformation the \emph{projection matrix} $P$ (yes, we can express the projection as a matrix! more on this later). Given a vertex $v$ on a 3D triangle mesh, we can chain the transformations to project it onto the screen space: $v'=PVMv$ (unfortunately, the combined matrix $PVM$ is usually called the ``MVP'' matrix). \cref{fig:3d_spaces} illustrates this.
+Before we explain the 3D transformations, we need to explain our spaces in 3D. Previously in 2D, we only had \emph{object space} and \emph{screen space}. The existence of the camera makes things slightly more complicated: the camera lives in the \emph{camera space} (the coordinate system in the previous parts), and the matrices now transform the objects into \emph{world space}. As a convention, we usually call the object-to-world transformation the \emph{model matrix} $M$, the world-to-camera transformation the \emph{view matrix} $V$, the camera-to-screen transformation the \emph{projection matrix} $P$ (yes, we can express the projection as a matrix! more on this later). Given a vertex $v$ on a 3D triangle mesh, we can chain the transformations to project it onto the screen space: $v'=PVMv$ (unfortunately, the combined matrix $PVM$ is usually called the ``MVP'' matrix). \cref{fig:3d_spaces} illustrates this. Note that the last two steps are what we did in \cref{sec:triangle_mesh}, where we project the triangles from camera space to projected camera space, and then to the screen space. 
 
 \paragraph{Scaling and translation.} Scaling and translations are basically the same as in 2D:
 \begin{equation}
@@ -778,11 +795,11 @@ Like in Homework 1, your first task is to implement the transformations in \lsti
 
 To test your rendering, use the following commands:
 \begin{lstlisting}[language=bash]
-  ./balboa -hw 2_4 ../scenes/two_shapes.json
-  ./balboa -hw 2_4 ../scenes/tetrahedron.json
-  ./balboa -hw 2_4 ../scenes/cube.json
-  ./balboa -hw 2_4 ../scenes/prism.json
-  ./balboa -hw 2_4 ../scenes/teapot.json
+  ./balboa -hw 2_4 ../scenes/hw2/two_shapes.json
+  ./balboa -hw 2_4 ../scenes/hw2/tetrahedron.json
+  ./balboa -hw 2_4 ../scenes/hw2/cube.json
+  ./balboa -hw 2_4 ../scenes/hw2/prism.json
+  ./balboa -hw 2_4 ../scenes/hw2/teapot.json
 \end{lstlisting}
 
 Our renderings of the \lstinline{two_shapes} and \lstinline{tetrahedron} scenes are shown in \cref{fig:hw2_4}.
@@ -807,7 +824,7 @@ Note that the last teapot scene contains 1570 triangles, so it might take a bit 
 
 \section{Design your own scenes (20 pts)}
 
-As usual, design a scene yourself and submit the scene and your rendering to us. We will give extra credits to people who impress us. Feel free to download 3D model files on the internet (please credit the authors and let us know where you downloaded it). Note that our 
+As usual, design a scene yourself and submit the scene and your rendering to us. We will give extra credits to people who impress us. Feel free to download 3D model files on the internet (please credit the authors and let us know where you downloaded it). Note that our parser assumes existence of the following attributes in a vertex: x, y, z, r, g, b, so if your downloaded model does not have the RGB information stored in the vertices, it may not parse correctly. Our parser also assumes that the model is a triangle mesh -- some meshes have general polygons and need to be triangulated before importing to balboa.
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
