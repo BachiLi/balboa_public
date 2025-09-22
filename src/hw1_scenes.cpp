@@ -161,6 +161,11 @@ Scene parse_scene(const fs::path &filename) {
                 polyline.stroke_width = (*stroke_width_it);
             }
             polyline.transform = parse_transformation(*it);
+
+            if (polyline.fill_color && !polyline.is_closed) {
+                Error("Can't have a non-closed shape with fill color.");
+            }
+
             scene.shapes.push_back(polyline);
         } else if ((*it)["type"] == "rectangle") {
             Polyline polyline;
