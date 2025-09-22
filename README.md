@@ -52,14 +52,6 @@ You may need the following packages
 sudo apt install g++ cmake libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
 ```
 
----
-### For macOS user with Xcode CLT version 16
-Remove older version directory by 
-```shell
-sudo rm -rf /Library/Developer/CommandLineTools/usr/include/c++
-```
-before `make`. See the [discuss](https://trac.macports.org/ticket/70750) for details.
-
 # Run
 Try 
 ```shell
