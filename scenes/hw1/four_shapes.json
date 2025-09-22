@@ -5,10 +5,18 @@
     ],
     "objects": [
         {
-            "type": "circle",
-            "center": [400, 225],
-            "radius": 200,
-            "fill_color": [0.2, 0.9, 0.2]
+            "type": "polyline",
+            "points": [200, 100, 300, 350, 600, 200, 700, 400],
+            "stroke_color": [0.1, 0.15, 0.1],
+            "stroke_width": 20,
+            "is_closed": false
+        },
+        {
+            "type": "triangle",
+            "p0": [750, 50],
+            "p1": [700, 400],
+            "p2": [200, 250],
+            "fill_color": [0.8, 0.8, 0.5]
         },
         {
             "type": "rectangle",
@@ -19,18 +27,10 @@
             "stroke_width": 2
         },
         {
-            "type": "triangle",
-            "p0": [750, 50],
-            "p1": [700, 400],
-            "p2": [200, 250],
-            "fill_color": [0.8, 0.8, 0.5]
-        },
-        {
-            "type": "polyline",
-            "points": [200, 100, 300, 350, 600, 200, 700, 400],
-            "stroke_color": [0.1, 0.15, 0.1],
-            "stroke_width": 20,
-            "is_closed": false
+            "type": "circle",
+            "center": [400, 225],
+            "radius": 200,
+            "fill_color": [0.2, 0.9, 0.2]
         }
     ]
 }

@@ -5,30 +5,15 @@
     ],
     "objects": [
         {
-            "type": "circle",
-            "fill_color": [0.1, 0.3, 0.9],
+            "type": "polyline",
+            "points": [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2.0, 1.0],
+            "fill_color": [0.8, 0.7, 0.8],
+            "stroke_color": [0.15, 0.1, 0.15],
+            "stroke_width": 0.01,
+            "is_closed": true,
             "transform": [
-                {"scale": [50, 25]},
-                {"rotate": 45},
-                {"translate": [60, 45]}
-            ]
-        },
-        {
-            "type": "rectangle",
-            "fill_color": [0.95, 0.1, 0.9],
-            "transform": [
-                {"scale": [50, 50]},
-                {"shear_x": -1},
-                {"translate": [25, 12.5]}
-            ]
-        },
-        {
-            "type": "triangle",
-            "fill_color": [0.1, 0.1, 0.9],
-            "transform": [
-                {"scale": [25, 50]},
-                {"shear_y": 1},
-                {"translate": [87.5, 25]}
+                {"scale": [40, 30]},
+                {"translate": [75, 12.5]}
             ]
         },
         {
@@ -44,15 +29,30 @@
             ]
         },
         {
-            "type": "polyline",
-            "points": [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2.0, 1.0],
-            "fill_color": [0.8, 0.7, 0.8],
-            "stroke_color": [0.15, 0.1, 0.15],
-            "stroke_width": 0.01,
-            "is_closed": true,
+            "type": "triangle",
+            "fill_color": [0.1, 0.1, 0.9],
             "transform": [
-                {"scale": [40, 30]},
-                {"translate": [75, 12.5]}
+                {"scale": [25, 50]},
+                {"shear_y": 1},
+                {"translate": [87.5, 25]}
+            ]
+        },
+        {
+            "type": "rectangle",
+            "fill_color": [0.95, 0.1, 0.9],
+            "transform": [
+                {"scale": [50, 50]},
+                {"shear_x": -1},
+                {"translate": [25, 12.5]}
+            ]
+        },
+        {
+            "type": "circle",
+            "fill_color": [0.1, 0.3, 0.9],
+            "transform": [
+                {"scale": [50, 25]},
+                {"rotate": 45},
+                {"translate": [60, 45]}
             ]
         }
     ]

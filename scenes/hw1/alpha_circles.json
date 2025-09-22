@@ -7,51 +7,9 @@
         {
             "type": "circle",
             "center": [256, 256],
-            "radius": 200,
-            "fill_color": [0.2, 0.4, 1.0],
-            "fill_alpha": 0.9
-        },
-        {
-            "type": "circle",
-            "center": [256, 256],
-            "radius": 180,
-            "fill_color": [1.0, 0.4, 0.2],
-            "fill_alpha": 0.8
-        },
-        {
-            "type": "circle",
-            "center": [256, 256],
-            "radius": 160,
-            "fill_color": [0.2, 1.0, 0.4],
-            "fill_alpha": 0.7
-        },
-        {
-            "type": "circle",
-            "center": [256, 256],
-            "radius": 140,
-            "fill_color": [0.4, 0.2, 1.0],
-            "fill_alpha": 0.6
-        },
-        {
-            "type": "circle",
-            "center": [256, 256],
-            "radius": 120,
-            "fill_color": [1.0, 0.2, 0.4],
-            "fill_alpha": 0.5
-        },
-        {
-            "type": "circle",
-            "center": [256, 256],
-            "radius": 100,
-            "fill_color": [0.4, 1.0, 0.2],
-            "fill_alpha": 0.4
-        },
-        {
-            "type": "circle",
-            "center": [256, 256],
-            "radius": 80,
-            "fill_color": [0.2, 0.2, 1.0],
-            "fill_alpha": 0.3
+            "radius": 40,
+            "fill_color": [1.0, 1.0, 0.2],
+            "fill_alpha": 0.1
         },
         {
             "type": "circle",
@@ -63,9 +21,51 @@
         {
             "type": "circle",
             "center": [256, 256],
-            "radius": 40,
-            "fill_color": [1.0, 1.0, 0.2],
-            "fill_alpha": 0.1
+            "radius": 80,
+            "fill_color": [0.2, 0.2, 1.0],
+            "fill_alpha": 0.3
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 100,
+            "fill_color": [0.4, 1.0, 0.2],
+            "fill_alpha": 0.4
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 120,
+            "fill_color": [1.0, 0.2, 0.4],
+            "fill_alpha": 0.5
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 140,
+            "fill_color": [0.4, 0.2, 1.0],
+            "fill_alpha": 0.6
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 160,
+            "fill_color": [0.2, 1.0, 0.4],
+            "fill_alpha": 0.7
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 180,
+            "fill_color": [1.0, 0.4, 0.2],
+            "fill_alpha": 0.8
+        },
+        {
+            "type": "circle",
+            "center": [256, 256],
+            "radius": 200,
+            "fill_color": [0.2, 0.4, 1.0],
+            "fill_alpha": 0.9
         }
     ]
 }

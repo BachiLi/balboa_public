@@ -5,23 +5,10 @@
     ],
     "objects": [
         {
-            "type": "circle",
-            "center": [350, 225],
-            "radius": 250,
-            "fill_color": [0.4, 0.8, 0.3]
-        },
-        {
-            "type": "triangle",
-            "p0": [350, 20],
-            "p1": [700, 800],
-            "p2": [200, 450],
-            "fill_color": [0.8, 0.2, 0.3]
-        },
-        {
-            "type": "rectangle",
-            "p_min": [70, 150],
-            "p_max": [300, 350],
-            "fill_color": [0.3, 0.6, 0.7]
+            "type": "polyline",
+            "points": [440, 300, 600, 220, 500, 50, 600, 400, 750, 200],
+            "fill_color": [0.8, 0.8, 0.15],
+            "is_closed": true
         },
         {
             "type": "polyline",
@@ -31,10 +18,23 @@
             "is_closed": false
         },
         {
-            "type": "polyline",
-            "points": [440, 300, 600, 220, 500, 50, 600, 400, 750, 200],
-            "fill_color": [0.8, 0.8, 0.15],
-            "is_closed": true
+            "type": "rectangle",
+            "p_min": [70, 150],
+            "p_max": [300, 350],
+            "fill_color": [0.3, 0.6, 0.7]
+        },
+        {
+            "type": "triangle",
+            "p0": [350, 20],
+            "p1": [700, 800],
+            "p2": [200, 450],
+            "fill_color": [0.8, 0.2, 0.3]
+        },
+        {
+            "type": "circle",
+            "center": [350, 225],
+            "radius": 250,
+            "fill_color": [0.4, 0.8, 0.3]
         }
     ]
 }
