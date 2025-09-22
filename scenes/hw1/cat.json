@@ -6,53 +6,95 @@
     "objects": [
         {
             "type": "triangle",
-            "p0": [190, 30],
-            "p1": [355, 105],
-            "p2": [280, 150],
-            "color": [0.4, 0.3, 0.2]
+            "p0": [190, 420],
+            "p1": [355, 345],
+            "p2": [280, 300],
+            "fill_color": [0.4, 0.3, 0.2],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 2
         },
         {
             "type": "triangle",
-            "p0": [610, 30],
-            "p1": [455, 105],
-            "p2": [520, 150],
-            "color": [0.4, 0.3, 0.2]
+            "p0": [610, 420],
+            "p1": [455, 345],
+            "p2": [520, 300],
+            "fill_color": [0.4, 0.3, 0.2],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 2
         },
         {
             "type": "circle",
             "center": [400, 225],
             "radius": 160,
-            "color": [0.3, 0.3, 0.3]
+            "fill_color": [0.3, 0.3, 0.3],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 2
         },
         {
             "type": "circle",
-            "center": [315, 175],
+            "center": [315, 275],
             "radius": 40,
-            "color": [1, 1, 1]
+            "fill_color": [1, 1, 1]
         },
         {
             "type": "circle",
-            "center": [485, 175],
+            "center": [485, 275],
             "radius": 40,
-            "color": [1, 1, 1]
+            "fill_color": [1, 1, 1]
         },
         {
             "type": "circle",
-            "center": [315, 175],
+            "center": [315, 275],
             "radius": 5,
-            "color": [0.5, 0.5, 0.0]
+            "fill_color": [0.5, 0.5, 0.0]
         },
         {
             "type": "circle",
-            "center": [485, 175],
+            "center": [485, 275],
             "radius": 5,
-            "color": [0.5, 0.5, 0.0]
+            "fill_color": [0.5, 0.5, 0.0]
         },
         {
             "type": "circle",
-            "center": [400, 300],
+            "center": [400, 150],
             "radius": 10,
-            "color": [0.1, 0.1, 0.1]
+            "fill_color": [0.1, 0.1, 0.1]
+        },
+        {
+            "type": "polyline",
+            "points": [300, 185, 200, 185],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 5
+        },
+        {
+            "type": "polyline",
+            "points": [300, 205, 200, 235],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 5
+        },
+        {
+            "type": "polyline",
+            "points": [300, 165, 200, 145],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 5
+        },
+        {
+            "type": "polyline",
+            "points": [500, 185, 600, 185],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 5
+        },
+        {
+            "type": "polyline",
+            "points": [500, 205, 600, 235],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 5
+        },
+        {
+            "type": "polyline",
+            "points": [500, 165, 600, 145],
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_width": 5
         }
     ]
 }

@@ -1,43 +1,58 @@
 {
     "resolution": [600, 650],
     "background": [
-        0.5, 0.5, 0.5
+        0.4, 0.4, 0.4
     ],
     "objects": [
         {
             "type": "rectangle",
-            "p_min": [100, 100],
-            "p_max": [300, 350],
-            "color": [0.8, 0.3, 0.8],
-            "alpha": 0.7
+            "p_min": [100, 550],
+            "p_max": [300, 300],
+            "fill_color": [0.9, 0.2, 0.9],
+            "fill_alpha": 0.7,
+            "stroke_color": [0.7, 0.7, 0.7],
+            "stroke_alpha": 0.5,
+            "stroke_width": 10
         },
         {
             "type": "rectangle",
-            "p_min": [150, 150],
-            "p_max": [350, 400],
-            "color": [0.3, 0.8, 0.8],
-            "alpha": 0.8
+            "p_min": [150, 500],
+            "p_max": [350, 250],
+            "fill_color": [0.3, 0.8, 0.8],
+            "fill_alpha": 0.8,
+            "stroke_color": [0.7, 0.7, 0.7],
+            "stroke_alpha": 0.5,
+            "stroke_width": 10
         },
         {
             "type": "rectangle",
-            "p_min": [200, 200],
-            "p_max": [400, 450],
-            "color": [0.8, 0.8, 0.3],
-            "alpha": 0.6
+            "p_min": [200, 450],
+            "p_max": [400, 200],
+            "fill_color": [0.8, 0.8, 0.3],
+            "fill_alpha": 0.6,
+            "stroke_color": [0.7, 0.7, 0.7],
+            "stroke_alpha": 0.5,
+            "stroke_width": 10
         },
         {
             "type": "rectangle",
-            "p_min": [250, 250],
-            "p_max": [450, 500],
-            "color": [0.3, 0.8, 0.3],
-            "alpha": 0.5
+            "p_min": [250, 400],
+            "p_max": [450, 150],
+            "fill_color": [0.3, 0.8, 0.3],
+            "fill_alpha": 0.5,
+            "stroke_color": [0.7, 0.7, 0.7],
+            "stroke_alpha": 0.5,
+            "stroke_width": 10
         },
         {
             "type": "rectangle",
-            "p_min": [300, 300],
-            "p_max": [500, 550],
-            "color": [0.3, 0.3, 0.8],
-            "alpha": 0.4
+            "p_min": [300, 350],
+            "p_max": [500, 100],
+            "fill_color": [0.3, 0.3, 0.8],
+            "fill_alpha": 0.4,
+            "stroke_color": [0.7, 0.7, 0.7],
+            "stroke_alpha": 0.5,
+            "stroke_width": 10
         }
     ]
 }

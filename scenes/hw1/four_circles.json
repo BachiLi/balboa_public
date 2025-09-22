@@ -1,0 +1,33 @@
+{
+    "resolution": [640, 360],
+    "background": [
+        0.4, 0.6, 0.4
+    ],
+    "objects": [
+        {
+            "type": "circle",
+            "center": [320, 180],
+            "radius": 160,
+            "fill_color": [0.1, 0.3, 0.95]
+        },
+        {
+            "type": "circle",
+            "center": [150, 280],
+            "radius": 80,
+            "fill_color": [0.95, 0.1, 0.3]
+        },
+        {
+            "type": "circle",
+            "center": [490, 280],
+            "radius": 80,
+            "fill_color": [0.95, 0.1, 0.3]
+        },
+        {
+            "type": "circle",
+            "center": [320, 150],
+            "radius": 30,
+            "stroke_color": [0.3, 0.5, 0.3],
+            "stroke_width": 10
+        }
+    ]
+}

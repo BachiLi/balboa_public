@@ -1,12 +1,14 @@
 {
     "resolution": [512, 512],
     "background": [
-        0.5, 0.5, 0.5
+        0.4, 0.4, 0.9
     ],
     "objects": [
         {
             "type": "circle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.05,
             "transform": [
                 {"scale": [100, 100]},
                 {"translate": [256, 256]}
@@ -14,7 +16,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]}
@@ -22,7 +26,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},
@@ -33,7 +39,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},
@@ -44,7 +52,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},
@@ -55,7 +65,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},
@@ -66,7 +78,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},
@@ -77,7 +91,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},
@@ -88,7 +104,9 @@
         },
         {
             "type": "rectangle",
-            "color": [0.8, 0.8, 0.2],
+            "fill_color": [0.8, 0.8, 0.2],
+            "stroke_color": [1.0, 1.0, 1.0],
+            "stroke_width": 0.1,
             "transform": [
                 {"scale": [26, 70]},
                 {"translate": [243, 60]},

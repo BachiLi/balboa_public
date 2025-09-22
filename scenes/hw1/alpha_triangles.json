@@ -1,7 +1,7 @@
 {
     "resolution": [640, 480],
     "background": [
-        0.5, 0.5, 0.5
+        0.25, 0.25, 0.5
     ],
     "objects": [
         {
@@ -9,24 +9,27 @@
             "p0": [50, 20],
             "p1": [500, 50],
             "p2": [200, 300],
-            "color": [0.3, 0.5, 0.8],
-            "alpha": 0.9
+            "fill_color": [0.1, 0.1, 1.0],
+            "fill_alpha": 0.9
         },
         {
             "type": "triangle",
             "p0": [200, 100],
             "p1": [400, 500],
             "p2": [20, 300],
-            "color": [0.8, 0.2, 0.8],
-            "alpha": 0.5
+            "fill_color": [1.0, 0.1, 1.0],
+            "fill_alpha": 0.5,
+            "stroke_color": [0.1, 0.1, 0.1],
+            "stroke_alpha": 0.4,
+            "stroke_width": 5
         },
         {
             "type": "triangle",
             "p0": [200, 200],
             "p1": [550, 100],
             "p2": [550, 400],
-            "color": [0.2, 0.8, 0.8],
-            "alpha": 0.6
+            "fill_color": [0.1, 1.0, 1.0],
+            "fill_alpha": 0.6
         }
     ]
 }

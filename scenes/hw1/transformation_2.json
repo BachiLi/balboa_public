@@ -1,12 +1,30 @@
 {
     "resolution": [640, 360],
     "background": [
-        0.5, 0.5, 0.5
+        0.4, 0.3, 0.4
     ],
     "objects": [
         {
+            "type": "rectangle",
+            "fill_color": [0.4, 0.95, 0.4],
+            "transform": [
+                {"scale": [200, 250]},
+                {"shear_x": -1.5},
+                {"translate": [65, 50]}
+            ]
+        },
+        {
+            "type": "triangle",
+            "fill_color": [0.1, 0.95, 0.9],
+            "transform": [
+                {"scale": [180, 220]},
+                {"shear_y": 1},
+                {"translate": [380, 120]}
+            ]
+        },
+        {
             "type": "circle",
-            "color": [0.4, 0.7, 0.3],
+            "fill_color": [0.95, 0.7, 0.3],
             "transform": [
                 {"scale": [250, 70]},
                 {"rotate": 70},
@@ -14,21 +32,27 @@
             ]
         },
         {
-            "type": "rectangle",
-            "color": [0.4, 0.7, 0.4],
+            "type": "polyline",
+            "points": [0.0, 0.0, 1.0, 2.0, 1.0, 0.0],
+            "stroke_color": [0.9, 0.9, 0.15],
+            "stroke_width": 1,
+            "is_closed": false,
             "transform": [
-                {"scale": [250, 200]},
-                {"shear_x": -1},
-                {"translate": [70, 50]}
+                {"scale": [70, 50]},
+                {"rotate": -50},
+                {"translate": [420, 250]}
             ]
         },
         {
-            "type": "triangle",
-            "color": [0.3, 0.8, 0.8],
+            "type": "polyline",
+            "points": [0.0, 0.0, 1.0, 1.0, 2.0, 1.0, 3.0, 0.0, 1.0, -1.0],
+            "fill_color": [0.9, 0.1, 0.8],
+            "stroke_color": [0.95, 0.95, 0.95],
+            "stroke_width": 0.02,
+            "is_closed": true,
             "transform": [
-                {"scale": [180, 220]},
-                {"shear_y": 1},
-                {"translate": [380, 120]}
+                {"scale": [120, 160]},
+                {"translate": [300, 50]}
             ]
         }
     ]

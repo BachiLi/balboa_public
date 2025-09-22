@@ -6,28 +6,34 @@
     "objects": [
         {
             "type": "rectangle",
-            "p_min": [150, 100],
-            "p_max": [450, 350],
-            "color": [0.2, 0.2, 0.2]
+            "p_min": [150, 350],
+            "p_max": [450, 100],
+            "fill_color": [0.2, 0.2, 0.2],
+            "stroke_color": [0.05, 0.05, 0.05],
+            "stroke_width": 2
         },
         {
             "type": "circle",
-            "center": [235, 180],
+            "center": [235, 270],
             "radius": 40,
-            "color": [0.8, 0.8, 0.8]
+            "fill_color": [0.8, 0.8, 0.8],
+            "stroke_color": [0.05, 0.05, 0.05],
+            "stroke_width": 2
         },
         {
             "type": "circle",
-            "center": [365, 180],
+            "center": [365, 270],
             "radius": 40,
-            "color": [0.8, 0.8, 0.8]
+            "fill_color": [0.8, 0.8, 0.8],
+            "stroke_color": [0.05, 0.05, 0.05],
+            "stroke_width": 2
         },
         {
             "type": "triangle",
-            "p0": [235, 315],
-            "p1": [365, 315],
-            "p2": [300, 290],
-            "color": [0.4, 0.4, 0.8]
+            "p0": [235, 135],
+            "p1": [365, 135],
+            "p2": [300, 160],
+            "fill_color": [0.4, 0.4, 0.8]
         }
     ]
 }

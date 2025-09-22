@@ -1,21 +1,21 @@
 {
     "resolution": [160, 90],
     "background": [
-        1, 1, 1
+        0.3, 0.3, 0.3
     ],
     "objects": [
         {
             "type": "circle",
-            "color": [0.3, 0.3, 0.5],
+            "fill_color": [0.1, 0.3, 0.9],
             "transform": [
                 {"scale": [50, 25]},
                 {"rotate": 45},
-                {"translate": [80, 45]}
+                {"translate": [60, 45]}
             ]
         },
         {
             "type": "rectangle",
-            "color": [0.4, 0.2, 0.4],
+            "fill_color": [0.95, 0.1, 0.9],
             "transform": [
                 {"scale": [50, 50]},
                 {"shear_x": -1},
@@ -24,11 +24,35 @@
         },
         {
             "type": "triangle",
-            "color": [0.2, 0.2, 0.5],
+            "fill_color": [0.1, 0.1, 0.9],
             "transform": [
                 {"scale": [25, 50]},
                 {"shear_y": 1},
-                {"translate": [125, 25]}
+                {"translate": [87.5, 25]}
+            ]
+        },
+        {
+            "type": "polyline",
+            "points": [0.0, 0.0, 1.0, 0.0, 1.0, 2.0],
+            "stroke_color": [0.9, 0.9, 0.15],
+            "stroke_width": 1,
+            "is_closed": false,
+            "transform": [
+                {"scale": [15, 15]},
+                {"rotate": -30},
+                {"translate": [112.5, 50]}
+            ]
+        },
+        {
+            "type": "polyline",
+            "points": [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 2.0, 1.0],
+            "fill_color": [0.8, 0.7, 0.8],
+            "stroke_color": [0.15, 0.1, 0.15],
+            "stroke_width": 0.01,
+            "is_closed": true,
+            "transform": [
+                {"scale": [40, 30]},
+                {"translate": [75, 12.5]}
             ]
         }
     ]
