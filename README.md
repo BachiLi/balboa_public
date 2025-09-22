@@ -4,7 +4,7 @@ https://cseweb.ucsd.edu/~tzli/cse167/
 
 # Build
 All the dependencies are included. Use CMake to build.
-```
+```shell
 git clone --recurse-submodules https://github.com/BachiLi/balboa_public mkdir build
 cd build
 cmake ..
@@ -27,7 +27,7 @@ It requires compilers that support C++17 (gcc version >= 8, clang version >= 7, 
     - Active kit: `Visual Studio ... x64`, choose the appropriate one depending on your architecture. 
     - Default build target: `balboa`. 
 2. Create a `launch.json` in `.vscode` folder: 
-    ```
+    ```json
     {
         "version": "0.2.0",
         "configurations": [
@@ -48,13 +48,21 @@ It requires compilers that support C++17 (gcc version >= 8, clang version >= 7, 
 ---
 ### For Linux users (or Windows users using WSL):
 You may need the following packages
-```
+```shell
 sudo apt install g++ cmake libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
 ```
 
+---
+### For macOS user with Xcode CLT version 16
+Remove older version directory by 
+```shell
+sudo rm -rf /Library/Developer/CommandLineTools/usr/include/c++
+```
+before `make`. See the [discuss](https://trac.macports.org/ticket/70750) for details.
+
 # Run
 Try 
-```
+```shell
 cd build
 ./balboa -hw 1_1
 ```
