@@ -8,71 +8,6 @@ using json = nlohmann::json;
 
 namespace hw1 {
 
-CircleScene hw1_2_scene_0 = {
-    {640, 360}, // resolution
-    {0.5, 0.5, 0.5}, // background
-    { // center, radius, color
-        {{320, 180}, 160, {0.3, 0.5, 0.8}},
-        {{150,  80},  80, {0.8, 0.3, 0.5}},
-        {{490,  80},  80, {0.8, 0.3, 0.5}},
-    }
-};
-
-CircleScene hw1_2_scene_1 = {
-    {1280, 720}, // resolution
-    {0.5, 0.7, 0.5}, // background
-    { // center, radius, color
-        {{0, 0}, 720, {0.2, 0.2, 0.8}},
-        {{1280, 0}, 720, {0.8, 0.2, 0.5}},
-        {{640, 500}, 80, {0.8, 0.8, 0.2}},
-    }
-};
-
-CircleScene hw1_2_scene_2 = {
-    {350, 650}, // resolution
-    {0.7, 0.2, 0.3}, // background
-    { // center, radius, color
-        {{100, 200}, 200, {0.2, 0.2, 0.8}},
-        {{150, 300}, 220, {0.8, 0.2, 0.2}},
-        {{200, 400}, 240, {0.2, 0.8, 0.2}},
-        {{250, 500}, 260, {0.8, 0.2, 0.8}},
-        {{300, 600}, 280, {0.2, 0.8, 0.8}},
-        {{300, 600}, 280, {0.2, 0.8, 0.8}}
-    }
-};
-
-CircleScene hw1_2_scene_3 = {
-    {512, 512}, // resolution
-    {0.5, 0.5, 0.3}, // background
-    { // center, radius, color
-        {{256, 256}, 100, {0.8, 0.8, 0.8}},
-        {{128, 128}, 100, {0.2, 0.2, 0.2}},
-        {{384, 128}, 100, {0.2, 0.2, 0.2}},
-        {{384, 384}, 100, {0.2, 0.2, 0.2}},
-        {{128, 384}, 100, {0.2, 0.2, 0.2}}
-    }
-};
-
-CircleScene hw1_2_scene_4 = {
-    {720, 512}, // resolution
-    {0.5, 0.5, 0.5}, // background
-    { // center, radius, color
-        {{150, 150}, 150, {0.3, 0.3, 0.8}},
-        {{360, 150}, 150, {0.2, 0.2, 0.2}},
-        {{570, 150}, 150, {0.8, 0.3, 0.3}},
-        {{255, 300}, 150, {0.3, 0.8, 0.8}},
-        {{465, 300}, 150, {0.3, 0.8, 0.3}}
-    }
-};
-
-CircleScene hw1_2_scenes[] = {
-    hw1_2_scene_0,
-    hw1_2_scene_1,
-    hw1_2_scene_2,
-    hw1_2_scene_3,
-    hw1_2_scene_4
-};
-
 Matrix3x3 parse_transformation(const json &node) {
     // Homework 1.4: parse a sequence of linear transformation and 
     // combine them into an affine matrix
@@ -139,38 +74,102 @@ Scene parse_scene(const fs::path &filename) {
             Error("Object with undefined type.");
         }
         if ((*it)["type"] == "circle") {
-            Vector2 center{0, 0};
-            Real radius = 1;
-            Vector3 color{0, 0, 0};
-            Real alpha = 1;
+            Circle circle;
+            circle.center = Vector2{0, 0};
+            circle.radius = 1;
+            circle.fill_alpha = 1;
+            circle.stroke_alpha = 1;
+            circle.stroke_width = 1;
 
             auto center_it = it->find("center");
             if (center_it != it->end()) {
-                center = Vector2{
+                circle.center = Vector2{
                     (*center_it)[0], (*center_it)[1]
                 };
             }
             auto radius_it = it->find("radius");
             if (radius_it != it->end()) {
-                radius = (*radius_it);
+                circle.radius = (*radius_it);
             }
-            auto color_it = it->find("color");
-            if (color_it != it->end()) {
-                color = Vector3{
-                    (*color_it)[0], (*color_it)[1], (*color_it)[2]
+            auto fill_color_it = it->find("fill_color");
+            if (fill_color_it != it->end()) {
+                circle.fill_color = Vector3{
+                    (*fill_color_it)[0], (*fill_color_it)[1], (*fill_color_it)[2]
                 };
             }
-            auto alpha_it = it->find("alpha");
-            if (alpha_it != it->end()) {
-                alpha = (*alpha_it);
+            auto fill_alpha_it = it->find("fill_alpha");
+            if (fill_alpha_it != it->end()) {
+                circle.fill_alpha = (*fill_alpha_it);
             }
-            Matrix3x3 transform = parse_transformation(*it);
-            scene.shapes.push_back(Circle{center, radius, color, alpha, transform});
+            auto stroke_color_it = it->find("stroke_color");
+            if (stroke_color_it != it->end()) {
+                circle.stroke_color = Vector3{
+                    (*stroke_color_it)[0], (*stroke_color_it)[1], (*stroke_color_it)[2]
+                };
+            }
+            auto stroke_alpha_it = it->find("stroke_alpha");
+            if (stroke_alpha_it != it->end()) {
+                circle.stroke_alpha = (*stroke_alpha_it);
+            }
+            auto stroke_width_it = it->find("stroke_width");
+            if (stroke_width_it != it->end()) {
+                circle.stroke_width = (*stroke_width_it);
+            }
+            circle.transform = parse_transformation(*it);
+            scene.shapes.push_back(circle);
+        } else if ((*it)["type"] == "polyline") {
+            Polyline polyline;
+            polyline.is_closed = true;
+            polyline.fill_alpha = 1;
+            polyline.stroke_alpha = 1;
+            polyline.stroke_width = 1;
+
+            auto points_it = it->find("points");
+            if (points_it != it->end()) {
+                for (int i = 0; i < (int)points_it->size() / 2; i++) {
+                    Real x = (*points_it)[2 * i];
+                    Real y = (*points_it)[2 * i + 1];
+                    polyline.points.push_back(Vector2{x, y});
+                }
+            }
+            auto is_closed_it = it->find("is_closed");
+            if (is_closed_it != it->end()) {
+                polyline.is_closed = *is_closed_it;
+            }
+            auto fill_color_it = it->find("fill_color");
+            if (fill_color_it != it->end()) {
+                polyline.fill_color = Vector3{
+                    (*fill_color_it)[0], (*fill_color_it)[1], (*fill_color_it)[2]
+                };
+            }
+            auto fill_alpha_it = it->find("fill_alpha");
+            if (fill_alpha_it != it->end()) {
+                polyline.fill_alpha = (*fill_alpha_it);
+            }
+            auto stroke_color_it = it->find("stroke_color");
+            if (stroke_color_it != it->end()) {
+                polyline.stroke_color = Vector3{
+                    (*stroke_color_it)[0], (*stroke_color_it)[1], (*stroke_color_it)[2]
+                };
+            }
+            auto stroke_alpha_it = it->find("stroke_alpha");
+            if (stroke_alpha_it != it->end()) {
+                polyline.stroke_alpha = (*stroke_alpha_it);
+            }
+            auto stroke_width_it = it->find("stroke_width");
+            if (stroke_width_it != it->end()) {
+                polyline.stroke_width = (*stroke_width_it);
+            }
+            polyline.transform = parse_transformation(*it);
+            scene.shapes.push_back(polyline);
         } else if ((*it)["type"] == "rectangle") {
+            Polyline polyline;
+            polyline.is_closed = true;
+            polyline.fill_alpha = 1;
+            polyline.stroke_alpha = 1;
+            polyline.stroke_width = 1;
             Vector2 p_min{0, 0};
             Vector2 p_max{1, 1};
-            Vector3 color{0, 0, 0};
-            Real alpha = 1;
 
             auto p_min_it = it->find("p_min");
             if (p_min_it != it->end()) {
@@ -184,24 +183,45 @@ Scene parse_scene(const fs::path &filename) {
                     (*p_max_it)[0], (*p_max_it)[1]
                 };
             }
-            auto color_it = it->find("color");
-            if (color_it != it->end()) {
-                color = Vector3{
-                    (*color_it)[0], (*color_it)[1], (*color_it)[2]
+            polyline.points.push_back(p_min);
+            polyline.points.push_back(Vector2{p_min.x, p_max.y});
+            polyline.points.push_back(p_max);
+            polyline.points.push_back(Vector2{p_max.x, p_min.y});
+            auto fill_color_it = it->find("fill_color");
+            if (fill_color_it != it->end()) {
+                polyline.fill_color = Vector3{
+                    (*fill_color_it)[0], (*fill_color_it)[1], (*fill_color_it)[2]
                 };
             }
-            auto alpha_it = it->find("alpha");
-            if (alpha_it != it->end()) {
-                alpha = (*alpha_it);
+            auto fill_alpha_it = it->find("fill_alpha");
+            if (fill_alpha_it != it->end()) {
+                polyline.fill_alpha = (*fill_alpha_it);
             }
-            Matrix3x3 transform = parse_transformation(*it);
-            scene.shapes.push_back(Rectangle{p_min, p_max, color, alpha, transform});
+            auto stroke_color_it = it->find("stroke_color");
+            if (stroke_color_it != it->end()) {
+                polyline.stroke_color = Vector3{
+                    (*stroke_color_it)[0], (*stroke_color_it)[1], (*stroke_color_it)[2]
+                };
+            }
+            auto stroke_alpha_it = it->find("stroke_alpha");
+            if (stroke_alpha_it != it->end()) {
+                polyline.stroke_alpha = (*stroke_alpha_it);
+            }
+            auto stroke_width_it = it->find("stroke_width");
+            if (stroke_width_it != it->end()) {
+                polyline.stroke_width = (*stroke_width_it);
+            }
+            polyline.transform = parse_transformation(*it);
+            scene.shapes.push_back(polyline);
         } else if ((*it)["type"] == "triangle") {
+            Polyline polyline;
+            polyline.is_closed = true;
+            polyline.fill_alpha = 1;
+            polyline.stroke_alpha = 1;
+            polyline.stroke_width = 1;
             Vector2 p0{0, 0};
             Vector2 p1{1, 0};
             Vector2 p2{0, 1};
-            Vector3 color{0, 0, 0};
-            Real alpha = 1;
 
             auto p0_it = it->find("p0");
             if (p0_it != it->end()) {
@@ -221,22 +241,49 @@ Scene parse_scene(const fs::path &filename) {
                     (*p2_it)[0], (*p2_it)[1]
                 };
             }
-            auto color_it = it->find("color");
-            if (color_it != it->end()) {
-                color = Vector3{
-                    (*color_it)[0], (*color_it)[1], (*color_it)[2]
+            polyline.points.push_back(p0);
+            polyline.points.push_back(p1);
+            polyline.points.push_back(p2);
+            auto fill_color_it = it->find("fill_color");
+            if (fill_color_it != it->end()) {
+                polyline.fill_color = Vector3{
+                    (*fill_color_it)[0], (*fill_color_it)[1], (*fill_color_it)[2]
                 };
             }
-            auto alpha_it = it->find("alpha");
-            if (alpha_it != it->end()) {
-                alpha = (*alpha_it);
+            auto fill_alpha_it = it->find("fill_alpha");
+            if (fill_alpha_it != it->end()) {
+                polyline.fill_alpha = (*fill_alpha_it);
             }
-            Matrix3x3 transform = parse_transformation(*it);
-            scene.shapes.push_back(Triangle{p0, p1, p2, color, alpha, transform});
+            auto stroke_color_it = it->find("stroke_color");
+            if (stroke_color_it != it->end()) {
+                polyline.stroke_color = Vector3{
+                    (*stroke_color_it)[0], (*stroke_color_it)[1], (*stroke_color_it)[2]
+                };
+            }
+            auto stroke_alpha_it = it->find("stroke_alpha");
+            if (stroke_alpha_it != it->end()) {
+                polyline.stroke_alpha = (*stroke_alpha_it);
+            }
+            auto stroke_width_it = it->find("stroke_width");
+            if (stroke_width_it != it->end()) {
+                polyline.stroke_width = (*stroke_width_it);
+            }
+            polyline.transform = parse_transformation(*it);
+            scene.shapes.push_back(polyline);
         }
     }
 
     return scene;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream &os, const std::optional<T> &x) {
+    if (x) {
+        os << *x;
+    } else {
+        os << "None";    
+    }
+    return os;
 }
 
 std::ostream& operator<<(std::ostream &os, const Shape &shape) {
@@ -245,21 +292,28 @@ std::ostream& operator<<(std::ostream &os, const Shape &shape) {
         os << "Circle, " << 
               "center=" << circle->center << ", " <<
               "radius=" << circle->radius << ", " <<
-              "color=" << circle->color << ", " <<
+              "fill_color=" << circle->fill_color << ", " <<
+              "fill_alpha=" << circle->fill_alpha << ", " <<
+              "stroke_color=" << circle->stroke_color << ", " <<
+              "stroke_alpha=" << circle->stroke_alpha << ", " <<
+              "stroke_width=" << circle->stroke_width << ", " <<
               "transform=" << std::endl << circle->transform << "]";
-    } else if (auto *rectangle = std::get_if<Rectangle>(&shape)) {
-        os << "Rectangle, " << 
-              "p_min=" << rectangle->p_min << ", " <<
-              "p_max=" << rectangle->p_max << ", " <<
-              "color=" << rectangle->color << ", " <<
-              "transform=" << std::endl<< rectangle->transform << "]";
-    } else if (auto *triangle = std::get_if<Triangle>(&shape)) {
-        os << "Triangle, " << 
-              "p0=" << triangle->p0 << ", " <<
-              "p1=" << triangle->p1 << ", " <<
-              "p2=" << triangle->p2 << ", " <<
-              "color=" << triangle->color << ", " <<
-              "transform=" << std::endl << triangle->transform << "]";
+    } else if (auto *polyline = std::get_if<Polyline>(&shape)) {
+        os << "Polyline, points=[";
+        bool first = true;
+        for (auto it : polyline->points) {
+            if (!first) os << ", ";
+            os << it;
+            first = false;
+        }
+        os << "], ";
+        os << "is_closed=" << polyline->is_closed << ", " <<
+              "fill_color=" << polyline->fill_color << ", " << 
+              "fill_alpha=" << polyline->fill_alpha << ", " << 
+              "stroke_color=" << polyline->stroke_color << ", " << 
+              "stroke_alpha=" << polyline->stroke_alpha << ", " << 
+              "stroke_width=" << polyline->stroke_width << ", " <<
+              "transform=" << std::endl << polyline->transform << "]";
     } else {
         // Likely an unhandled case.
         os << "Unknown]";
