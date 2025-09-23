@@ -3,6 +3,7 @@
 #include "balboa.h"
 #include "vector.h"
 #include "matrix.h"
+#include <optional>
 #include <variant>
 #include <vector>
 
