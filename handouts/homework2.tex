@@ -25,26 +25,24 @@ To facilitate the projection, we will focus on representing 3D surfaces, instead
 \section{Rendering a single 3D triangle (20 pts)}
 \label{sec:single_triangle}
 
-Let's start simple and render just a single 3D triangle. Our plan is to first project the triangle to a 2D image plane, then we can directly use the code from our previous homework to render the projected triangle.
+Let's start simple and render just a single 3D triangle. Our plan is to first project the triangle to a 2D image plane, then we can directly use the code from our previous homework to render the projected triangle. Or even better, in the lectures we introduce a faster method using half-planes of the three edges of the triangle.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{imgs/perspective_transform.pdf}
-    \caption{To perform perspective projection, we setup the coordinate system of the camera space so that the origin of the camera is at $(0, 0, 0)$, the camera is facing negative $z$-axis, $x$-axis is pointing right, and $y$-axis is pointing up. We put the image plane at $z=-1$. The perspective projection of a point $(x, y, z)$ is then simply finding the intersection between the line formed by the point and the camera origin with the image plane. Since our image plane has a finite extent, we further clips all point outside of $[-sa, -s, -1] \times [sa, s, -1]$ where $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$) and $s$ is the scaling factor controlling the size of our image. The clipping defines a \emph{view frustrum}.}
+    \caption{To perform perspective projection, we need to setup a coordinate system for the \emph{camera space}. The figure illustrates the configuration of the space (y is pointing outwards of the screen). The perspective projection of a point $(x, y, z)$ is then simply finding the intersection between the line formed by the point and the camera origin with the image plane. Since our image plane has a finite extent, we further clips all point outside of $[-sa, -s, -1] \times [sa, s, -1]$ where $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$) and $s$ is the scaling factor controlling the size of our image. The clipping defines a \emph{view frustrum}.}
     \label{fig:perspective_transform}
 \end{figure}
 
-How do we project the triangle then? It's significantly easier if we assume a particular coordinate system of our camera. We will lift this assumption in the later part of the homework (by, you guess it, applying 3D transformations). Let's assume in the \emph{camera space}, $x$-axis is pointing right, $y$-axis is pointing up, and $z$-axis is pointing away from the direction the camera is looking at (the $z$ is specified this way so that we are following a \href{https://en.wikipedia.org/wiki/Right-hand_rule}{right-handed} coordinate system). We also assume that the image plane is located at $z=-1$ -- this is where we are going to project our triangle onto. \cref{fig:perspective_transform} shows that the perspective projection of a point $(x, y, z)$ boils down to computing the intersection between the line formed by the point and the camera origin with the image plane. The projected point $(x', y')$ is
-\begin{equation}
-\left(x', y'\right) = \left(-\frac{x}{z}, -\frac{y}{z}\right).
-\label{eq:projection}
-\end{equation}
+How do we project the triangle then? It's significantly easier if we assume a particular coordinate system of our camera. We will lift this assumption in the later part of the homework (by, you guess it, applying 3D transformations). 
+\cref{fig:perspective_transform} illustrates the configuration and how to compute the projection by computing the intersection between the line formed by the point and the camera
+origin with the image plane.
 
 Furthermore, we need to define the extent of the image plane (we can't have an image with infinite size!). Note that our image can be a rectangle (instead of a square). We define the extent of the image plane to be $[-sa, -s, -1] \times [sa, s, -1]$: $s$ is a scaling factor that controls the size of the image (it's half of the sensor size), and $a$ is the aspect ratio ($\frac{\text{image width}}{\text{image height}}$). $s$ is related to the vertical \href{https://en.wikipedia.org/wiki/Field_of_view}{field of view} $\alpha$ of a camera:
 \begin{equation}
 s = \tan\left(\frac{\alpha}{2}\right).
 \end{equation}
-(A common bug in the previous year, when calculating the aspect ratio $a$, is that in C++, dividing two integers will round the results to an integer, e.g., $9/16=0$ in C++. Make sure you convert the types.)
+(A common bug in the previous years, when calculating the aspect ratio $a$, is that in C++, dividing two integers will round the results to an integer, e.g., $9/16=0$ in C++. Make sure you convert the types.)
 
 Any point that lands outside of the extent of the image plane is discarded and not going to show up in our image. We call the set of points that are going to land on the image planes the \emph{view frustrum}. \cref{fig:perspective_transform} also visualizes the view frustrum.
 
@@ -57,16 +55,18 @@ Therefore, given a triangle with 3 vertices, we will project all three of them o
     \label{fig:camera_vs_screen}
 \end{figure}
 
-There are a few other complications though. Firstly, the point $(x', y')$ is in the projected camera space after the projection. We will need to transform it into the screen space. Recall that our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_screen}. So we need to further convert the point $(x', y')$ from the projected camera space to screen space. Looking at \cref{fig:camera_vs_screen}, we can see that the we need to translate the origin, scale the axes, and flip the $y$ axis. We will give you the formula for the $x$-axis, and you should figure out the $y$-axis formula yourself:
+There are a few other complications though. Firstly, the projected point $(x', y', 1)$ is in the projected camera space after the projection. We will need to transform it into the screen space. Our screen space has $x$-axis pointing right with $y$-axis pointing down, and the extent is $[0, 0] \times [\text{width}, \text{height}]$. See \cref{fig:camera_vs_screen} (note that it is slightly different from the ``canvas space'' we used in Homework 1, where the $y$-axis pointed up). So we need to further convert the point $(x', y')$ from the projected camera space to screen space. Looking at \cref{fig:camera_vs_screen}, we can see that the we need to translate the origin, scale the axes, and flip the $y$ axis. We will give you the formula for the $x$-axis, and you should figure out the $y$-axis formula yourself:
 \begin{equation}
 x'' = w\frac{x'+sa}{2sa},
 \label{eq:camera_to_screen}
 \end{equation}
 where $w$ is the width of the image.
 
-The second complication is that a triangle vertex can be behind the camera i.e., $-z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: recall that in \cref{eq:projection}, we need to divide by $-z$ for the projection. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. Hence, we consider all points such that $-z < z_{\text{near}}$ to be behind the camera. $z_{\text{near}}$ is usually called the \emph{near clipping plane}.
+The second complication is that a triangle vertex can be behind the camera i.e., $-z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: recall that in \cref{eq:projection}, we need to divide by $-z$ for the projection. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. 
+Hence, we consider all points such that $-z < z_{\text{near}}$ to be behind the camera. 
+$z_{\text{near}}$ is usually called the \emph{near clipping plane}.
 
-Dealing with triangles with only one or two vertices behind the camera, and the other in front of the camera is tricky: we will need to implement \emph{clipping} (described below as a bonus). Instead, in this homework, we only require you only render the triangles where all three vertices are in front of the near plane. If even one of the vertices of a triangle is behind the near clipping plane, you should reject the triangle and not render it.
+Dealing with triangles with only one or two vertices behind the camera, and the other in front of the camera is a little bit tricky: we will need to implement \emph{clipping} (described below as a bonus). Instead, in this homework, we only require you only render the triangles where all three vertices are in front of the near plane. If even one of the vertices of a triangle is behind the near clipping plane, you should reject the triangle and not render it.
 
 \begin{figure}[h]
     \centering
@@ -101,9 +101,9 @@ outputs/hw_2_1_3.png
 \end{lstlisting}
 We'll compare your output with our rendering for grading.
 
-\paragraph{Bonus: triangle clipping (15 pts).} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane. To speed up the computation, clipping is also often done with the entire 3D \href{https://en.wikipedia.org/wiki/Viewing_frustum}{view frustum}, discarding any triangles that are outside of the screen or too far away from the camera. We don't do it in this homework. 
+\paragraph{Bonus: triangle clipping (10 pts).} In practice, instead of rejecting a triangle if one or two verices are behind the near clipping plane, graphics pipelines would implement triangle clipping (\cref{fig:triangle_clipping}). As a bonus, you will implement the clipping of the triangles and render them correctly even when some vertices are behind the near clipping plane. To speed up the computation, clipping is also often done with the entire 3D \href{https://en.wikipedia.org/wiki/Viewing_frustum}{view frustum}, discarding any triangles that are outside of the screen or too far away from the camera. We don't do it in this homework. 
 
-\section{Rendering a triangle mesh (20 pts)}
+\section{Rendering a triangle mesh (30 pts)}
 \label{sec:triangle_mesh}
 
 \begin{figure}[h]
@@ -237,23 +237,29 @@ To summarize, given an image plane point (e.g., pixel or subpixel center) and a 
     \item Finally, we obtain the depth using \cref{eq:interpolated_depth} and use the depth to pick the triangle that is the closest to the pixel sample, but in front of the clipping plane.
 \end{enumerate}
 
-One final detail, remember we discussed two variants for rendering multiple objects in a scene? The depth testing makes the two variants differ more. For the \emph{ray tracing} style (i.e., for each pixel, check all triangles), you need to maintain the closest $z$ value when traversing all the triangles. For the \emph{rasterization} style (i.e., for each triangle, check all pixels), you need to maintain a whole image of $z$ values, and this is usually called the \emph{Z-buffer}. 
+One final detail, in the lectures we discussed two variants for rendering multiple objects in a scene. For the \emph{ray tracing} style (i.e., for each pixel, check all triangles), you need to maintain the closest $z$ value when traversing all the triangles. For the \emph{rasterization} style (i.e., for each triangle, check all pixels), you need to maintain a whole image of $z$ values, and this is usually called the \emph{Z-buffer}. 
 \begin{lstlisting}[language=Python]
+# "Ray tracing style"
 # For each pixel, check all triangles
 for each pixel:
-    z_min = infinity
-    for each triangle:
-        # check if the pixel center hits the triangle
-        # overwrite color and z_min if the triangle is closer
+    for each antialiasing sample:
+        z_min = infinity
+        for each triangle:
+            # check if the pixel center hits the triangle
+            # overwrite color and z_min if the triangle is closer
 
+# "Rasterization style"
 # For each triangle, check all pixels
-Z_buffer = Image(w, h)
+Z_buffer = Image(4 * w, 4 * h)
 for each triangle:
     # project the triangle
     for each pixel:
-        # check if the pixel center hits the triangle
-        # overwrite color and Z_buffer[pixel] if the triangle is closer
+        for each antialiasing sample:
+            # check if the sample hits the triangle
+            # overwrite color and Z_buffer[sample] if the triangle is closer
+# Average the samples and downsize the image.
 \end{lstlisting}
+Notice how we handle the antialiasing in the rasterization method.
 We will discuss the pros and cons of the two approaches in depth in the lectures.
 
 Now you should be ready to implement the rendering of a triangle mesh! In this part, to specify the color of the triangles, in our triangle mesh, we further store a color per triangle. 
@@ -297,9 +303,8 @@ We'll compare your output with our rendering for grading.
 
 This part is more involved than the previous part. A way to debug is to render the same triangle as in \cref{sec:single_triangle} using your \cref{sec:triangle_mesh} code -- if they are different, then something is wrong and you can check what led to that problem. 
 
-\paragraph{Bonus: occlusion culling (20 pts).} During rasterization-style rendering, if we can prove that a triangle is completely blocked by some other triangles (using the current Z buffer), we can completely skip the rendering of the triangle to speed up our rendering. This is called \href{https://en.wikipedia.org/wiki/Z-buffering#Z-culling}{occlusion culling} or Z-culling. Read the paper \href{https://dl.acm.org/doi/10.1145/166117.166147}{Hierarchical Z-Buffer Visibility} from Greene et al. and implement occlusion culling using a hierarchical Z buffer. Our test scenes do not have heavy occlusion, so you will need to design your own scenes to show the speedup.
-
 \section{Perspective-corrected interpolation (20 pts)}
+\label{sec:interpolation}
 
 So far, we have been rendering constant color triangles. It's time to make things more colorful. Instead of specifying \emph{face colors}, we'll specify \emph{vertex colors}, and interpolate them using barycentric coordinates.
 
@@ -820,11 +825,25 @@ outputs/hw_2_4_teapot.png
 
 Note that the last teapot scene contains 1570 triangles, so it might take a bit of time to render it (it took 30 seconds in my implementation). By the way, the teapot is the famous \href{https://en.wikipedia.org/wiki/Utah_teapot}{Utah teapot} made by Martin Newell when doing his Ph.D. at Utah in the early days of computer graphics.
 
-\paragraph{Bonus (15 pts).} Like Homework 1, generate an animation by interpolating between transformations. To interpolate between rotations, read the \href{https://thenumb.at/Exponential-Rotations/}{article} from Max Slater. Feel free to modify any part of the code in balboa. You can use \href{https://trac.ffmpeg.org/wiki/Slideshow}{ffmpeg} to convert a sequence of images into a video file.
-
-\section{Design your own scenes (20 pts)}
+\section{Design your own scenes (10 pts)}
 
 As usual, design a scene yourself and submit the scene and your rendering to us. We will give extra credits to people who impress us. Feel free to download 3D model files on the internet (please credit the authors and let us know where you downloaded it). Note that our parser assumes existence of the following attributes in a vertex: x, y, z, r, g, b, so if your downloaded model does not have the RGB information stored in the vertices, it may not parse correctly. Our parser also assumes that the model is a triangle mesh -- some meshes have general polygons and need to be triangulated before importing to balboa.
+
+\section{Bonus: animation (15 pts)}
+Like Homework 1, generate an animation by interpolating between transformations. To interpolate between rotations, read the \href{https://thenumb.at/Exponential-Rotations/}{article} from Max Slater. You will only get the full 15 points if you have interpolated rotation.
+Feel free to modify any part of the code in balboa. You can use \href{https://trac.ffmpeg.org/wiki/Slideshow}{ffmpeg} to convert a sequence of images into a video file.
+
+\section{Bonus: ray casting (20 pts)}
+Follow \href{https://raytracing.github.io/books/RayTracingInOneWeekend.html}{ray tracing in one weekend} and implement a ray caster that renders our JSON scenes. For coloring, use the 3D barycentric coordinates to interpolate the vertex color as in \cref{sec:interpolation}. 
+For ray-triangle intersection, you can use the \href{https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm}{Möller–Trumbore intersection algorithm}, which will give you the barycentric coordinates of the triangle along with the intersection (feel free to copy paste code for this part). 
+You will find that a ray caster is actually easier to implement than our projection-based rasterizer, but we want you to know different ways to render and the rasterizer is how the most of the current GPU works except for ray tracing hardware.
+
+\section{Bonus: occlusion culling (20 pts)} 
+
+During rasterization-style rendering, if we can prove that a triangle is completely blocked by some other triangles (using the current Z buffer), we can completely skip the rendering of the triangle to speed up our rendering. 
+This is called \href{https://en.wikipedia.org/wiki/Z-buffering#Z-culling}{occlusion culling} or Z-culling. 
+Read the paper \href{https://dl.acm.org/doi/10.1145/166117.166147}{Hierarchical Z-Buffer Visibility} from Greene et al. and implement occlusion culling using a hierarchical Z buffer. 
+Our test scenes do not have heavy occlusion, so you will need to design your own scenes to show the speedup.
 
 %\bibliographystyle{plain}
 %\bibliography{refs}
