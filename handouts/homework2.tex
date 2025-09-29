@@ -62,7 +62,7 @@ x'' = w\frac{x'+sa}{2sa},
 \end{equation}
 where $w$ is the width of the image.
 
-The second complication is that a triangle vertex can be behind the camera i.e., $-z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: recall that in \cref{eq:projection}, we need to divide by $-z$ for the projection. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. 
+The second complication is that a triangle vertex can be behind the camera i.e., $-z < 0$. In fact, even if $z$ is very close to zero, it can be still problematic: notice the division in \cref{fig:perspective_transform}. When $z$ is very close to zero, the division can be unstable due to limited floating point precision. 
 Hence, we consider all points such that $-z < z_{\text{near}}$ to be behind the camera. 
 $z_{\text{near}}$ is usually called the \emph{near clipping plane}.
 
